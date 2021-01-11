@@ -1,0 +1,202 @@
+*&---------------------------------------------------------------------*
+*& Include          YR0117_990TOP
+*&---------------------------------------------------------------------*
+TABLES : MARD, BKPF, MCHB.
+
+DATA : BEGIN OF GS_DISP_LEFT,
+
+         CLABS      TYPE MCHB-CLABS, "#####
+         MEINS      TYPE MARA-MEINS, "####
+         MATNR      TYPE MCHB-MATNR, "####
+         MAKTX      TYPE MAKT-MAKTX, "###
+         WERKS      TYPE MARD-WERKS, "###
+         LGORT      TYPE MARD-LGORT, "##
+         CHARG      TYPE MCHB-CHARG, "####
+*         MBLNR TYPE MSEG-MBLNR, "Material Document No.
+         DETAIL     TYPE ICON-ID, "STO_PO####
+         PSTYP      TYPE EKPO-PSTYP, "### ####3
+         RESWK      TYPE EKKO-RESWK, "Supply Plant
+         EBELN      TYPE EKPO-EBELN,  "STO_PO
+         CHARG_EKET TYPE EKET-CHARG,
+         DSTATE     TYPE ICON-ID,  "########
+*         BWART TYPE MSEG-BWART, "Movement Type
+
+       END OF GS_DISP_LEFT.
+
+DATA GT_DISP_LEFT LIKE TABLE OF GS_DISP_LEFT.
+
+*-----------------------------------------------------------------------------------------------------------------------*
+DATA : BEGIN OF GS_DISP3,
+         STAT  TYPE CHAR10,
+         MATNR TYPE MARA-MATNR,
+         CHARG TYPE MSEG-CHARG,
+         AEDAT TYPE EKKO-AEDAT, "####
+         ERNAM TYPE EKKO-ERNAM, "##
+         EBELN TYPE EKPO-EBELN,
+         EBELP TYPE EKPO-EBELP,
+         WERKS TYPE MSEG-WERKS,
+         LGORT TYPE MSEG-LGORT,
+         MEINS TYPE MSEG-MEINS,
+         ARRIVAL TYPE ICON-ID,
+         ELIKZ TYPE MATDOC-ELIKZ, "DELIVER COMPLETE INDICATOR
+         PSTYP TYPE EKPO-PSTYP, "### ####3
+         RESWK TYPE EKKO-RESWK, "Supply Plant
+         BELNR TYPE EKBE-BELNR, "do#(##)
+         MBLNR TYPE EKBE-BELNR, "DO#(##)
+         MENGE TYPE EKBE-MENGE,
+COLOR     TYPE CHAR04,
+       END OF GS_DISP3,
+       GT_DISP3 LIKE TABLE OF GS_DISP3.
+
+DATA : GT_EKBE TYPE TABLE OF EKBE,
+       GS_EKBE TYPE EKBE.
+
+
+
+""""""""""""""""""""""""""""""""""""""""""""""""
+DATA : BEGIN OF GS_DISP2,
+         BELNR  TYPE EKBE-BELNR, "do#(##)
+  ELIKZ TYPE EKBE-ELIKZ,
+         MBLNR  TYPE EKBE-BELNR, "DO#(##)
+           AEDAT TYPE EKKO-AEDAT, "PO####
+         ERNAM TYPE EKKO-ERNAM, "PO##
+         OAEDAT TYPE EKKO-AEDAT, "GI####
+         OERNAM TYPE EKKO-ERNAM, "GI##
+         IAEDAT TYPE EKKO-AEDAT, "GR####
+         IERNAM TYPE EKKO-ERNAM, "GR##
+         DIFF TYPE I, "####
+         MENGE  TYPE EKBE-MENGE, "##
+         MEINS  TYPE MARA-MEINS, "####
+         MATNR  TYPE MCHB-MATNR, "####
+         MAKTX  TYPE MAKT-MAKTX, "###
+         CHARG  TYPE MCHB-CHARG, "####
+         EBELN  TYPE EKPO-EBELN, "STOPO
+         STAT TYPE ICON-ID,      " ######
+       END OF GS_DISP2.
+
+DATA : GT_DISP2 LIKE TABLE OF GS_DISP2.
+
+*-----------------------------------------------------------------------------------------------------------------------*
+
+DATA : BEGIN OF GS_DISP_0200.
+    INCLUDE STRUCTURE GS_DISP3.
+DATA : OKCODE TYPE SY-UCOMM,
+       INDEX  TYPE LVC_INDEX,
+       END OF GS_DISP_0200.
+DATA : GT_DISP_0200 LIKE TABLE OF GS_DISP_0200.
+
+DATA : BEGIN OF GS_DISP_CLOSE.
+    INCLUDE STRUCTURE GS_DISP3.
+DATA : OKCODE TYPE SY-UCOMM,
+       INDEX  TYPE LVC_INDEX,
+       END OF GS_DISP_CLOSE.
+DATA : GT_DISP_CLOSE LIKE TABLE OF GS_DISP_0200.
+
+DATA GV_EBELN TYPE EKPO-EBELN.
+
+*-----------------------------------------------------------------------------------------------------------------------*
+
+DATA : BEGIN OF GS_DISP_0300.
+    INCLUDE STRUCTURE GS_DISP3.
+DATA : OKCODE TYPE SY-UCOMM,
+       INDEX  TYPE LVC_INDEX,
+       END OF GS_DISP_0300.
+DATA : GT_DISP_0300 LIKE TABLE OF GS_DISP_0300.
+
+*-----------------------------------------------------------------------------------------------------------------------*
+
+DATA : BEGIN OF GS_DISP_0400, "STO_PO###
+         CLABS  TYPE MCHB-CLABS, "#####
+         MEINS  TYPE MARA-MEINS, "####
+         MATNR  TYPE MCHB-MATNR, "####
+         MAKTX  TYPE MAKT-MAKTX, "###
+         WERKS  TYPE MARD-WERKS, "###
+         LGORT  TYPE MARD-LGORT, "##
+         CHARG  TYPE MCHB-CHARG, "####
+
+         OKCODE TYPE SY-UCOMM,
+         INDEX  TYPE LVC_INDEX,
+       END OF GS_DISP_0400.
+
+DATA : GT_DISP_0400 LIKE TABLE OF GS_DISP_0400.
+
+*-----------------------------------------------------------------------------------------------------------------------*
+
+
+***********************************************
+*ALV## ##
+**********************************************
+
+DATA : GO_DOCKING  TYPE REF TO CL_GUI_DOCKING_CONTAINER,
+       GO_SPLITTER TYPE REF TO CL_GUI_SPLITTER_CONTAINER,
+       GO_SUBDOCK  TYPE REF TO CL_GUI_CONTAINER,
+       GO_CONT1    TYPE REF TO CL_GUI_CONTAINER,
+       GO_CONT2    TYPE REF TO CL_GUI_CONTAINER,
+       GO_CONT3    TYPE REF TO CL_GUI_CONTAINER,
+       GO_GRID1    TYPE REF TO CL_GUI_ALV_GRID,
+       GO_GRID2    TYPE REF TO CL_GUI_ALV_GRID,
+       GO_GRID3    TYPE REF TO CL_GUI_ALV_GRID.
+
+
+DATA : GT_FCAT1   TYPE LVC_T_FCAT,
+       GT_FCAT2   TYPE LVC_T_FCAT,
+       GS_FCAT1   TYPE LVC_S_FCAT,
+       GS_FCAT2   TYPE LVC_S_FCAT,
+       GT_FCAT3   TYPE LVC_T_FCAT,
+       GS_FCAT3   TYPE LVC_S_FCAT,
+
+       GS_LAYOUT1 TYPE LVC_S_LAYO,
+       GS_LAYOUT2 TYPE LVC_S_LAYO,
+       GS_LAYOUT3 TYPE LVC_S_LAYO,
+
+       GS_SORT1   TYPE LVC_S_SORT,
+       GS_SORT2   TYPE LVC_S_SORT,
+       GT_SORT1   TYPE LVC_T_SORT,
+       GT_SORT2   TYPE LVC_T_SORT,
+       GS_SORT3   TYPE LVC_S_SORT,
+       GT_SORT3   TYPE LVC_T_SORT.
+
+
+DATA : GV_OKCODE         TYPE SY-UCOMM,
+       GO_EVENT_RECEIVER TYPE REF TO LCL_EVENT_RECEIVER.
+
+
+*******************************************************
+**BAPI ## ##**
+*******************************************************
+
+DATA :GS_DAY   TYPE C,
+      GS_BATCH TYPE MCHB-CHARG, "mseg -> mchb # ####
+      GV_BAPI  TYPE C.
+
+DATA: GS_HEADER  TYPE BAPI2017_GM_HEAD_01,
+      GS_CODE    TYPE BAPI2017_GM_CODE,
+      GS_HEADRET TYPE BAPI2017_GM_HEAD_RET,
+      GS_BAPIRET TYPE BAPIRET2,
+      GT_BAPIRET TYPE STANDARD TABLE OF BAPIRET2,
+      GS_ITEM    TYPE BAPI2017_GM_ITEM_CREATE,
+      GT_ITEM    TYPE STANDARD TABLE OF BAPI2017_GM_ITEM_CREATE.
+
+DATA : GS_EXIT TYPE CHAR01.
+
+
+
+
+
+*** BAPI_PO_CREATE1 ## *** (STO_PO ### ##~~)
+
+DATA : GS_POHEADER     LIKE  BAPIMEPOHEADER.
+DATA : GS_POHEADERX    LIKE  BAPIMEPOHEADERX.
+DATA : GS_EXPHEADER    LIKE  BAPIMEPOHEADER.
+DATA : GV_PO     LIKE BAPIMEPOHEADER-PO_NUMBER.
+DATA : GT_POITEM       LIKE  BAPIMEPOITEM     OCCURS 0 WITH HEADER LINE.
+DATA : GT_POITEMX      LIKE  BAPIMEPOITEMX    OCCURS 0 WITH HEADER LINE.
+DATA : GT_POSCHEDULE   LIKE  BAPIMEPOSCHEDULE OCCURS 0 WITH HEADER LINE.
+DATA : GT_POSCHEDULEX  LIKE  BAPIMEPOSCHEDULX OCCURS 0 WITH HEADER LINE.
+
+DATA : GT_RETURN       LIKE  BAPIRET2         OCCURS 0 WITH HEADER LINE.
+DATA GV_INDEX TYPE I.
+DATA GV_BAPI_PO TYPE CHAR01.
+
+----------------------------------------------------------------------------------
+Extracted by Direct Download Enterprise version 1.3.1 - E.G.Mellodew. 1998-2005 UK. Sap Release 751

@@ -1,0 +1,255 @@
+*&---------------------------------------------------------------------*
+*& Include          YR0117_990I01
+*&---------------------------------------------------------------------*
+*&---------------------------------------------------------------------*
+*&      Module  EXIT_0100  INPUT
+*&---------------------------------------------------------------------*
+*       text
+*----------------------------------------------------------------------*
+MODULE EXIT_0100 INPUT.
+
+  LEAVE TO SCREEN 0.
+
+ENDMODULE.
+*&---------------------------------------------------------------------*
+*&      Module  USER_COMMAND_0100  INPUT
+*&---------------------------------------------------------------------*
+*       text
+*----------------------------------------------------------------------*
+MODULE USER_COMMAND_0100 INPUT.
+
+
+* 400# ## (STO_PO ##)
+  CASE GV_OKCODE.
+    WHEN 'MOVE'.
+"STEP 1 : PO##
+      PERFORM CRTE_STO.
+      IF GV_BAPI_PO = 'X'.
+        "####
+"STEP 2 : ####
+        PERFORM BAPI_MOVE_CRABS.
+        IF GV_BAPI = 'X'.
+          "#### ####
+          PERFORM GET_DATA.
+          GS_DISP3-STAT = '###'.
+          GS_DISP3-BELNR = GS_HEADRET-MAT_DOC.
+          GS_DISP3-EBELN = GS_ITEM-PO_NUMBER.
+          GS_DISP3-COLOR = 'C310'.
+        ELSE.
+        GS_DISP3-STAT = ICON_INCOMPLETE.
+        ENDIF.
+
+        GS_DISP3-MATNR = GT_POITEM-MATERIAL.
+        GS_DISP3-CHARG = GT_POITEM-BATCH .
+        GS_DISP3-AEDAT = GS_POHEADER-CREAT_DATE.
+        GS_DISP3-ERNAM = GS_POHEADER-CREATED_BY.
+        GS_DISP3-EBELN = GV_PO.
+        GS_DISP3-MENGE = GT_POITEM-QUANTITY .
+        GS_POHEADER-CREAT_DATE = SY-DATUM.
+        GS_POHEADER-CREATED_BY = SY-UNAME.
+        GS_DISP3-EBELP = GT_POITEM-PO_ITEM.
+        GS_DISP3-COLOR = 'C300'.
+        APPEND GS_DISP3 TO GT_DISP3.
+
+        PERFORM REFRESH_ALV.
+      ENDIF.
+
+
+* 200# ##. (5131 ## -> ####)
+
+*    WHEN 'MOVE'.
+*
+*PERFORM BUTTON_MOVE.
+*
+*
+*        PERFORM REFRESH_ALV.
+*      ENDIF.
+
+    WHEN 'CLOSE_PO'.
+
+      PERFORM CLOSE_PO.
+
+      IF GV_BAPI = 'X'.
+        "#### ####
+        PERFORM SET_AFTER_CLOSE.
+        PERFORM REFRESH_ALV.
+      ENDIF.
+  ENDCASE.
+
+
+ENDMODULE.
+*&---------------------------------------------------------------------*
+*&      Module  EXIT_0200  INPUT
+*&---------------------------------------------------------------------*
+*       text
+*----------------------------------------------------------------------*
+MODULE EXIT_0200 INPUT.
+
+  LEAVE TO SCREEN 0.
+
+ENDMODULE.
+*&---------------------------------------------------------------------*
+*&      Module  USER_COMMAND_0200  INPUT
+*&---------------------------------------------------------------------*
+*       text
+*----------------------------------------------------------------------*
+MODULE USER_COMMAND_0200 INPUT.
+  IF GV_OKCODE = 'SAVE'.
+    PERFORM SAVE_0200.
+  ENDIF.
+
+
+
+
+
+
+
+
+
+
+ENDMODULE.
+*&---------------------------------------------------------------------*
+*&      Module  EXIT_0300  INPUT
+*&---------------------------------------------------------------------*
+*       text
+*----------------------------------------------------------------------*
+MODULE EXIT_0300 INPUT.
+  LEAVE TO SCREEN 0.
+ENDMODULE.
+*&---------------------------------------------------------------------*
+*&      Module  USER_COMMAND_0300  INPUT
+*&---------------------------------------------------------------------*
+*       text
+*----------------------------------------------------------------------*
+MODULE USER_COMMAND_0300 INPUT.
+
+  IF GV_OKCODE = 'SAVE'.
+    PERFORM SAVE_0300.
+  ENDIF.
+
+
+
+
+
+
+
+
+
+ENDMODULE.
+*&---------------------------------------------------------------------*
+*&      Module  F4_EBELN  INPUT
+*&---------------------------------------------------------------------*
+*       text
+*----------------------------------------------------------------------*
+*MODULE F4_EBELN INPUT.
+*
+*DATA : BEGIN OF LS_EBELN,
+*         EBELN TYPE EKPO-EBELN,
+*         MENGE TYPE EKPO-MENGE,
+*       END OF LS_EBELN.
+*
+*  DATA : LT_EBELN LIKE TABLE OF LS_EBELN,
+*         LT_RETURN TYPE TABLE OF DDSHRETVAL.
+*
+*  LS_EBELN-EBELN = 'A'.
+*  LS_EBELN-MENGE = '##'.
+*  APPEND LS_EBELN TO LT_EBELN.
+**
+**  LS_MATNR-MATNR = 'MAT03'.
+**  LS_MATNR-MAKTX = '##03'.
+**  APPEND LS_MATNR TO LT_MATNR.
+*
+*  CALL FUNCTION 'F4IF_INT_TABLE_VALUE_REQUEST'
+*    EXPORTING
+**     DDIC_STRUCTURE         = ' '
+*      RETFIELD               = 'EBELN'
+**     PVALKEY                = ' '
+*     DYNPPROG               = SY-REPID
+*     DYNPNR                 = SY-DYNNR
+*     DYNPROFIELD            = 'GV_EBELN'
+**     STEPL                  = 0
+*     WINDOW_TITLE           = '5131## ##### ##'
+**     VALUE                  = ' '
+*     VALUE_ORG              = 'S'
+**     MULTIPLE_CHOICE        = ' '
+**     DISPLAY                = ' '
+**     CALLBACK_PROGRAM       = ' '
+**     CALLBACK_FORM          = ' '
+**     CALLBACK_METHOD        =
+**     MARK_TAB               =
+**   IMPORTING
+**     USER_RESET             =
+*    TABLES
+*      VALUE_TAB              = LT_EBELN
+**     FIELD_TAB              =
+*      RETURN_TAB             = LT_RETURN
+**     DYNPFLD_MAPPING        =
+**   EXCEPTIONS
+**     PARAMETER_ERROR        = 1
+**     NO_VALUES_FOUND        = 2
+**     OTHERS                 = 3
+*            .
+*  IF SY-SUBRC <> 0.
+** Implement suitable error handling here
+*  ENDIF.
+*
+*ENDMODULE.
+*&---------------------------------------------------------------------*
+*&      Module  USER_COMMAND_0400  INPUT
+*&---------------------------------------------------------------------*
+*       text
+*----------------------------------------------------------------------*
+MODULE USER_COMMAND_0400 INPUT.
+  DATA : LS_DATA TYPE MARD.
+  DATA : LV_ANSWER.
+IF GV_OKCODE = 'SAVE'.
+
+
+  IF GS_DISP_0400-CLABS EQ 0.
+    MESSAGE S015 DISPLAY LIKE 'E'.    "### #####
+    EXIT.
+    ELSEIF GS_DISP_0400-CLABS > GS_DISP_LEFT-CLABS.
+      MESSAGE S023 DISPLAY LIKE 'E'. "##### ## #### ####.
+      EXIT.
+      ELSE.
+          " -> 400# ## ### ## ##
+  CALL FUNCTION 'POPUP_TO_CONFIRM'
+    EXPORTING
+      TITLEBAR              = TEXT-001 " '5131 >> ####'
+      TEXT_QUESTION         = TEXT-002 " '### ########?'
+      TEXT_BUTTON_1         = TEXT-003 " 'YES'
+      TEXT_BUTTON_2         = TEXT-004 " 'NO'
+      DISPLAY_CANCEL_BUTTON = SPACE    " ''
+    IMPORTING
+      ANSWER                = LV_ANSWER.
+
+  IF LV_ANSWER = '2'.
+    EXIT.
+  ELSE.
+  PERFORM BAPI_STO_PO_CREATE.
+  ENDIF.
+  ENDIF.
+
+
+
+  LEAVE TO SCREEN 0.
+
+ENDIF.
+
+
+
+
+ENDMODULE.
+*&---------------------------------------------------------------------*
+*&      Module  EXIT_0400  INPUT
+*&---------------------------------------------------------------------*
+*       text
+*----------------------------------------------------------------------*
+MODULE EXIT_0400 INPUT.
+
+  LEAVE TO SCREEN 0.
+
+ENDMODULE.
+
+----------------------------------------------------------------------------------
+Extracted by Direct Download Enterprise version 1.3.1 - E.G.Mellodew. 1998-2005 UK. Sap Release 751

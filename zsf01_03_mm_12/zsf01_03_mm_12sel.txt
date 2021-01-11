@@ -1,0 +1,27 @@
+*&---------------------------------------------------------------------*
+*& Include          ZSF01_03_MM_005SEL
+*&---------------------------------------------------------------------*
+
+SELECTION-SCREEN BEGIN OF BLOCK BL1 WITH FRAME TITLE TEXT-001.
+
+SELECT-OPTIONS : S_MATNR FOR MCHB-MATNR NO-EXTENSION NO INTERVALS, "###
+*                 S_BUKRS FOR BKPF-BUKRS OBLIGATORY DEFAULT '5130' NO-EXTENSION NO INTERVALS, "#### = 5130
+*                 S_BUKRS FOR EKKO-BURKS OBLIGATORY DEFAULT '5130',
+*                 S_EKORG FOR EKKO-EKORG DEFAULT '5131',
+*                 S_WERKS FOR MARD-WERKS DEFAULT '5131' NO-EXTENSION NO INTERVALS,            "###  = 5131
+                 S_CHARG FOR MCHB-CHARG.                           "####
+
+SELECTION-SCREEN END OF BLOCK BL1.
+
+
+*----------------------------------------------------------------------*
+* BDC
+*PARAMETERS : P_MODE TYPE CTU_PARAMS-DISMODE DEFAULT 'N'.
+
+
+*----------------------------------------------------------------------*
+** BAPI
+*PARAMETERS : P_TRAME TYPE MSEG-TRAME.
+
+----------------------------------------------------------------------------------
+Extracted by Direct Download Enterprise version 1.3.1 - E.G.Mellodew. 1998-2005 UK. Sap Release 751

@@ -1,0 +1,175 @@
+*&---------------------------------------------------------------------*
+*& Include          YR0117_990O01
+*&---------------------------------------------------------------------*
+*&---------------------------------------------------------------------*
+*& Module SET_ALV_0100 OUTPUT
+*&---------------------------------------------------------------------*
+*&
+*&---------------------------------------------------------------------*
+MODULE SET_ALV_0100 OUTPUT.
+
+  IF GO_DOCKING IS INITIAL.
+
+*INSTANCE
+    PERFORM SET_INSTANCE.
+
+*####
+    PERFORM SET_FCAT1.
+    PERFORM SET_FCAT2.
+    PERFORM SET_FCAT3.
+
+*LAYOUT
+    PERFORM SET_LAYOUT1.
+    PERFORM SET_LATOUT2.
+    PERFORM SET_LAYOUT3.
+
+*EVENT
+    PERFORM SET_EVENT.
+
+*SORT
+    PERFORM SET_SORT.
+
+*ALV
+    PERFORM DISPLAY_ALV.
+
+  ELSE.
+*REFRESH
+    PERFORM REFRESH_ALV.
+
+  ENDIF.
+
+ENDMODULE.
+*&---------------------------------------------------------------------*
+*& Module STATUS_0100 OUTPUT
+*&---------------------------------------------------------------------*
+*&
+*&---------------------------------------------------------------------*
+MODULE STATUS_0100 OUTPUT.
+  SET PF-STATUS '0100'.
+  SET TITLEBAR '0100'.
+ENDMODULE.
+*&---------------------------------------------------------------------*
+*& Module STATUS_0200 OUTPUT
+*&---------------------------------------------------------------------*
+*&
+*&---------------------------------------------------------------------*
+MODULE STATUS_0200 OUTPUT.
+ SET PF-STATUS '0200'.
+ SET TITLEBAR '0200'.
+ENDMODULE.
+*&---------------------------------------------------------------------*
+*& Module SET_SCREEN_0200 OUTPUT
+*&---------------------------------------------------------------------*
+*&
+*&---------------------------------------------------------------------*
+MODULE SET_SCREEN_0200 OUTPUT.
+*
+*  LOOP AT SCREEN.
+*
+*    CASE GS_DISP_0200-OKCODE.
+*
+*      WHEN 'MOVE'.  " ### #, ### ### ## ## #### #!
+*        IF SCREEN-NAME = 'GS_DISP_0200-MATNR' OR
+*           SCREEN-NAME = 'GS_DISP_0200-MEINS' OR
+*           SCREEN-NAME = 'GS_DISP_0200-WERKS'.
+**           SCREEN-NAME = 'GS_DISP_0200-LGORT'.
+**           SCREEN-NAME = 'GS_DISP_0200-CHARG'.
+*
+*           SCREEN-INPUT = 0.
+*
+*        ENDIF.
+*
+*        MODIFY SCREEN.
+*
+*    ENDCASE.
+*
+*  ENDLOOP.
+
+
+ENDMODULE.
+*&---------------------------------------------------------------------*
+*& Module STATUS_0300 OUTPUT
+*&---------------------------------------------------------------------*
+*&
+*&---------------------------------------------------------------------*
+MODULE STATUS_0300 OUTPUT.
+ SET PF-STATUS '0300'.
+ SET TITLEBAR '0300'.
+ENDMODULE.
+*&---------------------------------------------------------------------*
+*& Module SET_SCREEN_0300 OUTPUT
+*&---------------------------------------------------------------------*
+*&
+*&---------------------------------------------------------------------*
+MODULE SET_SCREEN_0300 OUTPUT.
+
+  LOOP AT SCREEN.
+
+    CASE GS_DISP_0300-OKCODE.
+
+      WHEN 'MV_MICHAK'.
+        IF SCREEN-NAME = 'GS_DISP_0300-MEINS' OR
+           SCREEN-NAME = 'GS_DISP_0300-MATNR' OR
+           SCREEN-NAME = 'GS_DISP_0300-MENGE' OR
+           SCREEN-NAME = 'GS_DISP_0300-WERKS' OR
+           SCREEN-NAME = 'GS_DISP_0300-LGORT' OR
+           SCREEN-NAME = 'GS_DISP_0300-CHARG' OR
+           SCREEN-NAME = 'GS_DISP_0300-EBELN' OR
+
+           SCREEN-INPUT = 0.
+
+        ENDIF.
+
+
+
+        MODIFY SCREEN.
+
+    ENDCASE.
+
+  ENDLOOP.
+
+
+
+
+ENDMODULE.
+*&---------------------------------------------------------------------*
+*& Module STATUS_0400 OUTPUT
+*&---------------------------------------------------------------------*
+*&
+*&---------------------------------------------------------------------*
+MODULE STATUS_0400 OUTPUT.
+ SET PF-STATUS '0400'.
+ SET TITLEBAR '0400'.
+ENDMODULE.
+*&---------------------------------------------------------------------*
+*& Module SET_SCREEN_0400 OUTPUT
+*&---------------------------------------------------------------------*
+*&
+*&---------------------------------------------------------------------*
+MODULE SET_SCREEN_0400 OUTPUT.
+
+  LOOP AT SCREEN.
+
+    CASE GS_DISP_0400-OKCODE.
+
+      WHEN 'CRTE_STO'.
+        IF SCREEN-NAME = 'GS_DISP_0400-MEINS' OR
+           SCREEN-NAME = 'GS_DISP_0400-MATNR' OR
+           SCREEN-NAME = 'GS_DISP_0400-WERKS' OR
+           SCREEN-NAME = 'GS_DISP_0400-LGORT' OR
+           SCREEN-NAME = 'GS_DISP_0400-CHARG'.
+
+           SCREEN-INPUT = '0'.
+
+       MODIFY SCREEN.
+
+       ENDIF.
+    ENDCASE.
+  ENDLOOP.
+
+
+
+ENDMODULE.
+
+----------------------------------------------------------------------------------
+Extracted by Direct Download Enterprise version 1.3.1 - E.G.Mellodew. 1998-2005 UK. Sap Release 751
