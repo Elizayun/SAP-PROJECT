@@ -1,0 +1,74 @@
+*&---------------------------------------------------------------------*
+*& Include          YR0127_0360O01
+*&---------------------------------------------------------------------*
+*&---------------------------------------------------------------------*
+*& Module STATUS_0100 OUTPUT
+*&---------------------------------------------------------------------*
+*&
+*&---------------------------------------------------------------------*
+MODULE STATUS_0100 OUTPUT.
+ SET PF-STATUS '0100'.
+ SET TITLEBAR '0100'.
+ENDMODULE.
+*&---------------------------------------------------------------------*
+*& Module SET_ALV_0100 OUTPUT
+*&---------------------------------------------------------------------*
+*&
+*&---------------------------------------------------------------------*
+MODULE SET_ALV_0100 OUTPUT.
+
+IF GO_DOCKING IS INITIAL.
+
+* INSTANCE ##
+  PERFORM CREATE_OBJECT.
+
+* LAYOUT ##
+  PERFORM SET_LAYOUT.
+
+* #### ##
+  PERFORM SET_FIELDCAT.
+
+* SORT ##
+  PERFORM SET_SORT.
+
+* EVENT ##
+  PERFORM SET_EVENT.
+
+* ALV ##
+  PERFORM DISPLAY_ALV.
+
+ELSE.
+"REFRESH_ALV.
+    CALL METHOD GO_GRID1->REFRESH_TABLE_DISPLAY.
+
+ENDIF.
+
+ENDMODULE.
+*&---------------------------------------------------------------------*
+*& Form CREATE_OBJECT
+*&---------------------------------------------------------------------*
+*& text
+*&---------------------------------------------------------------------*
+*& -->  p1        text
+*& <--  p2        text
+*&---------------------------------------------------------------------*
+FORM CREATE_OBJECT .
+
+* ## #### ##
+  CREATE OBJECT GO_DOCKING
+    EXPORTING
+      SIDE      = CL_GUI_DOCKING_CONTAINER=>DOCK_AT_LEFT
+      EXTENSION = CL_GUI_DOCKING_CONTAINER=>WS_MAXIMIZEBOX.
+
+
+
+* ### ### ##### GRID ##.
+  CREATE OBJECT GO_GRID1
+    EXPORTING
+      I_PARENT = GO_DOCKING.
+
+
+ENDFORM.
+
+----------------------------------------------------------------------------------
+Extracted by Direct Download Enterprise version 1.3.1 - E.G.Mellodew. 1998-2005 UK. Sap Release 751
