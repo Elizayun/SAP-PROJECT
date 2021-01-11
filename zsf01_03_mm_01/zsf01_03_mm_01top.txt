@@ -1,0 +1,57 @@
+*&---------------------------------------------------------------------*
+*& Include          YR0127_0360TOP
+*&---------------------------------------------------------------------*
+
+TABLES : EKKO, MARA.
+DATA : BEGIN OF GS_DISP,
+
+         MATNR     TYPE EKPO-MATNR,     "####
+         MENGE     TYPE EKPO-MENGE,     "##
+         MEINS     TYPE EKPO-MEINS,     "##
+         WERKS     TYPE EKPO-WERKS,     "Plant
+         YIELD(10) TYPE P DECIMALS 2,     "##
+         TXZ01     TYPE EKPO-TXZ01,     "####
+         BADEA     TYPE EKPO-MENGE,   "####
+
+       END OF GS_DISP,
+       GT_DISP LIKE TABLE OF GS_DISP.
+DATA : GV_MATNR TYPE MARA-MATNR.
+
+DATA : BEGIN OF GS_BAD,
+
+         MATNR     TYPE EKPO-MATNR,       "####
+         MEINS     TYPE EKPO-MEINS,       "##
+         EXPRT(10) TYPE P DECIMALS 2,     "#### ##
+         QCRT(10)  TYPE P DECIMALS 2,     "QC ## ##
+         TXZ01     TYPE EKPO-TXZ01,        "####
+         TOTAL     TYPE EKPO-MENGE,       "# ####
+         EXPIR     TYPE EKPO-MENGE,       "#### ## ##
+         CMMNT     TYPE CHAR50,           "#### ##
+         QCBAD     TYPE EKPO-MENGE,       "QC####
+         COLOR     TYPE CHAR04,
+       END OF GS_BAD,
+       GT_BAD LIKE TABLE OF GS_BAD.
+
+
+
+DATA : GV_OKCODE TYPE SY-UCOMM.
+
+*******************************************************
+*-- ALV ## ## --*
+*******************************************************
+DATA : GO_CUSTOM_CONTAINER TYPE REF TO CL_GUI_CUSTOM_CONTAINER,       GO_SPLITTER TYPE REF TO CL_GUI_SPLITTER_CONTAINER,
+       GO_CONT1    TYPE REF TO CL_GUI_CONTAINER,
+       GO_CONT2    TYPE REF TO CL_GUI_CONTAINER,
+       GO_GRID1    TYPE REF TO CL_GUI_ALV_GRID,
+       GO_GRID2    TYPE REF TO CL_GUI_ALV_GRID.
+
+DATA : GT_FCAT1   TYPE LVC_T_FCAT,    "##
+       GT_FCAT2   TYPE LVC_T_FCAT,    "##
+       GS_FCAT    TYPE LVC_S_FCAT,    "#### ##
+       GS_LAYOUT1 TYPE LVC_S_LAYO,    "##
+       GS_LAYOUT2 TYPE LVC_S_LAYO.    "##
+
+DATA : GO_EVENT_RECEIVER TYPE REF TO LCL_EVENT_RECEIVER.
+
+----------------------------------------------------------------------------------
+Extracted by Direct Download Enterprise version 1.3.1 - E.G.Mellodew. 1998-2005 UK. Sap Release 751
