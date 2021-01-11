@@ -1,0 +1,34 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<html>
+<head>
+<title>ZSF01_03_MM_11SEL</title>
+</head>
+<body bgcolor="#FFFFE0">
+<font size="3" face = "Arial" color="#000000"><b>Code listing for: ZSF01_03_MM_11SEL</b></font>
+<br>
+<font size="3" face = "Arial" color="#000000"><b>Description:  Include YR0127_0360SEL</b></font>
+<hr>
+<pre width="100">
+<font color ="#0000FF">*&---------------------------------------------------------------------*</font>
+<font color ="#0000FF">*& Include          YR0127_0360SEL</font>
+<font color ="#0000FF">*&---------------------------------------------------------------------*</font>
+
+TABLES : EKKO, EKPO.
+
+SELECTION-SCREEN BEGIN OF BLOCK BL1 WITH FRAME TITLE TEXT-T01.
+
+SELECT-OPTIONS : S_MATNR FOR EKPO-MATNR, "####
+                 S_EBELN FOR EKKO-EBELN, "######
+                 S_AEDAT FOR EKKO-AEDAT. "#### ###
+
+SELECTION-SCREEN SKIP 2.
+
+
+
+SELECTION-SCREEN END OF BLOCK BL1.
+</pre>
+<hr>
+<font size="2" face = "Sans Serif">Extracted by Direct Download Enterprise version 1.3.1 - E.G.Mellodew. 1998-2005 UK. Sap Release 751
+</font>
+</body>
+</html>

@@ -1,0 +1,152 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<html>
+<head>
+<title>ZSF01_03_MM_11TOP</title>
+</head>
+<body bgcolor="#FFFFE0">
+<font size="3" face = "Arial" color="#000000"><b>Code listing for: ZSF01_03_MM_11TOP</b></font>
+<br>
+<font size="3" face = "Arial" color="#000000"><b>Description:  Include YR0127_0360TOP</b></font>
+<hr>
+<pre width="100">
+<font color ="#0000FF">*&---------------------------------------------------------------------*</font>
+<font color ="#0000FF">*& Include          YR0127_0360TOP</font>
+<font color ="#0000FF">*&---------------------------------------------------------------------*</font>
+
+"#####: ######
+DATA : BEGIN OF GS_DISP_HEADER,
+         STAT2 TYPE ICON-ID,        "######
+
+         EBELN TYPE EKPO-EBELN,     "######
+         BSART TYPE EKKO-BSART,     "####
+         AEDAT TYPE EKKO-AEDAT,     "#### ####
+         TXZ01 TYPE EKPO-TXZ01,     "####
+         EBELP TYPE EKPO-EBELP,     "PO#####
+         MATNR TYPE EKPO-MATNR,     "####
+         MENGE TYPE EKPO-MENGE,     "##
+         MEINS TYPE EKPO-MEINS,     "##
+         LIFNR TYPE EKKO-LIFNR,     "####
+         ERNAM TYPE EKKO-ERNAM,     "###
+         WERKS TYPE EKPO-WERKS,     "Plant
+         LGORT TYPE EKPO-LGORT,     "Storage location
+         BUKRS TYPE EKPO-BUKRS,     "#### 5130
+         MBLNR TYPE MSEG-MBLNR,     "######
+         BADDO TYPE MSEG-MBLNR,     "#### ####
+         ELIKZ TYPE EKPO-ELIKZ,     "####
+         MATKL TYPE EKPO-MATKL,     "####
+         CHARG TYPE MSEG-CHARG,     "####
+         " ---------### ##
+         FRESH TYPE CHAR05,         "###
+         BADEA TYPE CHAR05,         "####
+         PARGR TYPE I,              "######
+         RCVQT TYPE I,              "### ##
+         RMNQT TYPE I,              "## ##
+         CMMNT TYPE CHAR30,         "####### ###
+         GRMSG TYPE CHAR50,         "GR# ## ###
+         "--------
+         STYLE TYPE LVC_T_STYL,
+       END OF GS_DISP_HEADER,
+      GS_DISP_HEADER1 LIKE GS_DISP_HEADER.
+DATA : GT_DISP_HEADER LIKE TABLE OF GS_DISP_HEADER,
+       GT_REFRESH LIKE TABLE OF GS_DISP_HEADER.
+
+
+
+"#####: QA## ##
+DATA : BEGIN OF GS_DISP_ITEM,
+         EBELN TYPE EKPO-EBELN,     "######
+         EBELP TYPE EKPO-EBELP,     "PO#####
+         BSART TYPE EKKO-BSART,     "####
+         AEDAT TYPE EKKO-AEDAT,     "#### ###
+         TXZ01 TYPE EKPO-TXZ01,     "####
+         MATNR TYPE EKPO-MATNR,     "####
+         MENGE TYPE EKPO-MENGE,     "##
+         MEINS TYPE EKPO-MEINS,     "##
+         LIFNR TYPE EKKO-LIFNR,     "####
+         WERKS TYPE EKPO-WERKS,     "Plant
+         LGORT TYPE EKPO-LGORT,     "Storage location
+         BUKRS TYPE EKPO-BUKRS,     "####
+         MBLNR TYPE MSEG-MBLNR,     "######
+         ZEILE TYPE MSEG-ZEILE,     "#######
+         MJAHR TYPE MSEG-MJAHR,     "######
+         CPUDT TYPE MKPF-CPUDT,     "###.
+         CPUTM TYPE MKPF-CPUTM,     "####
+         ELIKZ TYPE EKPO-ELIKZ,     "####
+         LOEKZ TYPE EKPO-LOEKZ,     "PO#####
+         "------
+         ERFMG TYPE MSEG-ERFMG,     "####
+         "----
+         FRESH TYPE CHAR05,         "###
+         BATCH TYPE CHAR10,         "####
+         BADEA TYPE CHAR05,         "####
+
+       END OF GS_DISP_ITEM.
+DATA : GT_DISP_ITEM LIKE TABLE OF GS_DISP_ITEM.
+
+
+
+
+<font color ="#0000FF">* BADEA TYPE MSEG-ABLAD,         "###</font>
+<font color ="#0000FF">* FRESH TYPE MSEG-WEMPF,         "####</font>
+<font color ="#0000FF">* PARGR TYPE EKPO-KTMNG,         "####</font>
+
+
+
+DATA : GV_OKCODE TYPE SY-UCOMM.
+
+<font color ="#0000FF">*******************************************************</font>
+<font color ="#0000FF">*-- ALV ## ## --*</font>
+<font color ="#0000FF">*******************************************************</font>
+DATA : GO_DOCKING  TYPE REF TO CL_GUI_DOCKING_CONTAINER,
+       GO_SPLITTER TYPE REF TO CL_GUI_SPLITTER_CONTAINER,
+       GO_CONT1    TYPE REF TO CL_GUI_CONTAINER,
+       GO_CONT2    TYPE REF TO CL_GUI_CONTAINER,
+       GO_GRID1    TYPE REF TO CL_GUI_ALV_GRID,
+       GO_GRID2    TYPE REF TO CL_GUI_ALV_GRID.
+
+DATA : GT_FCAT1   TYPE LVC_T_FCAT,    "##
+       GT_FCAT2   TYPE LVC_T_FCAT,    "##
+       GS_FCAT    TYPE LVC_S_FCAT,    "#### ##
+       GS_LAYOUT1 TYPE LVC_S_LAYO,    "##
+       GS_LAYOUT2 TYPE LVC_S_LAYO.   "##
+
+
+
+
+DATA : GO_EVENT_RECEIVER TYPE REF TO LCL_EVENT_RECEIVER.
+
+<font color ="#0000FF">*******************************************************</font>
+<font color ="#0000FF">*-- BAPI ## ## --*</font>
+<font color ="#0000FF">*******************************************************</font>
+
+DATA :GV_DAY   TYPE C,
+      GV_BATCH TYPE MSEG-CHARG,
+      GV_FRESH TYPE CHAR01,
+      GV_BADEA TYPE CHAR10,
+      GV_PARGR TYPE CHAR10.
+
+DATA: GMVT_HEADER  TYPE BAPI2017_GM_HEAD_01,
+      GS_GMVT_ITEM TYPE BAPI2017_GM_ITEM_CREATE,
+      GMVT_HEADRET TYPE BAPI2017_GM_HEAD_RET,
+      RT_BAPIRET   TYPE STANDARD TABLE OF BAPIRET2,
+      GT_GMVT_ITEM TYPE STANDARD TABLE OF BAPI2017_GM_ITEM_CREATE WITH HEADER LINE,
+      GV_DOC       TYPE BAPI2017_GM_HEAD_RET-MAT_DOC,
+      GV_BADDO     TYPE BAPI2017_GM_HEAD_RET-MAT_DOC,
+      GMVT_CODE    TYPE BAPI2017_GM_CODE.
+
+
+
+DATA GV_EXIT TYPE CHAR01.
+DATA GV_GR TYPE CHAR01.
+DATA GV_GR_BAD TYPE CHAR01.
+DATA GV_BAD TYPE CHAR01.
+DATA GV_RCV TYPE I.    "## ### ### ##
+
+DATA: GS_ROWS_HEADER TYPE LVC_S_ROW,
+      GT_ROWS_HEADER TYPE LVC_T_ROW.
+</pre>
+<hr>
+<font size="2" face = "Sans Serif">Extracted by Direct Download Enterprise version 1.3.1 - E.G.Mellodew. 1998-2005 UK. Sap Release 751
+</font>
+</body>
+</html>
