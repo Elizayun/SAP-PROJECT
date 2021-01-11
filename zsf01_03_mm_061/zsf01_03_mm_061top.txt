@@ -1,0 +1,117 @@
+*&---------------------------------------------------------------------*
+*& Include          YR0122_0220TOP
+*&---------------------------------------------------------------------*
+TABLES : MARA.
+************************************
+DATA : S_DATE-LOW TYPE SCAL-DATE,
+       S_DATE-HIGH TYPE SCAL-DATE.
+DATA : GV_WEEK TYPE SCAL-WEEK.
+DATA : BEGIN OF GS_DISP,
+         "---EKET
+         EINDT TYPE EKET-EINDT,      "## ###(PO###)
+         EBELN TYPE EKET-EBELN,      "PO
+         "---EKPO
+         AEDAT TYPE EKPO-AEDAT,      "PO ###
+         ELIKZ TYPE EKPO-ELIKZ,      "#### ##
+         MENGE TYPE EKPO-MENGE,      " ####
+         MEINS TYPE EKPO-MEINS,      " ####
+         NETPR TYPE EKPO-NETPR,      " ## # ##
+         "----MSEG
+         MBLNR TYPE MSEG-MBLNR,        "DO
+         DLDAT TYPE MSEG-BUDAT_MKPF,   "###
+         LIFNR TYPE MSEG-LIFNR,         "####
+         MATNR TYPE MSEG-MATNR,
+         USNAM TYPE MSEG-USNAM_MKPF,   "### ##
+         BADEA TYPE MSEG-ABLAD,         "###
+         FRESH TYPE MSEG-WEMPF,        "####
+         ENTEA TYPE MSEG-MENGE,        "### ##
+         "---FOR ### ##
+         DIFF  TYPE I, "## ###
+         DLPNT TYPE F, "## ##
+         COUNT TYPE I,
+         "--FOR ##
+         UNTPR TYPE EKPO-NETPR, "## ####
+         "--FOR ## ##
+         BADRT TYPE F, "###
+         BADSC TYPE F, "## ##
+         "--FOR ### ##
+         FRSHP TYPE F, "### ##
+*         "--FOR #
+         COLOR TYPE CHAR04,  "##
+       END OF GS_DISP.
+DATA : GT_DISP LIKE TABLE OF GS_DISP.
+DATA  : GT_PERIOD LIKE TABLE OF GS_DISP.
+
+"-----------####-------------
+DATA : BEGIN OF GS_TOTAL,
+
+         MATNR       TYPE MSEG-MATNR,
+         MAKTX       TYPE MAKT-MAKTX,
+         LIFNR       TYPE MSEG-LIFNR,
+         DELAY(10)      TYPE P DECIMALS 2,              "#####
+         DELAY_SCORE(10) TYPE P DECIMALS 2,       "######
+         NETPR(16)   TYPE P DECIMALS 2,
+         MENGE(16)      TYPE P DECIMALS 2,     "####
+         UNTPR(10)       TYPE P DECIMALS 2,    "##
+         PRICE(10)       TYPE P DECIMALS 2,     "####
+         STPRC(10)       TYPE P DECIMALS 2,    "####(1##)
+         STMEN(10)       TYPE P DECIMALS 2,     "1## ##
+         PRCHG(10)       TYPE P DECIMALS 2,   "## ###
+         UNTPR_SCORE(10) TYPE P DECIMALS 2,       "####
+         PRCHG_SCORE(10) TYPE P DECIMALS 2,  "### ##
+         PRICE_SCORE(10) TYPE P DECIMALS 2,  "### ##
+         BADRT(10)       TYPE P DECIMALS 2,             "###
+         BADEA(10)       TYPE P DECIMALS 2,        "####
+         ENTEA(10)       TYPE P DECIMALS 2,       "####
+         BADSC(10) TYPE P DECIMALS 2,       "####
+         FRESH(10) TYPE P DECIMALS 2,       "### ##
+         COUNT(10)       TYPE P,
+         RANK TYPE I,
+         TOTAL(10) TYPE P DECIMALS 2,
+         COLOR TYPE CHAR04,                     "##
+*         PERIOD      TYPE CHAR20,   "##
+       END OF GS_TOTAL.
+
+DATA : GT_TOTAL LIKE TABLE OF GS_TOTAL,
+      GT_STTOTAL LIKE TABLE OF GS_TOTAL.
+*******************************************
+*###
+
+DATA : GS_WEIGHT TYPE YTJG_WEIGHT,
+       GT_WEIGHT LIKE TABLE OF GS_WEIGHT,
+       GS_FIRST TYPE YTJG_WEIGHT.
+
+
+
+
+DATA : GV_EXIT TYPE CHAR01,
+      GV_EXIT2 TYPE CHAR01.
+
+***********************************************
+*ALV## ##
+**********************************************
+
+DATA : GO_CONTAINER TYPE REF TO CL_GUI_CUSTOM_CONTAINER,
+       GO_CONT2     TYPE REF TO CL_GUI_CONTAINER,
+       GO_CONT1     TYPE REF TO CL_GUI_CONTAINER,
+       GO_SPLITTER  TYPE REF TO CL_GUI_SPLITTER_CONTAINER,
+       GO_GRID1      TYPE REF TO CL_GUI_ALV_GRID,
+       GO_GRID2     TYPE REF TO CL_GUI_ALV_GRID.
+
+DATA GV_OKCODE TYPE SY-UCOMM.
+
+DATA : GT_FCAT   TYPE LVC_T_FCAT,
+       GS_FCAT   TYPE LVC_S_FCAT,
+       GS_LAYOUT TYPE LVC_S_LAYO.
+
+DATA : GT_SORT TYPE LVC_T_SORT,
+       GS_SORT  LIKE LINE OF GT_SORT.
+
+************************************************************
+*EVENT ## ##
+****************************************************
+
+DATA : GO_EVENT_RECEIVER TYPE REF TO LCL_EVENT_RECEIVER.
+
+----------------------------------------------------------------------------------
+Extracted by Direct Download Enterprise version 1.3.1 - E.G.Mellodew. 1998-2005 UK. Sap Release 751
