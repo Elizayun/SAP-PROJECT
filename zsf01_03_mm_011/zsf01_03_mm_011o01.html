@@ -1,0 +1,117 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<html>
+<head>
+<title>ZSF01_03_MM_011O01</title>
+</head>
+<body bgcolor="#FFFFE0">
+<font size="3" face = "Arial" color="#000000"><b>Code listing for: ZSF01_03_MM_011O01</b></font>
+<br>
+<font size="3" face = "Arial" color="#000000"><b>Description:  Include YR0127_0360O01</b></font>
+<hr>
+<pre width="100">
+<font color ="#0000FF">*&---------------------------------------------------------------------*</font>
+<font color ="#0000FF">*& Include          YR0127_0360O01</font>
+<font color ="#0000FF">*&---------------------------------------------------------------------*</font>
+<font color ="#0000FF">*&---------------------------------------------------------------------*</font>
+<font color ="#0000FF">*& Module STATUS_0100 OUTPUT</font>
+<font color ="#0000FF">*&---------------------------------------------------------------------*</font>
+<font color ="#0000FF">*&</font>
+<font color ="#0000FF">*&---------------------------------------------------------------------*</font>
+MODULE STATUS_0100 OUTPUT.
+ SET PF-STATUS '0100'.
+ SET TITLEBAR '0100'.
+ENDMODULE.
+<font color ="#0000FF">*&---------------------------------------------------------------------*</font>
+<font color ="#0000FF">*& Module SET_ALV_0100 OUTPUT</font>
+<font color ="#0000FF">*&---------------------------------------------------------------------*</font>
+<font color ="#0000FF">*&</font>
+<font color ="#0000FF">*&---------------------------------------------------------------------*</font>
+MODULE SET_ALV_0100 OUTPUT.
+
+IF GO_CUSTOM_CONTAINER IS INITIAL.
+
+<font color ="#0000FF">* INSTANCE ##</font>
+  PERFORM CREATE_OBJECT.
+
+<font color ="#0000FF">* LAYOUT ##</font>
+  PERFORM SET_LAYOUT.
+
+<font color ="#0000FF">* #### ##</font>
+  PERFORM SET_FIELDCAT.
+
+<font color ="#0000FF">* EVENT ##</font>
+  PERFORM SET_EVENT.
+
+<font color ="#0000FF">* SORT</font>
+  PERFORM SET_SORT.
+
+<font color ="#0000FF">* ALV ##</font>
+  PERFORM DISPLAY_ALV.
+
+ELSE.
+"REFRESH_ALV.
+    CALL METHOD GO_GRID1-&gt;REFRESH_TABLE_DISPLAY.
+    CALL METHOD GO_GRID2-&gt;REFRESH_TABLE_DISPLAY.
+
+ENDIF.
+
+ENDMODULE.
+<font color ="#0000FF">*&---------------------------------------------------------------------*</font>
+<font color ="#0000FF">*& Form CREATE_OBJECT</font>
+<font color ="#0000FF">*&---------------------------------------------------------------------*</font>
+<font color ="#0000FF">*& text</font>
+<font color ="#0000FF">*&---------------------------------------------------------------------*</font>
+<font color ="#0000FF">*& --&gt;  p1        text</font>
+<font color ="#0000FF">*& &lt;--  p2        text</font>
+<font color ="#0000FF">*&---------------------------------------------------------------------*</font>
+FORM CREATE_OBJECT .
+
+<font color ="#0000FF">* ## #### ##</font>
+  CREATE OBJECT GO_CUSTOM_CONTAINER
+    EXPORTING
+      CONTAINER_NAME = 'GO_CUSTOM_CONTAINER'.
+<font color ="#0000FF">* ## #### ## (MAIN CONTAINER ##)</font>
+  CREATE OBJECT GO_SPLITTER
+    EXPORTING
+      PARENT  = GO_CUSTOM_CONTAINER
+      ROWS    = 1
+      COLUMNS = 2.
+
+<font color ="#0000FF">* ## ### GUI CONTAINER ##.</font>
+  CALL METHOD GO_SPLITTER-&gt;GET_CONTAINER
+    EXPORTING
+      ROW       = 1
+      COLUMN    = 1
+    RECEIVING
+      CONTAINER = GO_CONT1.
+
+  CALL METHOD GO_SPLITTER-&gt;GET_CONTAINER
+    EXPORTING
+      ROW       = 1
+      COLUMN    = 2
+    RECEIVING
+      CONTAINER = GO_CONT2.
+
+<font color ="#0000FF">* ### ### ##### GRID ##.</font>
+  CREATE OBJECT GO_GRID1
+    EXPORTING
+      I_PARENT = GO_CONT1.
+
+  CREATE OBJECT GO_GRID2
+    EXPORTING
+      I_PARENT = GO_CONT2.
+
+
+CALL METHOD GO_SPLITTER-&gt;SET_COLUMN_WIDTH
+  EXPORTING
+    ID          = 1
+    WIDTH      = 36
+.
+
+ENDFORM.
+</pre>
+<hr>
+<font size="2" face = "Sans Serif">Extracted by Direct Download Enterprise version 1.3.1 - E.G.Mellodew. 1998-2005 UK. Sap Release 751
+</font>
+</body>
+</html>

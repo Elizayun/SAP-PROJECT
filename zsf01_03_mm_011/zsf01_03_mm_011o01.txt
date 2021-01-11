@@ -1,0 +1,103 @@
+*&---------------------------------------------------------------------*
+*& Include          YR0127_0360O01
+*&---------------------------------------------------------------------*
+*&---------------------------------------------------------------------*
+*& Module STATUS_0100 OUTPUT
+*&---------------------------------------------------------------------*
+*&
+*&---------------------------------------------------------------------*
+MODULE STATUS_0100 OUTPUT.
+ SET PF-STATUS '0100'.
+ SET TITLEBAR '0100'.
+ENDMODULE.
+*&---------------------------------------------------------------------*
+*& Module SET_ALV_0100 OUTPUT
+*&---------------------------------------------------------------------*
+*&
+*&---------------------------------------------------------------------*
+MODULE SET_ALV_0100 OUTPUT.
+
+IF GO_CUSTOM_CONTAINER IS INITIAL.
+
+* INSTANCE ##
+  PERFORM CREATE_OBJECT.
+
+* LAYOUT ##
+  PERFORM SET_LAYOUT.
+
+* #### ##
+  PERFORM SET_FIELDCAT.
+
+* EVENT ##
+  PERFORM SET_EVENT.
+
+* SORT
+  PERFORM SET_SORT.
+
+* ALV ##
+  PERFORM DISPLAY_ALV.
+
+ELSE.
+"REFRESH_ALV.
+    CALL METHOD GO_GRID1->REFRESH_TABLE_DISPLAY.
+    CALL METHOD GO_GRID2->REFRESH_TABLE_DISPLAY.
+
+ENDIF.
+
+ENDMODULE.
+*&---------------------------------------------------------------------*
+*& Form CREATE_OBJECT
+*&---------------------------------------------------------------------*
+*& text
+*&---------------------------------------------------------------------*
+*& -->  p1        text
+*& <--  p2        text
+*&---------------------------------------------------------------------*
+FORM CREATE_OBJECT .
+
+* ## #### ##
+  CREATE OBJECT GO_CUSTOM_CONTAINER
+    EXPORTING
+      CONTAINER_NAME = 'GO_CUSTOM_CONTAINER'.
+* ## #### ## (MAIN CONTAINER ##)
+  CREATE OBJECT GO_SPLITTER
+    EXPORTING
+      PARENT  = GO_CUSTOM_CONTAINER
+      ROWS    = 1
+      COLUMNS = 2.
+
+* ## ### GUI CONTAINER ##.
+  CALL METHOD GO_SPLITTER->GET_CONTAINER
+    EXPORTING
+      ROW       = 1
+      COLUMN    = 1
+    RECEIVING
+      CONTAINER = GO_CONT1.
+
+  CALL METHOD GO_SPLITTER->GET_CONTAINER
+    EXPORTING
+      ROW       = 1
+      COLUMN    = 2
+    RECEIVING
+      CONTAINER = GO_CONT2.
+
+* ### ### ##### GRID ##.
+  CREATE OBJECT GO_GRID1
+    EXPORTING
+      I_PARENT = GO_CONT1.
+
+  CREATE OBJECT GO_GRID2
+    EXPORTING
+      I_PARENT = GO_CONT2.
+
+
+CALL METHOD GO_SPLITTER->SET_COLUMN_WIDTH
+  EXPORTING
+    ID          = 1
+    WIDTH      = 36
+.
+
+ENDFORM.
+
+----------------------------------------------------------------------------------
+Extracted by Direct Download Enterprise version 1.3.1 - E.G.Mellodew. 1998-2005 UK. Sap Release 751
