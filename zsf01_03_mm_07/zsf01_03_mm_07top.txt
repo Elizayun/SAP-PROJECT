@@ -1,0 +1,69 @@
+*&---------------------------------------------------------------------*
+*& Include          YR0122_0220TOP
+*&---------------------------------------------------------------------*
+TABLES : MARA, MSEG.
+************************************
+
+*DATA : BEGIN OF GS_DISP,
+*         MATNR TYPE MARA-MATNR,
+*         ERSDA TYPE MARA-ERSDA,
+*         MTART TYPE MARA-MTART,
+*         MBRSH TYPE MARA-MBRSH,
+*         MATKL TYPE MARA-MATKL,
+* END OF GS_DISP.
+DATA : BEGIN OF GS_DISP, "MSEG
+
+         LGORT      TYPE MSEG-LGORT,      "STORAGE LOCATION
+         WERKS      TYPE MSEG-WERKS,      "PLANT
+         CHARG      TYPE MSEG-CHARG,      "####
+         MATNR      TYPE MSEG-MATNR,      "####
+         MENGE      TYPE MSEG-MENGE,      "##
+         MEINS      TYPE MSEG-MEINS,      "##-##
+         BWART      TYPE MSEG-BWART,      "####
+         MT_TEXT    TYPE C LENGTH 10,          "######
+         MBLNR      TYPE MSEG-MBLNR,      "######
+         LIFNR      TYPE MSEG-LIFNR,      "####
+         DMBTR      TYPE MSEG-DMBTR,      "##
+         WAERS      TYPE MSEG-WAERS,      "## ##
+         MAKTX      TYPE MAKT-MAKTX,      "####
+*         BTEXT      TYPE T156T-BTEXT,    "######
+         BUDAT_MKPF TYPE MSEG-BUDAT_MKPF, "###
+         CPUTM_MKPF TYPE MSEG-CPUTM_MKPF,  "####
+         USNAM_MKPF TYPE MSEG-USNAM_MKPF, "####
+         DATE       TYPE N LENGTH 2,               "### ## ## ##
+         STAT       TYPE ICON-ID,
+         DORC       TYPE CHAR01,              "###TEXT
+         SHKZG      TYPE MSEG-SHKZG,        "###
+         COLOR      TYPE CHAR04,          "###
+
+
+       END OF GS_DISP.
+
+
+DATA : GT_DISP LIKE TABLE OF GS_DISP.
+
+
+
+
+
+***********************************************
+*ALV## ##
+**********************************************
+
+DATA : GO_CONTAINER TYPE REF TO CL_GUI_CUSTOM_CONTAINER,
+       GO_GRID      TYPE REF TO CL_GUI_ALV_GRID.
+
+DATA GV_OKCODE TYPE SY-UCOMM.
+
+DATA : GT_FCAT   TYPE LVC_T_FCAT,
+       GS_FCAT   TYPE LVC_S_FCAT,
+       GS_LAYOUT TYPE LVC_S_LAYO.
+
+************************************************************
+*EVENT ## ##
+****************************************************
+
+DATA : GO_EVENT_RECEIVER TYPE REF TO LCL_EVENT_RECEIVER.
+
+----------------------------------------------------------------------------------
+Extracted by Direct Download Enterprise version 1.3.1 - E.G.Mellodew. 1998-2005 UK. Sap Release 751

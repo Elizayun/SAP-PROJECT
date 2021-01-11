@@ -1,0 +1,38 @@
+*&---------------------------------------------------------------------*
+*& Include          YR0122_0220CLS
+*&---------------------------------------------------------------------*
+
+CLASS LCL_EVENT_RECEIVER DEFINITION.
+  PUBLIC SECTION.
+
+    METHODS HANDLE_DOUBLE_CLICK
+                  FOR EVENT DOUBLE_CLICK OF CL_GUI_ALV_GRID
+      IMPORTING E_ROW
+                  E_COLUMN
+                  ES_ROW_NO.
+
+
+
+
+ENDCLASS.
+
+
+"## ##
+CLASS LCL_EVENT_RECEIVER IMPLEMENTATION.
+
+  METHOD HANDLE_DOUBLE_CLICK.
+
+**    MESSAGE I000 WITH '#########'.
+*    PERFORM  HANDLE_DOUBLE_CLICK USING E_ROW
+*                                       E_COLUMN.
+
+  ENDMETHOD.
+
+
+
+
+
+ENDCLASS.
+
+----------------------------------------------------------------------------------
+Extracted by Direct Download Enterprise version 1.3.1 - E.G.Mellodew. 1998-2005 UK. Sap Release 751
