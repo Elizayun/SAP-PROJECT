@@ -1,0 +1,1806 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<html>
+<head>
+<title>ZSF01_03_MM_13F01</title>
+</head>
+<body bgcolor="#FFFFE0">
+<font size="3" face = "Arial" color="#000000"><b>Code listing for: ZSF01_03_MM_13F01</b></font>
+<br>
+<font size="3" face = "Arial" color="#000000"><b>Description:  Include YR0117_990F01</b></font>
+<hr>
+<pre width="100">
+<font color ="#0000FF">*&---------------------------------------------------------------------*</font>
+<font color ="#0000FF">*& Include          YR0117_990F01</font>
+<font color ="#0000FF">*&---------------------------------------------------------------------*</font>
+<font color ="#0000FF">*&---------------------------------------------------------------------*</font>
+<font color ="#0000FF">*& Form SET_INSTANCE</font>
+<font color ="#0000FF">*&---------------------------------------------------------------------*</font>
+<font color ="#0000FF">*& text</font>
+<font color ="#0000FF">*&---------------------------------------------------------------------*</font>
+<font color ="#0000FF">*& --&gt;  p1        text</font>
+<font color ="#0000FF">*& &lt;--  p2        text</font>
+<font color ="#0000FF">*&---------------------------------------------------------------------*</font>
+FORM SET_INSTANCE .
+
+<font color ="#0000FF">*MAIN CONTAINER ##</font>
+  CREATE OBJECT GO_DOCKING
+    EXPORTING
+      SIDE      = CL_GUI_DOCKING_CONTAINER=&gt;DOCK_AT_LEFT
+      EXTENSION = CL_GUI_DOCKING_CONTAINER=&gt;WS_MAXIMIZEBOX.
+
+
+<font color ="#0000FF">* ## #### ## (MAIN CONTAINER ##)</font>
+
+  CREATE OBJECT GO_SPLITTER
+    EXPORTING
+      PARENT  = GO_DOCKING
+      ROWS    = 1  "1#
+      COLUMNS = 2. "2#
+
+
+<font color ="#0000FF">* ## ### GUI CONTAINER ##</font>
+
+  CALL METHOD GO_SPLITTER-&gt;GET_CONTAINER
+    EXPORTING
+      ROW       = 1
+      COLUMN    = 1
+    RECEIVING
+      CONTAINER = GO_SUBDOCK.  "TOP## GO_SUBDOCK ## ####!!
+
+
+  CALL METHOD GO_SPLITTER-&gt;GET_CONTAINER
+    EXPORTING
+      ROW       = 1
+      COLUMN    = 2
+    RECEIVING
+      CONTAINER = GO_CONT2.
+  "DOCKING ## ####
+  CALL METHOD GO_SPLITTER-&gt;SET_COLUMN_WIDTH
+    EXPORTING
+      ID    = 1
+      WIDTH = 35.
+
+  CREATE OBJECT GO_SPLITTER
+    EXPORTING
+      PARENT  = GO_SUBDOCK
+      ROWS    = 2
+      COLUMNS = 1.
+
+
+  CALL METHOD GO_SPLITTER-&gt;GET_CONTAINER
+    EXPORTING
+      ROW       = 1
+      COLUMN    = 1
+    RECEIVING
+      CONTAINER = GO_CONT1.
+
+
+  CALL METHOD GO_SPLITTER-&gt;GET_CONTAINER
+    EXPORTING
+      ROW       = 2
+      COLUMN    = 1
+    RECEIVING
+      CONTAINER = GO_CONT3.
+
+
+<font color ="#0000FF">* ### ### #####  GRID ##</font>
+
+  CREATE OBJECT GO_GRID1
+    EXPORTING
+      I_PARENT = GO_CONT1.
+
+  CREATE OBJECT GO_GRID2
+    EXPORTING
+      I_PARENT = GO_CONT2.
+
+  CREATE OBJECT GO_GRID3
+    EXPORTING
+      I_PARENT = GO_CONT3.
+
+ENDFORM.
+<font color ="#0000FF">*&---------------------------------------------------------------------*</font>
+<font color ="#0000FF">*& Form DISPLAY_ALV</font>
+<font color ="#0000FF">*&---------------------------------------------------------------------*</font>
+<font color ="#0000FF">*& text</font>
+<font color ="#0000FF">*&---------------------------------------------------------------------*</font>
+<font color ="#0000FF">*& --&gt;  p1        text</font>
+<font color ="#0000FF">*& &lt;--  p2        text</font>
+<font color ="#0000FF">*&---------------------------------------------------------------------*</font>
+FORM DISPLAY_ALV .
+
+  CALL METHOD GO_GRID1-&gt;SET_TABLE_FOR_FIRST_DISPLAY
+    EXPORTING
+<font color ="#0000FF">*     I_BUFFER_ACTIVE =</font>
+<font color ="#0000FF">*     I_BYPASSING_BUFFER            =</font>
+<font color ="#0000FF">*     I_CONSISTENCY_CHECK           =</font>
+<font color ="#0000FF">*     I_STRUCTURE_NAME              =</font>
+<font color ="#0000FF">*     IS_VARIANT      =</font>
+<font color ="#0000FF">*     I_SAVE          =</font>
+<font color ="#0000FF">*     I_DEFAULT       = 'X'</font>
+      IS_LAYOUT       = GS_LAYOUT1
+<font color ="#0000FF">*     IS_PRINT        =</font>
+<font color ="#0000FF">*     IT_SPECIAL_GROUPS             =</font>
+<font color ="#0000FF">*     IT_TOOLBAR_EXCLUDING          =</font>
+<font color ="#0000FF">*     IT_HYPERLINK    =</font>
+<font color ="#0000FF">*     IT_ALV_GRAPHICS =</font>
+<font color ="#0000FF">*     IT_EXCEPT_QINFO =</font>
+<font color ="#0000FF">*     IR_SALV_ADAPTER =</font>
+    CHANGING
+      IT_OUTTAB       = GT_DISP_LEFT
+      IT_FIELDCATALOG = GT_FCAT1
+      IT_SORT         = GT_SORT1
+<font color ="#0000FF">*     IT_FILTER       =</font>
+<font color ="#0000FF">*    EXCEPTIONS</font>
+<font color ="#0000FF">*     INVALID_PARAMETER_COMBINATION = 1</font>
+<font color ="#0000FF">*     PROGRAM_ERROR   = 2</font>
+<font color ="#0000FF">*     TOO_MANY_LINES  = 3</font>
+<font color ="#0000FF">*     OTHERS          = 4</font>
+    .
+  IF SY-SUBRC &lt;&gt; 0.
+<font color ="#0000FF">*   Implement suitable error handling here</font>
+  ENDIF.
+
+  CALL METHOD GO_GRID2-&gt;SET_TABLE_FOR_FIRST_DISPLAY
+    EXPORTING
+<font color ="#0000FF">*     I_BUFFER_ACTIVE =</font>
+<font color ="#0000FF">*     I_BYPASSING_BUFFER            =</font>
+<font color ="#0000FF">*     I_CONSISTENCY_CHECK           =</font>
+<font color ="#0000FF">*     I_STRUCTURE_NAME              =</font>
+<font color ="#0000FF">*     IS_VARIANT      =</font>
+<font color ="#0000FF">*     I_SAVE          =</font>
+<font color ="#0000FF">*     I_DEFAULT       = 'X'</font>
+      IS_LAYOUT       = GS_LAYOUT2
+<font color ="#0000FF">*     IS_PRINT        =</font>
+<font color ="#0000FF">*     IT_SPECIAL_GROUPS             =</font>
+<font color ="#0000FF">*     IT_TOOLBAR_EXCLUDING          =</font>
+<font color ="#0000FF">*     IT_HYPERLINK    =</font>
+<font color ="#0000FF">*     IT_ALV_GRAPHICS =</font>
+<font color ="#0000FF">*     IT_EXCEPT_QINFO =</font>
+<font color ="#0000FF">*     IR_SALV_ADAPTER =</font>
+    CHANGING
+      IT_OUTTAB       = GT_DISP_RIGHT
+      IT_FIELDCATALOG = GT_FCAT2
+      IT_SORT         = GT_SORT2
+<font color ="#0000FF">*     IT_FILTER       =</font>
+<font color ="#0000FF">*    EXCEPTIONS</font>
+<font color ="#0000FF">*     INVALID_PARAMETER_COMBINATION = 1</font>
+<font color ="#0000FF">*     PROGRAM_ERROR   = 2</font>
+<font color ="#0000FF">*     TOO_MANY_LINES  = 3</font>
+<font color ="#0000FF">*     OTHERS          = 4</font>
+    .
+  IF SY-SUBRC &lt;&gt; 0.
+<font color ="#0000FF">*   Implement suitable error handling here</font>
+  ENDIF.
+
+
+  CALL METHOD GO_GRID3-&gt;SET_TABLE_FOR_FIRST_DISPLAY
+    EXPORTING
+<font color ="#0000FF">*     I_BUFFER_ACTIVE =</font>
+<font color ="#0000FF">*     I_BYPASSING_BUFFER            =</font>
+<font color ="#0000FF">*     I_CONSISTENCY_CHECK           =</font>
+<font color ="#0000FF">*     I_STRUCTURE_NAME              =</font>
+<font color ="#0000FF">*     IS_VARIANT      =</font>
+<font color ="#0000FF">*     I_SAVE          =</font>
+<font color ="#0000FF">*     I_DEFAULT       = 'X'</font>
+      IS_LAYOUT       = GS_LAYOUT3
+<font color ="#0000FF">*     IS_PRINT        =</font>
+<font color ="#0000FF">*     IT_SPECIAL_GROUPS             =</font>
+<font color ="#0000FF">*     IT_TOOLBAR_EXCLUDING          =</font>
+<font color ="#0000FF">*     IT_HYPERLINK    =</font>
+<font color ="#0000FF">*     IT_ALV_GRAPHICS =</font>
+<font color ="#0000FF">*     IT_EXCEPT_QINFO =</font>
+<font color ="#0000FF">*     IR_SALV_ADAPTER =</font>
+    CHANGING
+      IT_OUTTAB       = GT_DISP_5132
+      IT_FIELDCATALOG = GT_FCAT1
+      IT_SORT         = GT_SORT1
+<font color ="#0000FF">*     IT_FILTER       =</font>
+<font color ="#0000FF">*    EXCEPTIONS</font>
+<font color ="#0000FF">*     INVALID_PARAMETER_COMBINATION = 1</font>
+<font color ="#0000FF">*     PROGRAM_ERROR   = 2</font>
+<font color ="#0000FF">*     TOO_MANY_LINES  = 3</font>
+<font color ="#0000FF">*     OTHERS          = 4</font>
+    .
+  IF SY-SUBRC &lt;&gt; 0.
+<font color ="#0000FF">*   Implement suitable error handling here</font>
+  ENDIF.
+
+ENDFORM.
+<font color ="#0000FF">*&---------------------------------------------------------------------*</font>
+<font color ="#0000FF">*& Form REFRESH_ALV</font>
+<font color ="#0000FF">*&---------------------------------------------------------------------*</font>
+<font color ="#0000FF">*& text</font>
+<font color ="#0000FF">*&---------------------------------------------------------------------*</font>
+<font color ="#0000FF">*& --&gt;  p1        text</font>
+<font color ="#0000FF">*& &lt;--  p2        text</font>
+<font color ="#0000FF">*&---------------------------------------------------------------------*</font>
+FORM REFRESH_ALV .
+
+  CALL METHOD GO_GRID1-&gt;REFRESH_TABLE_DISPLAY.
+<font color ="#0000FF">*    EXPORTING</font>
+<font color ="#0000FF">*      IS_STABLE      =  "### #### ## ##</font>
+<font color ="#0000FF">*      I_SOFT_REFRESH =</font>
+<font color ="#0000FF">*    EXCEPTIONS</font>
+<font color ="#0000FF">*      FINISHED       = 1</font>
+<font color ="#0000FF">*      OTHERS         = 2.</font>
+
+  CALL METHOD GO_GRID2-&gt;REFRESH_TABLE_DISPLAY.
+  CALL METHOD GO_GRID3-&gt;REFRESH_TABLE_DISPLAY.
+
+ENDFORM.
+<font color ="#0000FF">*&---------------------------------------------------------------------*</font>
+<font color ="#0000FF">*& Form GET_DATA</font>
+<font color ="#0000FF">*&---------------------------------------------------------------------*</font>
+<font color ="#0000FF">*& text</font>
+<font color ="#0000FF">*&---------------------------------------------------------------------*</font>
+<font color ="#0000FF">*& --&gt;  p1        text</font>
+<font color ="#0000FF">*& &lt;--  p2        text</font>
+<font color ="#0000FF">*&---------------------------------------------------------------------*</font>
+FORM GET_DATA .
+  DATA LV_DATE TYPE SYST-DATUM.
+  DATA : LS_MAKT TYPE MAKT,
+         LT_MAKT LIKE TABLE OF LS_MAKT.
+  DATA : LS_MDUB TYPE MDUB,
+         LT_MDUB LIKE TABLE OF LS_MDUB.
+  CLEAR : LT_MAKT, LT_MDUB, LV_DATE, GT_MDUB.
+  "STOCK IN TRANSFER.
+
+<font color ="#0000FF">*  LV_DATE = SY-DATUM - 30  . "#### ##?</font>
+  SELECT *
+    INTO CORRESPONDING FIELDS OF TABLE LT_MDUB
+    FROM MDUB
+   WHERE MATNR LIKE 'JG-A03-F%'  "#### like 'JG-A03-F%'(F01 ~ 05)
+    AND MATNR IN S_MATNR
+    AND CHARG IN S_CHARG
+    AND WAMNG NE 0 "####
+<font color ="#0000FF">*    AND EINDT BETWEEN LV_DATE AND SY-DATUM</font>
+    AND CHARG BETWEEN '201001' AND '220001'.
+
+
+  LOOP AT LT_MDUB INTO LS_MDUB.
+    GS_MDUB-MATNR = LS_MDUB-MATNR.
+    GS_MDUB-WAMNG = LS_MDUB-WAMNG. "##
+    GS_MDUB-WEMNG = LS_MDUB-WEMNG. "##
+    GS_MDUB-CHARG = LS_MDUB-CHARG.
+    GS_MDUB-MEINS = LS_MDUB-MEINS.
+    COLLECT GS_MDUB INTO GT_MDUB.
+    CLEAR : LS_MDUB, GS_MDUB.
+  ENDLOOP.
+
+
+  LOOP AT GT_MDUB INTO GS_MDUB.
+    GS_MDUB-DIFF = GS_MDUB-WAMNG - GS_MDUB-WEMNG.
+    MODIFY GT_MDUB FROM GS_MDUB.
+  ENDLOOP.
+
+
+  DELETE GT_MDUB WHERE DIFF = 0.
+
+
+  CLEAR GT_DISP_LEFT.
+  LOOP AT GT_MDUB INTO GS_MDUB.
+    GS_DISP_LEFT-MATNR = GS_MDUB-MATNR.
+    GS_DISP_LEFT-CHARG = GS_MDUB-CHARG .
+    GS_DISP_LEFT-MEINS = GS_MDUB-MEINS .
+    GS_DISP_LEFT-CLABS = GS_MDUB-DIFF.
+    APPEND GS_DISP_LEFT TO GT_DISP_LEFT.
+  ENDLOOP.
+  "GT_DISP_LEFT : 5131####-----------------------
+<font color ="#0000FF">*  CLEAR GT_DISP_LEFT.</font>
+<font color ="#0000FF">*</font>
+<font color ="#0000FF">*  SELECT  A~MATNR A~WERKS A~LGORT A~CHARG A~CLABS        "MCHB</font>
+<font color ="#0000FF">*          B~MEINS                               "MARA</font>
+<font color ="#0000FF">*  INTO CORRESPONDING FIELDS OF TABLE GT_DISP_LEFT</font>
+<font color ="#0000FF">*  FROM MCHB AS A</font>
+<font color ="#0000FF">*    INNER JOIN MARA AS B</font>
+<font color ="#0000FF">*    ON A~MATNR = B~MATNR</font>
+<font color ="#0000FF">*  WHERE A~MATNR IN S_MATNR        "####</font>
+<font color ="#0000FF">*    AND A~MATNR LIKE 'JG-A03-F%'  "#### like 'JG-A03-F%'(F01 ~ 05)</font>
+<font color ="#0000FF">*    AND A~WERKS EQ '5131'         "### = 5131</font>
+<font color ="#0000FF">*    AND A~LGORT EQ '3000'         "#### = 3000</font>
+<font color ="#0000FF">*    AND A~CLABS NE 0</font>
+<font color ="#0000FF">*    AND A~CHARG IN S_CHARG        "####</font>
+<font color ="#0000FF">*    AND A~CHARG BETWEEN '201001' AND '220001'. "#### ##..</font>
+<font color ="#0000FF">*  .</font>
+
+  CLEAR LT_MAKT.
+  SELECT MATNR MAKTX
+    INTO CORRESPONDING FIELDS OF TABLE LT_MAKT
+    FROM MAKT
+    WHERE MATNR LIKE  'JG-A03-F%'
+    AND MATNR IN S_MATNR
+    AND SPRAS = SY-LANGU.
+
+  LOOP AT GT_DISP_LEFT INTO GS_DISP_LEFT.
+    READ TABLE LT_MAKT INTO LS_MAKT WITH KEY MATNR = GS_DISP_LEFT-MATNR.
+    GS_DISP_LEFT-MAKTX = LS_MAKT-MAKTX.
+    GS_DISP_LEFT-DETAIL = '@59@'.
+    MODIFY GT_DISP_LEFT FROM GS_DISP_LEFT.
+    CLEAR : LS_MAKT, GS_DISP_LEFT.
+  ENDLOOP.
+
+  SORT : GT_DISP_LEFT BY MATNR CHARG.
+
+  "GT_DISP_5132 5132####-----------------------
+
+  CLEAR GT_DISP_5132.
+
+  SELECT  A~MATNR A~WERKS A~LGORT A~CHARG A~CLABS        "MCHB
+          B~MEINS                               "MARA
+  INTO CORRESPONDING FIELDS OF TABLE GT_DISP_5132
+  FROM MCHB AS A
+    INNER JOIN MARA AS B
+    ON A~MATNR = B~MATNR
+  WHERE A~MATNR IN S_MATNR        "####
+    AND A~MATNR LIKE 'JG-A03-F%'  "#### like 'JG-A03-F%'(F01 ~ 05)
+    AND A~WERKS EQ '5132'         "### = 5131
+    AND A~LGORT EQ '171A'         "#### = 3000
+    AND A~CLABS NE 0
+
+    AND A~CHARG IN S_CHARG        "####
+    AND A~CHARG BETWEEN '201001' AND '220001'. "#### ##..
+  .
+
+
+  LOOP AT GT_DISP_5132 INTO GS_DISP_5132.
+    READ TABLE LT_MAKT INTO LS_MAKT WITH KEY MATNR = GS_DISP_5132-MATNR.
+    GS_DISP_5132-MAKTX = LS_MAKT-MAKTX.
+    GS_DISP_5132-DETAIL = '@59@'.
+    MODIFY GT_DISP_5132 FROM GS_DISP_5132.
+    CLEAR : LS_MAKT, GS_DISP_5132.
+  ENDLOOP.
+
+  SORT : GT_DISP_5132 BY MATNR CHARG.
+
+ENDFORM.
+<font color ="#0000FF">*&---------------------------------------------------------------------*</font>
+<font color ="#0000FF">*& Form SET_FCAT1</font>
+<font color ="#0000FF">*&---------------------------------------------------------------------*</font>
+<font color ="#0000FF">*& text</font>
+<font color ="#0000FF">*&---------------------------------------------------------------------*</font>
+<font color ="#0000FF">*& --&gt;  p1        text</font>
+<font color ="#0000FF">*& &lt;--  p2        text</font>
+<font color ="#0000FF">*&---------------------------------------------------------------------*</font>
+FORM SET_FCAT1 .
+
+
+
+  CLEAR GS_FCAT1.
+  GS_FCAT1-FIELDNAME = 'MATNR'.
+  GS_FCAT1-COLTEXT   = '####'.
+<font color ="#0000FF">*  GS_FCAT1-REF_TABLE = 'MARD'.</font>
+  GS_FCAT1-HOTSPOT = 'X'.
+  APPEND GS_FCAT1 TO GT_FCAT1.
+
+  CLEAR GS_FCAT1.
+  GS_FCAT1-FIELDNAME = 'MAKTX'.
+  GS_FCAT1-COLTEXT   = '###'.
+<font color ="#0000FF">*  GS_FCAT1-REF_TABLE = 'MAKT'.</font>
+  APPEND GS_FCAT1 TO GT_FCAT1.
+
+  CLEAR GS_FCAT1.
+  GS_FCAT1-FIELDNAME = 'CHARG'.
+  GS_FCAT1-COLTEXT   = '####'.
+<font color ="#0000FF">*  GS_FCAT1-REF_TABLE = 'MCHB'.</font>
+  GS_FCAT1-JUST = 'C'.
+  GS_FCAT1-HOTSPOT = 'X'.
+  APPEND GS_FCAT1 TO GT_FCAT1.
+
+<font color ="#0000FF">*  CLEAR GS_FCAT1.</font>
+<font color ="#0000FF">*  GS_FCAT1-FIELDNAME = 'PSTYP'.</font>
+<font color ="#0000FF">*  GS_FCAT1-COLTEXT   = '####'.</font>
+<font color ="#0000FF">**  GS_FCAT1-REF_TABLE = 'MARA'.</font>
+<font color ="#0000FF">**  GS_FCAT1-JUST = 'C'.</font>
+<font color ="#0000FF">*  APPEND GS_FCAT1 TO GT_FCAT1.</font>
+
+  CLEAR GS_FCAT1.
+  GS_FCAT1-FIELDNAME  = 'CLABS'.
+  GS_FCAT1-COLTEXT    = '##'.
+  GS_FCAT1-EMPHASIZE = 'C100'.
+  GS_FCAT1-QFIELDNAME = 'MEINS'.
+  APPEND GS_FCAT1 TO GT_FCAT1.
+
+<font color ="#0000FF">*  CLEAR GS_FCAT1.</font>
+<font color ="#0000FF">*  GS_FCAT1-FIELDNAME  = 'MENGE'.</font>
+<font color ="#0000FF">*  GS_FCAT1-COLTEXT    = 'PO#_##'.</font>
+<font color ="#0000FF">*  GS_FCAT1-REF_TABLE  = 'EKPO'.</font>
+<font color ="#0000FF">*  GS_FCAT1-QFIELDNAME = 'MEINS'.</font>
+<font color ="#0000FF">*  APPEND GS_FCAT1 TO GT_FCAT1.</font>
+
+  CLEAR GS_FCAT1.
+  GS_FCAT1-FIELDNAME = 'MEINS'.
+  GS_FCAT1-COLTEXT   = '####'.
+<font color ="#0000FF">*  GS_FCAT1-REF_TABLE = 'MARA'.</font>
+  GS_FCAT1-JUST = 'C'.
+  APPEND GS_FCAT1 TO GT_FCAT1.
+
+<font color ="#0000FF">*  CLEAR GS_FCAT1.</font>
+<font color ="#0000FF">*  GS_FCAT1-FIELDNAME = 'INSME'.</font>
+<font color ="#0000FF">*  GS_FCAT1-COLTEXT   = 'QA##'.</font>
+<font color ="#0000FF">*  GS_FCAT1-REF_TABLE = 'MARD'.</font>
+<font color ="#0000FF">*  APPEND GS_FCAT1 TO GT_FCAT1.</font>
+
+
+<font color ="#0000FF">*</font>
+<font color ="#0000FF">*  CLEAR GS_FCAT1.</font>
+<font color ="#0000FF">*  GS_FCAT1-FIELDNAME = 'WERKS'.</font>
+<font color ="#0000FF">*  GS_FCAT1-COLTEXT   = '###'.</font>
+<font color ="#0000FF">**  GS_FCAT1-REF_TABLE = 'MARD'.</font>
+<font color ="#0000FF">*  APPEND GS_FCAT1 TO GT_FCAT1.</font>
+<font color ="#0000FF">*</font>
+<font color ="#0000FF">*  CLEAR GS_FCAT1.</font>
+<font color ="#0000FF">*  GS_FCAT1-FIELDNAME = 'LGORT'.</font>
+<font color ="#0000FF">*  GS_FCAT1-COLTEXT   = '####'.</font>
+<font color ="#0000FF">**  GS_FCAT1-REF_TABLE = 'MARD'.</font>
+<font color ="#0000FF">*  APPEND GS_FCAT1 TO GT_FCAT1.</font>
+
+  CLEAR GS_FCAT1.
+  GS_FCAT1-FIELDNAME = 'DETAIL'.
+  GS_FCAT1-COLTEXT   = 'STO_PO##'.
+  GS_FCAT1-JUST = 'C'.
+  GS_FCAT1-HOTSPOT = 'X'.
+  APPEND GS_FCAT1 TO GT_FCAT1.
+<font color ="#0000FF">*</font>
+
+<font color ="#0000FF">*  CLEAR GS_FCAT1.</font>
+<font color ="#0000FF">*  GS_FCAT1-FIELDNAME = 'BWART'.</font>
+<font color ="#0000FF">*  GS_FCAT1-COLTEXT   = 'MVT'. "'351' ##, ##### #### // '101' ##, 5132 ##### ## ###!!</font>
+<font color ="#0000FF">*  GS_FCAT1-REF_TABLE =  'MSEG'.</font>
+<font color ="#0000FF">*  APPEND GS_FCAT1 TO GT_FCAT1.</font>
+
+
+<font color ="#0000FF">*IF GT_FCAT1-FILEDNAME = 'VCLNR'.</font>
+<font color ="#0000FF">*   GT_FCAT1-CONVEXIT  = 'ALPHA'.</font>
+<font color ="#0000FF">*ENDIF.</font>
+
+ENDFORM.
+<font color ="#0000FF">*&---------------------------------------------------------------------*</font>
+<font color ="#0000FF">*& Form SET_FCAT2</font>
+<font color ="#0000FF">*&---------------------------------------------------------------------*</font>
+<font color ="#0000FF">*& text</font>
+<font color ="#0000FF">*&---------------------------------------------------------------------*</font>
+<font color ="#0000FF">*& --&gt;  p1        text</font>
+<font color ="#0000FF">*& &lt;--  p2        text</font>
+<font color ="#0000FF">*&---------------------------------------------------------------------*</font>
+FORM SET_FCAT2 .
+  CLEAR GS_FCAT2.
+  GS_FCAT2-FIELDNAME = 'STAT'.
+  GS_FCAT2-COLTEXT = '####'.
+  GS_FCAT2-JUST = 'C'.
+  APPEND GS_FCAT2 TO GT_FCAT2.
+
+
+  CLEAR GS_FCAT2.
+  GS_FCAT2-FIELDNAME = 'EBELN'.
+  GS_FCAT2-COLTEXT = 'STO_PO##'.
+  GS_FCAT2-EMPHASIZE = 'C110'.
+  APPEND GS_FCAT2 TO GT_FCAT2.
+<font color ="#0000FF">*</font>
+<font color ="#0000FF">*  CLEAR GS_FCAT2.</font>
+<font color ="#0000FF">*  GS_FCAT2-FIELDNAME = 'EBELP'.</font>
+<font color ="#0000FF">*  GS_FCAT2-COLTEXT = 'ITEM#'.</font>
+<font color ="#0000FF">*  APPEND GS_FCAT2 TO GT_FCAT2.</font>
+
+  CLEAR GS_FCAT2.
+  GS_FCAT2-FIELDNAME = 'MATNR'.
+  GS_FCAT2-COLTEXT = '####'.
+  APPEND GS_FCAT2 TO GT_FCAT2.
+
+  CLEAR GS_FCAT2.
+  GS_FCAT2-FIELDNAME = 'CHARG'.
+  GS_FCAT2-COLTEXT = '####'.
+  APPEND GS_FCAT2 TO GT_FCAT2.
+  CLEAR GS_FCAT2.
+  GS_FCAT2-FIELDNAME = 'MENGE'.
+  GS_FCAT2-COLTEXT = '##'.
+  APPEND GS_FCAT2 TO GT_FCAT2.
+  CLEAR GS_FCAT2.
+  GS_FCAT2-FIELDNAME = 'AEDAT'.
+  GS_FCAT2-COLTEXT = 'PO####'.
+  APPEND GS_FCAT2 TO GT_FCAT2.
+<font color ="#0000FF">*  CLEAR GS_FCAT2.</font>
+<font color ="#0000FF">*  GS_FCAT2-FIELDNAME = 'ERNAM'.</font>
+<font color ="#0000FF">*  GS_FCAT2-COLTEXT = 'PO###'.</font>
+<font color ="#0000FF">*  APPEND GS_FCAT2 TO GT_FCAT2.</font>
+  CLEAR GS_FCAT2.
+  GS_FCAT2-FIELDNAME = 'BELNR'.
+  GS_FCAT2-COLTEXT = '## DO#'.
+  GS_FCAT2-EMPHASIZE = 'C300'.
+  APPEND GS_FCAT2 TO GT_FCAT2.
+  CLEAR GS_FCAT2.
+  GS_FCAT2-FIELDNAME = 'OAEDAT'.
+  GS_FCAT2-COLTEXT   = '## ##'.
+  APPEND GS_FCAT2 TO GT_FCAT2.
+  CLEAR GS_FCAT2.
+  GS_FCAT2-FIELDNAME = 'OERNAM'.
+  GS_FCAT2-COLTEXT   = '## ###'.
+  APPEND GS_FCAT2 TO GT_FCAT2.
+
+  GS_FCAT2-FIELDNAME = 'MBLNR'.
+  GS_FCAT2-COLTEXT = '## DO#'.
+  GS_FCAT2-EMPHASIZE = 'C600'.
+  APPEND GS_FCAT2 TO GT_FCAT2.
+  CLEAR GS_FCAT2.
+  GS_FCAT2-FIELDNAME = 'IAEDAT'.
+  GS_FCAT2-COLTEXT   = '## ##'.
+  APPEND GS_FCAT2 TO GT_FCAT2.
+  CLEAR GS_FCAT2.
+  GS_FCAT2-FIELDNAME = 'IERNAM'.
+  GS_FCAT2-COLTEXT   = '## ###'.
+  APPEND GS_FCAT2 TO GT_FCAT2.
+
+  CLEAR GS_FCAT2.
+  GS_FCAT2-FIELDNAME = 'DIFF'.
+  GS_FCAT2-COLTEXT   = '#####'.
+  GS_FCAT2-EMPHASIZE = 'C200'.
+  APPEND GS_FCAT2 TO GT_FCAT2.
+ENDFORM.
+<font color ="#0000FF">*&---------------------------------------------------------------------*</font>
+<font color ="#0000FF">*& Form SET_LAYOUT1</font>
+<font color ="#0000FF">*&---------------------------------------------------------------------*</font>
+<font color ="#0000FF">*& text</font>
+<font color ="#0000FF">*&---------------------------------------------------------------------*</font>
+<font color ="#0000FF">*& --&gt;  p1        text</font>
+<font color ="#0000FF">*& &lt;--  p2        text</font>
+<font color ="#0000FF">*&---------------------------------------------------------------------*</font>
+FORM SET_LAYOUT1 .
+
+  GS_LAYOUT1-ZEBRA      = 'X'.
+  GS_LAYOUT1-CWIDTH_OPT = 'A'.
+  GS_LAYOUT1-SEL_MODE   = 'D'.
+  GS_LAYOUT1-NO_ROWINS  = 'X'.
+  GS_LAYOUT1-GRID_TITLE = '### ## ##'.
+
+ENDFORM.
+<font color ="#0000FF">*&---------------------------------------------------------------------*</font>
+<font color ="#0000FF">*& Form SET_LATOUT2</font>
+<font color ="#0000FF">*&---------------------------------------------------------------------*</font>
+<font color ="#0000FF">*& text</font>
+<font color ="#0000FF">*&---------------------------------------------------------------------*</font>
+<font color ="#0000FF">*& --&gt;  p1        text</font>
+<font color ="#0000FF">*& &lt;--  p2        text</font>
+<font color ="#0000FF">*&---------------------------------------------------------------------*</font>
+FORM SET_LATOUT2 .
+
+  GS_LAYOUT2-ZEBRA      = 'X'.
+  GS_LAYOUT2-CWIDTH_OPT = 'A'.
+  GS_LAYOUT2-SEL_MODE   = 'D'.
+  GS_LAYOUT2-NO_ROWINS  = 'X'.
+  GS_LAYOUT2-GRID_TITLE  = '## ## ##'.
+ENDFORM.
+<font color ="#0000FF">*&---------------------------------------------------------------------*</font>
+<font color ="#0000FF">*& Form SET_EVENT</font>
+<font color ="#0000FF">*&---------------------------------------------------------------------*</font>
+<font color ="#0000FF">*& text</font>
+<font color ="#0000FF">*&---------------------------------------------------------------------*</font>
+<font color ="#0000FF">*& --&gt;  p1        text</font>
+<font color ="#0000FF">*& &lt;--  p2        text</font>
+<font color ="#0000FF">*&---------------------------------------------------------------------*</font>
+FORM SET_EVENT .
+
+  CREATE OBJECT GO_EVENT_RECEIVER.
+
+  SET HANDLER GO_EVENT_RECEIVER-&gt;HANDLE_DOUBLE_CLICK
+          FOR GO_GRID1.
+
+  SET HANDLER GO_EVENT_RECEIVER-&gt;HANDLE_HOTSPOT_CLICK
+          FOR GO_GRID1.
+
+  SET HANDLER GO_EVENT_RECEIVER-&gt;HANDLE_HOTSPOT_CLICK
+          FOR GO_GRID2.
+  SET HANDLER GO_EVENT_RECEIVER-&gt;HANDLE_TOOLBAR
+       FOR GO_GRID2.
+  SET HANDLER GO_EVENT_RECEIVER-&gt;HANDLE_USER_COMMAND
+          FOR GO_GRID2.
+
+  SET HANDLER GO_EVENT_RECEIVER-&gt;HANDLE_HOTSPOT_CLICK
+        FOR GO_GRID3.
+
+ENDFORM.
+<font color ="#0000FF">*&---------------------------------------------------------------------*</font>
+<font color ="#0000FF">*& Form HANDLE_HOTSPOT_CLICK</font>
+<font color ="#0000FF">*&---------------------------------------------------------------------*</font>
+<font color ="#0000FF">*& text</font>
+<font color ="#0000FF">*&---------------------------------------------------------------------*</font>
+<font color ="#0000FF">*      --&gt;P_E_ROW_ID  text</font>
+<font color ="#0000FF">*      --&gt;P_E_COLUMN_ID  text</font>
+<font color ="#0000FF">*      --&gt;P_SENDER  text</font>
+<font color ="#0000FF">*&---------------------------------------------------------------------*</font>
+FORM HANDLE_HOTSPOT_CLICK  USING    PS_ROW_ID    TYPE LVC_S_ROW
+                                    PS_COLUMN_ID TYPE LVC_S_COL
+                                    P_SENDER     TYPE REF TO CL_GUI_ALV_GRID.
+
+  CASE P_SENDER.
+
+    WHEN GO_GRID1.
+      " ## ##### ### #### ##
+      READ TABLE GT_DISP_LEFT INTO GS_DISP_LEFT
+                                INDEX PS_ROW_ID-INDEX.
+
+      IF SY-SUBRC = 0.
+        IF PS_COLUMN_ID-FIELDNAME = 'MATNR'.
+
+          SET PARAMETER ID 'MAT' FIELD GS_DISP_LEFT-MATNR.
+          CALL TRANSACTION 'MB52' AND SKIP FIRST SCREEN.
+        ENDIF.
+      ENDIF.
+
+
+
+      IF PS_COLUMN_ID-FIELDNAME = 'DETAIL'.
+        READ TABLE GT_DISP_LEFT INTO GS_DISP_LEFT
+                                INDEX PS_ROW_ID-INDEX.
+
+        PERFORM GET_RIGHT_DATA USING GS_DISP_LEFT.
+
+        IF LINES( GT_DISP_RIGHT ) = 0.
+          MESSAGE S014 DISPLAY LIKE 'E'. "### STO_PO # ####.
+
+        ENDIF.
+      ENDIF.
+
+
+
+
+      PERFORM REFRESH_ALV.
+
+
+    WHEN GO_GRID3.
+
+      IF PS_COLUMN_ID-FIELDNAME = 'DETAIL'.
+        READ TABLE GT_DISP_5132 INTO GS_DISP_5132
+                                INDEX PS_ROW_ID-INDEX.
+
+        PERFORM GET_RIGHT_DATA USING GS_DISP_5132.
+
+        IF LINES( GT_DISP_RIGHT ) = 0.
+          MESSAGE S014 DISPLAY LIKE 'E'. "### STO_PO # ####.
+
+        ENDIF.
+      ENDIF.
+      PERFORM REFRESH_ALV.
+  ENDCASE.
+
+
+ENDFORM.
+<font color ="#0000FF">*&---------------------------------------------------------------------*</font>
+<font color ="#0000FF">*& Form BUTTON_MOVE</font>
+<font color ="#0000FF">*&---------------------------------------------------------------------*</font>
+<font color ="#0000FF">*& text</font>
+<font color ="#0000FF">*&---------------------------------------------------------------------*</font>
+<font color ="#0000FF">*& --&gt;  p1        text</font>
+<font color ="#0000FF">*& &lt;--  p2        text</font>
+<font color ="#0000FF">*&---------------------------------------------------------------------*</font>
+FORM BUTTON_MOVE .
+
+  DATA : LV_INDEX TYPE LVC_INDEX,
+         LV_ERR.
+
+  CLEAR GS_DISP_0200.
+
+<font color ="#0000FF">* ALV## ### ## ###.</font>
+  PERFORM GET_SELECTED_ROWS CHANGING LV_INDEX
+                                     LV_ERR.
+
+  CHECK LV_ERR IS INITIAL.
+
+
+<font color ="#0000FF">* INTERNAL TABLE ## 200# ### ## ### ### ##.</font>
+  READ TABLE GT_DISP_RIGHT INTO GS_DISP_RIGHT INDEX LV_INDEX.
+
+  "#### CHECK : ## ## # # PO#
+  IF GS_DISP_RIGHT-STAT = ICON_INCOMPLETE.
+
+    MOVE-CORRESPONDING GS_DISP_RIGHT TO GS_DISP_0200.
+    GS_DISP_0200-OKCODE = GV_OKCODE.
+    GS_DISP_0200-INDEX  = LV_INDEX.
+    CALL SCREEN '0200' STARTING AT 30 10.
+  ELSE.
+    MESSAGE S017 DISPLAY LIKE 'E'. "### #### ## PO# #######.
+  ENDIF.
+
+ENDFORM.
+<font color ="#0000FF">*&---------------------------------------------------------------------*</font>
+<font color ="#0000FF">*& Form HANDLE_DATA_CHANGED</font>
+<font color ="#0000FF">*&---------------------------------------------------------------------*</font>
+<font color ="#0000FF">*& text</font>
+<font color ="#0000FF">*&---------------------------------------------------------------------*</font>
+<font color ="#0000FF">*      --&gt;P_ER_DATA_CHANGED  text</font>
+<font color ="#0000FF">*&---------------------------------------------------------------------*</font>
+FORM HANDLE_DATA_CHANGED  USING       PO_DATA_CHANGED
+                          TYPE REF TO CL_ALV_CHANGED_DATA_PROTOCOL.
+
+  DATA : LS_GOOD_CELLS TYPE LVC_S_MODI,  " Line Type &lt;- ### #.
+         LT_GOOD_CELLS TYPE LVC_T_MODI.
+
+<font color ="#0000FF">*  DATA : LV_TEXT TYPE DD07T-DDTEXT.</font>
+
+  LT_GOOD_CELLS = PO_DATA_CHANGED-&gt;MT_GOOD_CELLS.
+
+  LOOP AT LT_GOOD_CELLS INTO LS_GOOD_CELLS.
+
+
+    CASE LS_GOOD_CELLS-FIELDNAME.
+      WHEN 'CLABS'.  "##
+        "#### ##
+<font color ="#0000FF">*        PERFORM SET_TEXT_GRADE USING LS_GOOD_CELLS-VALUE</font>
+<font color ="#0000FF">*                            CHANGING LV_TEXT.</font>
+
+<font color ="#0000FF">*        READ TABLE GT_TEXT_GRADE INTO GS_TEXT</font>
+<font color ="#0000FF">*                            WITH KEY DOMVALUE_L = LS_GOOD_CELLS-VALUE.</font>
+<font color ="#0000FF">*        IF SY-SUBRC = 0.</font>
+
+        " ##(ALV)# ##.
+<font color ="#0000FF">*        CALL METHOD PO_DATA_CHANGED-&gt;MODIFY_CELL</font>
+<font color ="#0000FF">*          EXPORTING</font>
+<font color ="#0000FF">*            I_ROW_ID    = LS_GOOD_CELLS-ROW_ID</font>
+<font color ="#0000FF">*            I_FIELDNAME =</font>
+<font color ="#0000FF">*            I_VALUE     = LV_TEXT.  " -&gt; GS_TEXT-DDTEXT. # LV_TEXT. # ####</font>
+<font color ="#0000FF">*        " ## ### ## ### ### ### ###~ ## #.</font>
+
+<font color ="#0000FF">*        ENDIF.</font>
+
+        READ TABLE GT_DISP_LEFT INTO GS_DISP_LEFT
+                                INDEX LS_GOOD_CELLS-ROW_ID.
+
+        MOVE-CORRESPONDING GS_DISP_LEFT TO GS_DISP_RIGHT.
+
+        APPEND GS_DISP_RIGHT TO GT_DISP_RIGHT.
+
+    ENDCASE.
+
+  ENDLOOP.
+
+
+  LT_GOOD_CELLS = PO_DATA_CHANGED-&gt;MT_GOOD_CELLS.
+
+  LOOP AT LT_GOOD_CELLS INTO LS_GOOD_CELLS.
+
+
+    CASE LS_GOOD_CELLS-FIELDNAME.
+      WHEN 'TRAME'.  "####
+        "#### ##
+<font color ="#0000FF">*        PERFORM SET_TEXT_GRADE USING LS_GOOD_CELLS-VALUE</font>
+<font color ="#0000FF">*                            CHANGING LV_TEXT.</font>
+
+<font color ="#0000FF">*        READ TABLE GT_TEXT_GRADE INTO GS_TEXT</font>
+<font color ="#0000FF">*                            WITH KEY DOMVALUE_L = LS_GOOD_CELLS-VALUE.</font>
+<font color ="#0000FF">*        IF SY-SUBRC = 0.</font>
+
+        " ##(ALV)# ##.
+<font color ="#0000FF">*        CALL METHOD PO_DATA_CHANGED-&gt;MODIFY_CELL</font>
+<font color ="#0000FF">*          EXPORTING</font>
+<font color ="#0000FF">*            I_ROW_ID    = LS_GOOD_CELLS-ROW_ID</font>
+<font color ="#0000FF">*            I_FIELDNAME =</font>
+<font color ="#0000FF">*            I_VALUE     = LV_TEXT.  " -&gt; GS_TEXT-DDTEXT. # LV_TEXT. # ####</font>
+<font color ="#0000FF">*        " ## ### ## ### ### ### ###~ ## #.</font>
+
+<font color ="#0000FF">*        ENDIF.</font>
+
+        READ TABLE GT_DISP_RIGHT INTO GS_DISP_RIGHT
+                                INDEX LS_GOOD_CELLS-ROW_ID.
+
+        MOVE-CORRESPONDING GS_DISP_RIGHT TO GS_DISP_RIGHT.
+
+        APPEND GS_DISP_RIGHT TO GT_DISP_RIGHT.
+
+    ENDCASE.
+
+  ENDLOOP.
+
+
+ENDFORM.
+<font color ="#0000FF">*&---------------------------------------------------------------------*</font>
+<font color ="#0000FF">*& Form GET_SELECTED_ROWS</font>
+<font color ="#0000FF">*&---------------------------------------------------------------------*</font>
+<font color ="#0000FF">*& text</font>
+<font color ="#0000FF">*&---------------------------------------------------------------------*</font>
+<font color ="#0000FF">*      &lt;--P_LV_INDEX  text</font>
+<font color ="#0000FF">*      &lt;--P_LV_ERR  text</font>
+<font color ="#0000FF">*&---------------------------------------------------------------------*</font>
+FORM GET_SELECTED_ROWS  CHANGING P_INDEX  " P_INDEX# ####~# #
+                                 P_ERR.
+
+  DATA : LT_ROWS TYPE LVC_T_ROW,
+         LS_ROWS TYPE LVC_S_ROW.
+
+  CLEAR : P_INDEX, P_ERR.
+
+<font color ="#0000FF">* ALV## ### ## ####</font>
+  CALL METHOD GO_GRID2-&gt;GET_SELECTED_ROWS
+    IMPORTING
+      ET_INDEX_ROWS = LT_ROWS.
+
+<font color ="#0000FF">*### ## ##</font>
+  IF LINES( LT_ROWS ) = 0.
+    P_ERR = 'X'.
+    MESSAGE S018 DISPLAY LIKE 'E'. "STO_PO ## ### #####.
+  ELSEIF LINES( LT_ROWS ) &gt; 1.
+    P_ERR = 'X'.
+    MESSAGE S002 DISPLAY LIKE 'E'.
+  ELSE.
+    READ TABLE LT_ROWS INTO LS_ROWS INDEX 1.
+    P_INDEX = LS_ROWS-INDEX.
+  ENDIF.
+
+
+
+ENDFORM.
+<font color ="#0000FF">*</font>
+<font color ="#0000FF">*</font>
+<font color ="#0000FF">*&---------------------------------------------------------------------*</font>
+<font color ="#0000FF">*& --&gt;  p1        text</font>
+<font color ="#0000FF">*& &lt;--  p2        text</font>
+<font color ="#0000FF">*&---------------------------------------------------------------------*</font>
+FORM BUTTON_MICHAK .
+
+  DATA : LV_INDEX TYPE LVC_INDEX,
+         LV_ERR.
+
+  CLEAR GS_DISP_0300.
+
+<font color ="#0000FF">* ALV## ### ## ###.</font>
+  PERFORM GET_SELECTED_ROWS CHANGING LV_INDEX
+                                      LV_ERR.
+  READ TABLE GT_DISP_RIGHT INTO GS_DISP_RIGHT INDEX LV_INDEX.
+  CHECK LV_ERR IS INITIAL.
+  IF GS_DISP_RIGHT-STAT = '###'.
+    MOVE-CORRESPONDING GS_DISP_RIGHT TO GS_DISP_0300.
+    GS_DISP_0300-OKCODE = GV_OKCODE.
+    GS_DISP_0300-INDEX  = LV_INDEX.
+    GV_INDEX = LV_INDEX.
+    CALL SCREEN '0300' STARTING AT 30 10.
+  ELSE.
+    MESSAGE S019 DISPLAY LIKE 'E'."## ## PO# #######.
+  ENDIF.
+
+
+ENDFORM.
+<font color ="#0000FF">*&---------------------------------------------------------------------*</font>
+<font color ="#0000FF">*& Form GET_SELECTED_ROWS2</font>
+<font color ="#0000FF">*&---------------------------------------------------------------------*</font>
+<font color ="#0000FF">*& text</font>
+<font color ="#0000FF">*&---------------------------------------------------------------------*</font>
+<font color ="#0000FF">*      &lt;--P_LV_INDEX  text</font>
+<font color ="#0000FF">*      &lt;--P_LV_ERR  text</font>
+
+<font color ="#0000FF">*&---------------------------------------------------------------------*</font>
+<font color ="#0000FF">*& Form BAPI_TRAME</font>
+<font color ="#0000FF">*&---------------------------------------------------------------------*</font>
+<font color ="#0000FF">*& text</font>
+<font color ="#0000FF">*&---------------------------------------------------------------------*</font>
+<font color ="#0000FF">*& --&gt;  p1        text</font>
+<font color ="#0000FF">*& &lt;--  p2        text</font>
+<font color ="#0000FF">*&---------------------------------------------------------------------*</font>
+FORM BAPI_GR_5132 .
+
+  CHECK GS_EXIT IS INITIAL.
+
+  CLEAR : GS_ITEM, GT_ITEM, GS_BAPIRET, GT_BAPIRET, GS_HEADER.
+
+
+<font color ="#0000FF">* BAPI HEADER STRUCTURE</font>
+  GS_HEADER-PSTNG_DATE = SY-DATUM.
+  GS_HEADER-DOC_DATE   = SY-DATUM.
+  GS_HEADER-PR_UNAME   = SY-UNAME.
+  GS_HEADER-REF_DOC_NO = GS_DISP_0300-BELNR.
+
+
+<font color ="#0000FF">* BAPI ITEM STRUCTURE</font>
+  GS_ITEM-MATERIAL = GS_DISP_0300-MATNR.  "####
+  GS_ITEM-PLANT    = GS_DISP_0300-WERKS.  "### '5132
+  GS_ITEM-STGE_LOC = GS_DISP_0300-LGORT.  "## '171A
+  GS_ITEM-BATCH    = GS_DISP_0300-CHARG.  "## ##
+  GS_ITEM-MOVE_TYPE = '101'.  "#### : ##
+  GS_ITEM-PO_NUMBER = GS_DISP_0300-EBELN.  "### STO_PO ### ###~~
+  GS_ITEM-PO_ITEM = '10'.                  "
+  GS_ITEM-ENTRY_QNT = GS_DISP_0300-MENGE.  "##
+  GS_ITEM-ENTRY_UOM = GS_DISP_0300-MEINS.  "####
+  GS_ITEM-NO_MORE_GR = 'X'.  "DELIVERY COMPLETED INDICATOR
+  GS_ITEM-REF_DOC = GS_DISP_0300-EBELN.
+  GS_ITEM-PROD_DATE = SY-DATUM.
+  GS_ITEM-MVT_IND = 'B'.
+
+  APPEND GS_ITEM TO GT_ITEM.
+
+
+<font color ="#0000FF">* Call the BAPI FM for GR posting</font>
+<font color ="#0000FF">*  ENDLOOP.</font>
+  CALL FUNCTION 'BAPI_GOODSMVT_CREATE'
+    EXPORTING
+      GOODSMVT_HEADER  = GS_HEADER
+      GOODSMVT_CODE    = '01'
+    IMPORTING
+      GOODSMVT_HEADRET = GS_HEADRET
+    TABLES
+      GOODSMVT_ITEM    = GT_ITEM
+      RETURN           = GT_BAPIRET.
+
+  READ TABLE GT_BAPIRET INTO GS_BAPIRET WITH KEY TYPE = 'E'.
+
+  IF SY-SUBRC NE 0.
+<font color ="#0000FF">* COMMIT</font>
+    GV_BAPI = 'X'.
+    CALL FUNCTION 'BAPI_TRANSACTION_COMMIT'
+      EXPORTING
+        WAIT = 'X'.
+  ELSE.
+<font color ="#0000FF">* ####</font>
+    CLEAR GV_BAPI.
+    MESSAGE S000 DISPLAY LIKE 'E' WITH GS_BAPIRET-MESSAGE.
+    CALL FUNCTION 'BAPI_TRANSACTION_ROLLBACK'
+<font color ="#0000FF">*         IMPORTING</font>
+<font color ="#0000FF">*           RETURN        =</font>
+      .
+
+  ENDIF.
+
+ENDFORM.
+<font color ="#0000FF">*&---------------------------------------------------------------------*</font>
+<font color ="#0000FF">*& Form HANDLE_DOUBLE_CLICK</font>
+<font color ="#0000FF">*&---------------------------------------------------------------------*</font>
+<font color ="#0000FF">*& text</font>
+<font color ="#0000FF">*&---------------------------------------------------------------------*</font>
+<font color ="#0000FF">*      --&gt;P_E_ROW  text</font>
+<font color ="#0000FF">*      --&gt;P_E_COLUMN  text</font>
+<font color ="#0000FF">*&---------------------------------------------------------------------*</font>
+FORM HANDLE_DOUBLE_CLICK  USING  PS_ROW TYPE LVC_S_ROW
+                                 PS_COLUMN TYPE LVC_S_COL.
+
+
+
+
+ENDFORM.
+<font color ="#0000FF">*&---------------------------------------------------------------------*</font>
+
+<font color ="#0000FF">*&---------------------------------------------------------------------*</font>
+<font color ="#0000FF">*& Form SET_SORT</font>
+<font color ="#0000FF">*&---------------------------------------------------------------------*</font>
+<font color ="#0000FF">*& text</font>
+<font color ="#0000FF">*&---------------------------------------------------------------------*</font>
+<font color ="#0000FF">*& --&gt;  p1        text</font>
+<font color ="#0000FF">*& &lt;--  p2        text</font>
+<font color ="#0000FF">*&---------------------------------------------------------------------*</font>
+FORM SET_SORT .
+
+  CLEAR : GT_SORT1, GS_SORT1.
+<font color ="#0000FF">*</font>
+  GS_SORT1-SPOS = '2'.
+  GS_SORT1-FIELDNAME = 'MAKTX'.
+  GS_SORT1-UP = 'X'.
+  APPEND GS_SORT1 TO GT_SORT1.
+
+  GS_SORT1-SPOS = '1'.
+  GS_SORT1-FIELDNAME = 'MATNR'.
+  GS_SORT1-UP = 'X'.
+  APPEND GS_SORT1 TO GT_SORT1.
+  """""""""""""""""""""""""""""""""""""""""""""
+
+<font color ="#0000FF">*  CLEAR : GT_SORT2, GS_SORT2.</font>
+<font color ="#0000FF">*</font>
+<font color ="#0000FF">*  GS_SORT2-SPOS = '2'.</font>
+<font color ="#0000FF">*  GS_SORT2-FIELDNAME = 'CHARG'.</font>
+<font color ="#0000FF">*  GS_SORT2-UP = 'X'.</font>
+<font color ="#0000FF">*  APPEND GS_SORT2 TO GT_SORT2.</font>
+<font color ="#0000FF">*</font>
+<font color ="#0000FF">*</font>
+<font color ="#0000FF">*  GS_SORT2-SPOS = '1'.</font>
+<font color ="#0000FF">*  GS_SORT2-FIELDNAME = 'MATNR'.</font>
+<font color ="#0000FF">*  GS_SORT2-UP = 'X'.</font>
+<font color ="#0000FF">*  APPEND GS_SORT2 TO GT_SORT2.</font>
+
+
+ENDFORM.
+<font color ="#0000FF">*&---------------------------------------------------------------------*</font>
+<font color ="#0000FF">*& Form BAPI_MOVE_CRABS</font>
+<font color ="#0000FF">*&---------------------------------------------------------------------*</font>
+<font color ="#0000FF">*& text</font>
+<font color ="#0000FF">*&---------------------------------------------------------------------*</font>
+<font color ="#0000FF">*& --&gt;  p1        text</font>
+
+<font color ="#0000FF">*&---------------------------------------------------------------------*</font>
+
+<font color ="#0000FF">*&---------------------------------------------------------------------*</font>
+<font color ="#0000FF">*& Form BAPI_STO_PO_CREATE</font>
+<font color ="#0000FF">*&---------------------------------------------------------------------*</font>
+<font color ="#0000FF">*& text</font>
+<font color ="#0000FF">*&---------------------------------------------------------------------*</font>
+<font color ="#0000FF">*& --&gt;  p1        text</font>
+<font color ="#0000FF">*& &lt;--  p2        text</font>
+<font color ="#0000FF">*&---------------------------------------------------------------------*</font>
+FORM BAPI_STO_PO_CREATE .
+
+<font color ="#0000FF">**&---------------------------------------------------------------------*</font>
+<font color ="#0000FF">**& BAPI# #### STO ### ### ##, #####</font>
+<font color ="#0000FF">**&---------------------------------------------------------------------*</font>
+
+  CLEAR : GS_POHEADER,      GS_POHEADERX, GS_EXPHEADER,
+          GT_POITEM[],      GT_POITEMX[], GT_POSCHEDULE[],
+          GT_POSCHEDULEX[], GT_RETURN[], GT_RETURN.
+  CLEAR : GV_BAPI.
+
+<font color ="#0000FF">* BAPI HEADER STRUCTURE</font>
+  CLEAR GS_POHEADER.
+  GS_POHEADER-COMP_CODE  = '5130'.
+  GS_POHEADER-DOC_TYPE   = 'UB'.
+  GS_POHEADER-PURCH_ORG  = '5130'.
+  GS_POHEADER-PUR_GROUP  = 'JG2'.
+  GS_POHEADER-SUPPL_PLNT = '5131'.
+  GS_POHEADER-LANGU = SY-LANGU.
+  GS_POHEADER-CREAT_DATE = SY-DATUM.
+  GS_POHEADER-CREATED_BY = SY-UNAME.
+  CLEAR GS_POHEADERX.
+  GS_POHEADERX-COMP_CODE  =  'X'.
+  GS_POHEADERX-DOC_TYPE   =  'X'.
+  GS_POHEADERX-PURCH_ORG  =  'X'.
+  GS_POHEADERX-PUR_GROUP  =  'X'.
+  GS_POHEADERX-SUPPL_PLNT =  'X'.
+  GS_POHEADERX-LANGU = 'X'.
+  GS_POHEADERX-CREAT_DATE = 'X'.
+  GS_POHEADERX-CREATED_BY = 'X'.
+<font color ="#0000FF">*  ADD 10 TO L_EBELP.</font>
+
+  CLEAR GT_POITEM.
+  GT_POITEM-PO_ITEM        =  '10'.                          "##### ##
+  GT_POITEM-MATERIAL       =  GS_DISP_0400-MATNR .           "####
+  GT_POITEM-PLANT          =  '5132'.                        "#######
+  GT_POITEM-STGE_LOC       =  '171A'             .           "######
+  GT_POITEM-BATCH          =  GS_DISP_0400-CHARG .           "####
+  GT_POITEM-QUANTITY       =  GS_DISP_0400-CLABS .           "####
+  GT_POITEM-PO_UNIT        =  'KG' .
+  GT_POITEM-ITEM_CAT       =  '7'.                           " Stock Transfer
+  APPEND GT_POITEM.
+
+  CLEAR GT_POITEMX.
+  GT_POITEMX-PO_ITEM       =  '10'.
+  GT_POITEMX-PO_ITEMX      =  'X'.
+  GT_POITEMX-MATERIAL      =  'X'.
+  GT_POITEMX-PLANT         =  'X'.
+  GT_POITEMX-STGE_LOC      =  'X'.
+  GT_POITEMX-BATCH          = 'X'.
+  GT_POITEMX-QUANTITY      =  'X'.
+  GT_POITEMX-PO_UNIT       =  'X'.
+  GT_POITEMX-ITEM_CAT       = 'X'.
+  APPEND GT_POITEMX.
+
+<font color ="#0000FF">*    AT END OF WERKS.</font>
+  CLEAR : GS_EXPHEADER, GT_RETURN[].
+  CALL FUNCTION 'BAPI_PO_CREATE1'
+    EXPORTING
+      POHEADER         = GS_POHEADER
+      POHEADERX        = GS_POHEADERX
+    IMPORTING
+      EXPPURCHASEORDER = GV_PO
+    TABLES
+      RETURN           = GT_RETURN[]
+      POITEM           = GT_POITEM[]
+      POITEMX          = GT_POITEMX[].
+
+  READ TABLE GT_RETURN[] INTO GT_RETURN WITH KEY TYPE = 'E'.
+  IF SY-SUBRC = 0.
+    "####
+    MESSAGE S000 DISPLAY LIKE 'E' WITH GT_RETURN-MESSAGE.
+<font color ="#0000FF">*        LV_MESSAGE =</font>
+    CALL FUNCTION 'BAPI_TRANSACTION_ROLLBACK'
+<font color ="#0000FF">*         IMPORTING</font>
+<font color ="#0000FF">*           RETURN        =</font>
+      .
+
+
+  ELSE.
+    "####
+    CALL FUNCTION 'BAPI_TRANSACTION_COMMIT'
+      EXPORTING
+        WAIT = 'X'.
+    GV_BAPI = 'X'.
+    MESSAGE S000 WITH 'STO_PO :' && GV_PO '# #######.'.
+  ENDIF.
+
+
+
+<font color ="#0000FF">*  PERFORM GET_RIGHT_DATA USING.</font>
+<font color ="#0000FF">*</font>
+<font color ="#0000FF">*  PERFORM REFRESH_ALV.</font>
+
+
+
+ENDFORM.
+<font color ="#0000FF">*&---------------------------------------------------------------------*</font>
+<font color ="#0000FF">*& Form SET_FCAT3</font>
+<font color ="#0000FF">*&---------------------------------------------------------------------*</font>
+<font color ="#0000FF">*& text</font>
+<font color ="#0000FF">*&---------------------------------------------------------------------*</font>
+<font color ="#0000FF">*& --&gt;  p1        text</font>
+<font color ="#0000FF">*& &lt;--  p2        text</font>
+<font color ="#0000FF">*&---------------------------------------------------------------------*</font>
+FORM SET_FCAT3 .
+<font color ="#0000FF">*  CLEAR GS_FCAT3.</font>
+<font color ="#0000FF">*  GS_FCAT3-FIELDNAME = 'STAT'.</font>
+<font color ="#0000FF">*  GS_FCAT3-COLTEXT = '####'.</font>
+<font color ="#0000FF">*  GS_FCAT3-JUST = 'C'.</font>
+<font color ="#0000FF">*  APPEND GS_FCAT3 TO GT_FCAT3.</font>
+<font color ="#0000FF">*</font>
+
+
+
+
+ENDFORM.
+<font color ="#0000FF">*&---------------------------------------------------------------------*</font>
+<font color ="#0000FF">*& Form SET_LAYOUT3</font>
+<font color ="#0000FF">*&---------------------------------------------------------------------*</font>
+<font color ="#0000FF">*& text</font>
+<font color ="#0000FF">*&---------------------------------------------------------------------*</font>
+<font color ="#0000FF">*& --&gt;  p1        text</font>
+<font color ="#0000FF">*& &lt;--  p2        text</font>
+<font color ="#0000FF">*&---------------------------------------------------------------------*</font>
+FORM SET_LAYOUT3 .
+
+  GS_LAYOUT3-ZEBRA      = 'X'.
+  GS_LAYOUT3-CWIDTH_OPT = 'A'.
+  GS_LAYOUT3-SEL_MODE   = 'D'.
+  GS_LAYOUT3-NO_ROWINS  = 'X'.
+  GS_LAYOUT3-GRID_TITLE = '5132 ### ## ##'.
+
+ENDFORM.
+<font color ="#0000FF">*&---------------------------------------------------------------------*</font>
+<font color ="#0000FF">*& Form CRTE_STO</font>
+<font color ="#0000FF">*&---------------------------------------------------------------------*</font>
+<font color ="#0000FF">*& text</font>
+<font color ="#0000FF">*&---------------------------------------------------------------------*</font>
+<font color ="#0000FF">*& --&gt;  p1        text</font>
+<font color ="#0000FF">*& &lt;--  p2        text</font>
+<font color ="#0000FF">*&---------------------------------------------------------------------*</font>
+FORM CRTE_STO .
+
+  DATA : LV_INDEX TYPE LVC_INDEX,
+         LV_ERR.
+
+  CLEAR GS_DISP_0400.
+
+<font color ="#0000FF">* ALV## ### ## ###.</font>
+  PERFORM GET_SELECTED_ROWS0 CHANGING LV_INDEX
+                                      LV_ERR.
+
+
+
+  CHECK LV_ERR IS INITIAL.
+
+
+<font color ="#0000FF">* INTERNAL TABLE ## 400# ### ## ### ### ##.</font>
+  READ TABLE GT_DISP_LEFT INTO GS_DISP_LEFT INDEX LV_INDEX.
+
+  GS_DISP_0400-MATNR = GS_DISP_LEFT-MATNR.
+  GS_DISP_0400-MAKTX = GS_DISP_LEFT-MAKTX.
+  GS_DISP_0400-OKCODE = GV_OKCODE.
+  GS_DISP_0400-INDEX  = LV_INDEX.
+  GS_DISP_0400-CHARG = GS_DISP_LEFT-CHARG.
+  GS_DISP_0400-WERKS = GS_DISP_LEFT-WERKS.
+  GS_DISP_0400-LGORT = GS_DISP_LEFT-LGORT.
+  GS_DISP_0400-MEINS = GS_DISP_LEFT-MEINS.
+
+  CALL SCREEN '0400' STARTING AT 30 10.
+
+ENDFORM.
+<font color ="#0000FF">*&---------------------------------------------------------------------*</font>
+<font color ="#0000FF">*& Form GET_SELECTED_ROWS0</font>
+<font color ="#0000FF">*&---------------------------------------------------------------------*</font>
+<font color ="#0000FF">*& text</font>
+<font color ="#0000FF">*&---------------------------------------------------------------------*</font>
+<font color ="#0000FF">*& --&gt;  p1        text</font>
+<font color ="#0000FF">*& &lt;--  p2        text</font>
+<font color ="#0000FF">*&---------------------------------------------------------------------*</font>
+FORM GET_SELECTED_ROWS0 CHANGING P_INDEX  " P_INDEX# ####~# #
+                                 P_ERR.
+
+  DATA : LT_ROWS TYPE LVC_T_ROW,
+         LS_ROWS TYPE LVC_S_ROW.
+
+  CLEAR : P_INDEX, P_ERR.
+
+<font color ="#0000FF">* ALV## ### ## ####</font>
+  CALL METHOD GO_GRID1-&gt;GET_SELECTED_ROWS
+    IMPORTING
+      ET_INDEX_ROWS = LT_ROWS.
+
+
+<font color ="#0000FF">*### ## ##</font>
+  IF LINES( LT_ROWS ) = 0.
+    MESSAGE S016 DISPLAY LIKE 'E'. "#### ### #####.
+    P_ERR = 'X'.
+  ELSEIF LINES( LT_ROWS ) &gt; 1.
+    MESSAGE S002 DISPLAY LIKE 'E'.
+    P_ERR = 'X'.
+  ENDIF.
+
+
+  READ TABLE LT_ROWS INTO LS_ROWS INDEX 1.
+  P_INDEX = LS_ROWS-INDEX.
+
+ENDFORM.
+<font color ="#0000FF">*&---------------------------------------------------------------------*</font>
+<font color ="#0000FF">*& Form GET_RIGHT_DATA</font>
+<font color ="#0000FF">*&---------------------------------------------------------------------*</font>
+<font color ="#0000FF">*& text</font>
+<font color ="#0000FF">*&---------------------------------------------------------------------*</font>
+<font color ="#0000FF">*& --&gt;  p1        text</font>
+<font color ="#0000FF">*& &lt;--  p2        text</font>
+<font color ="#0000FF">*&---------------------------------------------------------------------*</font>
+FORM GET_EKBE_DATA USING PPS_DISP LIKE GS_DISP_LEFT.
+  SELECT *
+    INTO CORRESPONDING FIELDS OF TABLE GT_EKBE
+    FROM EKBE
+    WHERE MATNR = PPS_DISP-MATNR
+
+    AND CHARG = PPS_DISP-CHARG
+
+    .
+ENDFORM.
+<font color ="#0000FF">*&---------------------------------------------------------------------*</font>
+<font color ="#0000FF">*& Form GET_RIGHT_DATA</font>
+<font color ="#0000FF">*&---------------------------------------------------------------------*</font>
+<font color ="#0000FF">*& text</font>
+<font color ="#0000FF">*&---------------------------------------------------------------------*</font>
+<font color ="#0000FF">*& --&gt;  p1        text</font>
+<font color ="#0000FF">*& &lt;--  p2        text</font>
+<font color ="#0000FF">*&---------------------------------------------------------------------*</font>
+FORM GET_RIGHT_DATA USING PS_DISP LIKE GS_DISP_LEFT.
+  SELECT EKPO~MATNR EKPO~EBELN EKPO~EBELP EKPO~MENGE EKPO~WERKS EKPO~LGORT EKPO~MEINS "po###
+    EKPO~ELIKZ EKKO~AEDAT EKKO~ERNAM
+    EKET~CHARG
+<font color ="#0000FF">*    EKBE~BELNR EKBE~MENGE EKBE~BWART EKBE~BUDAT AS OAEDAT EKBE~ERNAM AS OERNAM EKBE~XBLNR</font>
+  INTO CORRESPONDING FIELDS OF TABLE GT_DISP_RIGHT
+  FROM EKPO
+    INNER JOIN EKKO
+    ON EKPO~EBELN = EKKO~EBELN
+    INNER JOIN EKET "CHARG###
+    ON EKKO~EBELN = EKET~EBELN
+<font color ="#0000FF">*    INNER JOIN EKBE</font>
+<font color ="#0000FF">*    ON EKKO~EBELN = EKBE~EBELN</font>
+  WHERE EKPO~MATNR = PS_DISP-MATNR
+        AND EKPO~MATNR IN S_MATNR
+
+    AND EKET~CHARG IN S_CHARG
+  AND EKET~CHARG = PS_DISP-CHARG
+    .
+
+  SORT GT_DISP_RIGHT DESCENDING BY EBELN.
+
+  PERFORM GET_EKBE_DATA CHANGING PS_DISP.
+
+  LOOP AT GT_DISP_RIGHT INTO GS_DISP_RIGHT.
+    READ TABLE GT_EKBE INTO GS_EKBE WITH KEY EBELN = GS_DISP_RIGHT-EBELN BWART = '351' ELIKZ = ''.
+    IF SY-SUBRC = 0.
+      GS_DISP_RIGHT-STAT = '###'.
+      GS_DISP_RIGHT-MENGE = GS_EKBE-MENGE.
+      GS_DISP_RIGHT-BELNR = GS_EKBE-BELNR.
+      GS_DISP_RIGHT-OAEDAT = GS_EKBE-BUDAT.
+      GS_DISP_RIGHT-OERNAM = GS_EKBE-ERNAM.
+
+      READ TABLE GT_EKBE INTO GS_EKBE WITH KEY EBELN = GS_DISP_RIGHT-EBELN BWART = '101' ELIKZ = 'X'.
+      IF SY-SUBRC = 0.
+        GS_DISP_RIGHT-STAT = ICON_CHECKED.  "####
+        GS_DISP_RIGHT-MBLNR = GS_EKBE-BELNR.
+        GS_DISP_RIGHT-IAEDAT = GS_EKBE-BUDAT.
+        GS_DISP_RIGHT-IERNAM = GS_EKBE-ERNAM.
+        " ##### ##
+        CALL FUNCTION 'HR_CZ_COMPUTE_DATE_INTERVAL'
+          CHANGING
+            DATUM1 = GS_DISP_RIGHT-IAEDAT
+            DATUM2 = GS_DISP_RIGHT-OAEDAT
+            DAYS   = GS_DISP_RIGHT-DIFF.
+      ENDIF.
+    ELSEIF GS_DISP_RIGHT-ELIKZ = 'X'.
+      CLEAR GS_DISP_RIGHT-STAT.
+    ELSE.
+      GS_DISP_RIGHT-STAT = ICON_INCOMPLETE. "######
+    ENDIF.
+    MODIFY GT_DISP_RIGHT FROM GS_DISP_RIGHT.
+    CLEAR : GS_EKBE, GS_DISP_RIGHT.
+  ENDLOOP.
+
+  DELETE GT_DISP_RIGHT WHERE STAT =''.
+  DELETE GT_DISP_RIGHT WHERE AEDAT &lt; SY-DATUM - 20.
+
+<font color ="#0000FF">*</font>
+<font color ="#0000FF">*LOOP AT GT_DISP_RIGHT INTO GS_DISP_RIGHT.</font>
+<font color ="#0000FF">*  GS_DISP_RIGHT-STAT = '###'.</font>
+<font color ="#0000FF">*   MODIFY GT_DISP_RIGHT FROM GS_DISP_RIGHT.</font>
+<font color ="#0000FF">*   ENDLOOP.</font>
+ENDFORM.
+<font color ="#0000FF">*&---------------------------------------------------------------------*</font>
+<font color ="#0000FF">*& Form HANDLE_TOOLBAR</font>
+<font color ="#0000FF">*&---------------------------------------------------------------------*</font>
+<font color ="#0000FF">*& text</font>
+<font color ="#0000FF">*&---------------------------------------------------------------------*</font>
+<font color ="#0000FF">*      --&gt;P_E_OBJECT  text</font>
+<font color ="#0000FF">*      --&gt;P_SENDER  text</font>
+<font color ="#0000FF">*&---------------------------------------------------------------------*</font>
+FORM HANDLE_TOOLBAR  USING  PO_OBJECT TYPE REF TO CL_ALV_EVENT_TOOLBAR_SET
+                                          P_SENDER     TYPE REF TO CL_GUI_ALV_GRID.
+
+
+  DATA : LS_TOOLBAR TYPE STB_BUTTON.
+  DATA : LV_INDEX TYPE SY-TABIX.
+  CASE P_SENDER.
+    WHEN GO_GRID2.
+
+      CLEAR LS_TOOLBAR.
+      LS_TOOLBAR-FUNCTION = 'TOTAL'.
+      LS_TOOLBAR-ICON     = ''.
+      LS_TOOLBAR-QUICKINFO     = ''.
+      LS_TOOLBAR-TEXT     = '[####]'.
+      LS_TOOLBAR-DISABLED     = ''.
+      INSERT LS_TOOLBAR INTO PO_OBJECT-&gt;MT_TOOLBAR INDEX 1.
+
+      CLEAR LS_TOOLBAR.
+      LS_TOOLBAR-FUNCTION = 'SHIPPING'.
+      LS_TOOLBAR-ICON     = ''.
+      LS_TOOLBAR-QUICKINFO     = ''.
+      LS_TOOLBAR-TEXT     = '[### ##]'.
+      LS_TOOLBAR-DISABLED     = ''.
+      INSERT LS_TOOLBAR INTO PO_OBJECT-&gt;MT_TOOLBAR INDEX 2.
+
+      CLEAR LS_TOOLBAR.
+      LS_TOOLBAR-FUNCTION = 'UNDELIVERED'.
+      LS_TOOLBAR-ICON     = ''.
+      LS_TOOLBAR-QUICKINFO     = ''.
+      LS_TOOLBAR-TEXT     = '[### ##]'.
+      LS_TOOLBAR-DISABLED     = ''.
+      INSERT LS_TOOLBAR INTO PO_OBJECT-&gt;MT_TOOLBAR INDEX 3.
+      CLEAR LS_TOOLBAR.
+      LS_TOOLBAR-FUNCTION = 'DELIVERED'.
+      LS_TOOLBAR-ICON     = ''.
+      LS_TOOLBAR-QUICKINFO     = ''.
+      LS_TOOLBAR-TEXT     = '[######]'.
+      LS_TOOLBAR-DISABLED     = ''.
+      INSERT LS_TOOLBAR INTO PO_OBJECT-&gt;MT_TOOLBAR INDEX 4.
+
+      CLEAR LS_TOOLBAR.
+      LS_TOOLBAR-FUNCTION = 'EMAIL'.
+      LS_TOOLBAR-ICON     = ''.
+      LS_TOOLBAR-QUICKINFO     = ''.
+      LS_TOOLBAR-TEXT     = '[TO.#### ####]'.
+      LS_TOOLBAR-DISABLED     = ''.
+      INSERT LS_TOOLBAR INTO PO_OBJECT-&gt;MT_TOOLBAR INDEX 5.
+
+  ENDCASE.
+
+ENDFORM.
+<font color ="#0000FF">*&---------------------------------------------------------------------*</font>
+<font color ="#0000FF">*& Form HANDLE_USER_COMMAND</font>
+<font color ="#0000FF">*&---------------------------------------------------------------------*</font>
+<font color ="#0000FF">*& text</font>
+<font color ="#0000FF">*&---------------------------------------------------------------------*</font>
+<font color ="#0000FF">*      --&gt;P_E_UCOMM  text</font>
+<font color ="#0000FF">*      --&gt;P_SENDER  text</font>
+<font color ="#0000FF">*&---------------------------------------------------------------------*</font>
+FORM HANDLE_USER_COMMAND   USING P_UCOMM
+                                          P_SENDER     TYPE REF TO CL_GUI_ALV_GRID.
+
+  CASE P_SENDER.
+    WHEN GO_GRID2.
+      IF P_UCOMM = 'TOTAL'. "####
+        PERFORM GET_RIGHT_TOTAL.
+        GV_USERCOMMAND = 'TOTAL'.
+      ELSEIF P_UCOMM = 'SHIPPING'. "###
+        GV_USERCOMMAND = 'SHIPPING'.
+        PERFORM GET_RIGHT_TOTAL.
+        DELETE GT_DISP_RIGHT WHERE STAT &lt;&gt; '###'.
+
+      ELSEIF P_UCOMM = 'DELIVERED'. "####
+        GV_USERCOMMAND = 'DELIVERED'.
+        PERFORM GET_RIGHT_TOTAL.
+        DELETE GT_DISP_RIGHT WHERE STAT = '###'.
+        DELETE GT_DISP_RIGHT WHERE STAT = ICON_INCOMPLETE.
+
+      ELSEIF P_UCOMM = 'UNDELIVERED'. "#####
+        GV_USERCOMMAND = 'UNDELIVERED'.
+        PERFORM GET_RIGHT_TOTAL.
+        DELETE GT_DISP_RIGHT WHERE STAT &lt;&gt; ICON_INCOMPLETE.
+
+      ELSEIF P_UCOMM = 'EMAIL'. "######
+        GV_USERCOMMAND = 'EMAIL'.
+        PERFORM SEND_EMAIL.
+      ENDIF.
+  ENDCASE.
+  PERFORM REFRESH_ALV.
+
+ENDFORM.
+<font color ="#0000FF">*&---------------------------------------------------------------------*</font>
+<font color ="#0000FF">*& Form GET_RIGHT_TOTAL</font>
+<font color ="#0000FF">*&---------------------------------------------------------------------*</font>
+<font color ="#0000FF">*& text</font>
+<font color ="#0000FF">*&---------------------------------------------------------------------*</font>
+<font color ="#0000FF">*& --&gt;  p1        text</font>
+<font color ="#0000FF">*& &lt;--  p2        text</font>
+<font color ="#0000FF">*&---------------------------------------------------------------------*</font>
+FORM GET_RIGHT_TOTAL .
+  SELECT EKPO~MATNR EKPO~EBELN EKPO~EBELP EKPO~MENGE EKPO~WERKS EKPO~LGORT EKPO~MEINS
+      EKPO~ELIKZ EKKO~AEDAT EKKO~ERNAM
+      EKET~CHARG
+    INTO CORRESPONDING FIELDS OF TABLE GT_DISP_RIGHT
+    FROM EKPO
+      INNER JOIN EKKO
+      ON EKPO~EBELN = EKKO~EBELN
+      INNER JOIN EKET "CHARG###
+      ON EKKO~EBELN = EKET~EBELN
+
+    WHERE EKPO~MATNR LIKE 'JG-A03-F%'
+            AND EKPO~MATNR IN S_MATNR
+    AND EKET~CHARG IN S_CHARG
+    AND EKET~CHARG BETWEEN '201001' AND '231231'.
+  .
+
+  SORT GT_DISP_RIGHT DESCENDING BY EBELN.
+
+  SELECT *
+    INTO CORRESPONDING FIELDS OF TABLE GT_EKBE
+    FROM EKBE
+  WHERE MATNR LIKE 'JG-A03-F%'
+  AND MATNR IN S_MATNR
+  AND CHARG IN S_CHARG
+  AND CHARG BETWEEN '201001' AND '231231'.
+
+
+
+  "## ## LT ## ## ### #####
+  "#####
+  LOOP AT GT_DISP_RIGHT INTO GS_DISP_RIGHT.
+    READ TABLE GT_EKBE INTO GS_EKBE WITH KEY EBELN = GS_DISP_RIGHT-EBELN BWART = '351'.
+    IF SY-SUBRC = 0.
+      GS_DISP_RIGHT-STAT = '###'.
+      GS_DISP_RIGHT-MENGE = GS_EKBE-MENGE.
+      GS_DISP_RIGHT-BELNR = GS_EKBE-BELNR.
+      GS_DISP_RIGHT-OAEDAT = GS_EKBE-BUDAT.
+      GS_DISP_RIGHT-OERNAM = GS_EKBE-ERNAM.
+      READ TABLE GT_EKBE INTO GS_EKBE WITH KEY EBELN = GS_DISP_RIGHT-EBELN BWART = '101' .
+      IF SY-SUBRC = 0.
+        IF GS_EKBE-XBLNR = GS_DISP_RIGHT-BELNR.
+          GS_DISP_RIGHT-STAT = ICON_CHECKED.
+        ELSE.
+          GS_DISP_RIGHT-STAT = ICON_CHECKED.  "####
+        ENDIF.
+        GS_DISP_RIGHT-MBLNR = GS_EKBE-BELNR.
+        GS_DISP_RIGHT-MENGE = GS_EKBE-MENGE.
+        GS_DISP_RIGHT-IAEDAT = GS_EKBE-BUDAT.
+        GS_DISP_RIGHT-IERNAM = GS_EKBE-ERNAM.
+        "##### ##
+        CALL FUNCTION 'HR_CZ_COMPUTE_DATE_INTERVAL'
+          CHANGING
+            DATUM1 = GS_DISP_RIGHT-IAEDAT
+            DATUM2 = GS_DISP_RIGHT-OAEDAT
+<font color ="#0000FF">*           YEARS  =</font>
+            DAYS   = GS_DISP_RIGHT-DIFF.
+      ENDIF.
+    ELSE.
+      IF GS_DISP_RIGHT-ELIKZ = 'X'.
+        CLEAR GS_DISP_RIGHT-STAT.
+      ELSE.
+        GS_DISP_RIGHT-STAT = ICON_INCOMPLETE. "######
+      ENDIF.
+    ENDIF.
+    MODIFY GT_DISP_RIGHT FROM GS_DISP_RIGHT.
+    CLEAR : GS_EKBE, GS_DISP_RIGHT.
+
+  ENDLOOP.
+  DELETE GT_DISP_RIGHT WHERE STAT =''.
+  DELETE GT_DISP_RIGHT WHERE AEDAT &lt; SY-DATUM - 20.
+
+  SORT GT_DISP_RIGHT DESCENDING BY BELNR.
+
+ENDFORM.
+<font color ="#0000FF">*&---------------------------------------------------------------------*</font>
+<font color ="#0000FF">*& Form SET_AFTER_BAPI</font>
+<font color ="#0000FF">*&---------------------------------------------------------------------*</font>
+<font color ="#0000FF">*& text</font>
+<font color ="#0000FF">*&---------------------------------------------------------------------*</font>
+<font color ="#0000FF">*& --&gt;  p1        text</font>
+<font color ="#0000FF">*& &lt;--  p2        text</font>
+<font color ="#0000FF">*&---------------------------------------------------------------------*</font>
+FORM SET_AFTER_BAPI .
+
+  "####, ####, ### ##, ## ##, ##### ####
+  READ TABLE GT_DISP_RIGHT INTO GS_DISP_RIGHT INDEX GV_INDEX.
+  GS_DISP_RIGHT-STAT = ICON_CHECKED.
+  GS_DISP_RIGHT-MBLNR = GS_HEADRET-MAT_DOC.
+  GS_DISP_RIGHT-IERNAM = GS_HEADER-PR_UNAME.
+  GS_DISP_RIGHT-IAEDAT = GS_HEADER-PSTNG_DATE.
+
+  "##### ##
+  CALL FUNCTION 'HR_CZ_COMPUTE_DATE_INTERVAL'
+    CHANGING
+      DATUM1 = GS_DISP_RIGHT-IAEDAT
+      DATUM2 = GS_DISP_RIGHT-OAEDAT
+<font color ="#0000FF">*     YEARS  =</font>
+      DAYS   = GS_DISP_RIGHT-DIFF.
+  MODIFY GT_DISP_RIGHT FROM GS_DISP_RIGHT INDEX GV_INDEX..
+ENDFORM.
+<font color ="#0000FF">*&---------------------------------------------------------------------*</font>
+<font color ="#0000FF">*& Form SET_AFTER_CRTE_STO</font>
+<font color ="#0000FF">*&---------------------------------------------------------------------*</font>
+<font color ="#0000FF">*& text</font>
+<font color ="#0000FF">*&---------------------------------------------------------------------*</font>
+<font color ="#0000FF">*& --&gt;  p1        text</font>
+<font color ="#0000FF">*& &lt;--  p2        text</font>
+<font color ="#0000FF">*&---------------------------------------------------------------------*</font>
+FORM SET_AFTER_CRTE_STO .
+  GS_DISP_RIGHT-STAT = ICON_INCOMPLETE.
+  GS_DISP_RIGHT-MATNR = GT_POITEM-MATERIAL.
+  GS_DISP_RIGHT-CHARG = GT_POITEM-BATCH .
+  GS_DISP_RIGHT-AEDAT = GS_POHEADER-CREAT_DATE.
+  GS_DISP_RIGHT-ERNAM = GS_POHEADER-CREATED_BY.
+  GS_DISP_RIGHT-EBELN = GV_PO.
+  GS_DISP_RIGHT-MENGE = GT_POITEM-QUANTITY .
+  GS_DISP_RIGHT-EBELP = GT_POITEM-PO_ITEM.
+  APPEND GS_DISP_RIGHT TO GT_DISP_RIGHT.
+ENDFORM.
+<font color ="#0000FF">*&---------------------------------------------------------------------*</font>
+<font color ="#0000FF">*& Form SEND_EMAIL</font>
+<font color ="#0000FF">*&---------------------------------------------------------------------*</font>
+<font color ="#0000FF">*& text</font>
+<font color ="#0000FF">*&---------------------------------------------------------------------*</font>
+<font color ="#0000FF">*& --&gt;  p1        text</font>
+<font color ="#0000FF">*& &lt;--  p2        text</font>
+<font color ="#0000FF">*&---------------------------------------------------------------------*</font>
+FORM SEND_EMAIL .
+  DATA : LV_ANSWER.
+  DATA : LV_INDEX TYPE LVC_INDEX,
+         LV_ERR.
+  DATA : LT_ROWS TYPE LVC_T_ROW,
+         LS_ROWS TYPE LVC_S_ROW.
+
+  CALL FUNCTION 'POPUP_TO_CONFIRM'
+    EXPORTING
+      TITLEBAR              = 'E-MAIL ###'
+      TEXT_QUESTION         = '5131 ##### ####### ######?'
+      TEXT_BUTTON_1         = '#'
+      ICON_BUTTON_1         = 'ICON_CHECKED'
+      TEXT_BUTTON_2         = '###'
+      ICON_BUTTON_2         = 'ICON_INCOMPLETE'
+      DISPLAY_CANCEL_BUTTON = SPACE
+    IMPORTING
+      ANSWER                = LV_ANSWER.
+
+  IF LV_ANSWER = 2.
+    EXIT.
+  ELSE.
+<font color ="#0000FF">* ALV## ### ## ####</font>
+    CALL METHOD GO_GRID2-&gt;GET_SELECTED_ROWS
+      IMPORTING
+        ET_INDEX_ROWS = LT_ROWS.
+
+
+
+
+
+    "### ## ####.
+    IF LINES( LT_ROWS ) = 1.
+
+      READ TABLE LT_ROWS INTO LS_ROWS INDEX 1.
+      READ TABLE GT_DISP_RIGHT INTO GS_DISP_RIGHT INDEX LS_ROWS-INDEX.
+      PERFORM WRITE_EMAIL.
+
+    ELSE.
+      PERFORM WRITE_EMAIL_WITHOUT_PO.
+    ENDIF.
+
+
+
+
+  ENDIF.
+
+
+
+ENDFORM.
+<font color ="#0000FF">*&---------------------------------------------------------------------*</font>
+<font color ="#0000FF">*& Form WRITE_EMAIL</font>
+<font color ="#0000FF">*&---------------------------------------------------------------------*</font>
+<font color ="#0000FF">*& text</font>
+<font color ="#0000FF">*&---------------------------------------------------------------------*</font>
+<font color ="#0000FF">*& --&gt;  p1        text</font>
+<font color ="#0000FF">*& &lt;--  p2        text</font>
+<font color ="#0000FF">*&---------------------------------------------------------------------*</font>
+FORM WRITE_EMAIL .
+  DATA TEXTLINES    LIKE TLINE OCCURS 0 WITH HEADER LINE.
+  DATA LS_EMAIL LIKE TEXTLINES.
+  DATA LV_EMAIL_TEXT TYPE SO_TEXT255.
+
+  DATA: OBJECT_HD_CHANGE LIKE SOOD1 OCCURS 0 WITH HEADER LINE,
+        OBJCONT          LIKE SOLI  OCCURS 0 WITH HEADER LINE,
+        RECEIVERS        LIKE SOOS1 OCCURS 0 WITH HEADER LINE.
+
+  CLEAR : OBJECT_HD_CHANGE, OBJECT_HD_CHANGE[],
+          OBJCONT, OBJCONT[], RECEIVERS, RECEIVERS[].
+
+  OBJECT_HD_CHANGE-OBJLA  = SY-LANGU.
+  OBJECT_HD_CHANGE-OBJDES = 'STO_PO ### ## ##'.
+  OBJECT_HD_CHANGE-OBJSNS = 'F'.
+  OBJECT_HD_CHANGE-VMTYP  = 'T'.
+  OBJECT_HD_CHANGE-SKIPS  = 'X'.
+  OBJECT_HD_CHANGE-ACNAM  = SY-UNAME.        "###
+  OBJECT_HD_CHANGE-OBJCP  = 'X'.
+  APPEND OBJECT_HD_CHANGE.
+
+  RECEIVERS-RCDAT  = SY-DATUM.
+  RECEIVERS-RCTIM  = SY-UZEIT.
+  RECEIVERS-RECNAM = 'IITPEDU_A22'.          "###
+  RECEIVERS-SNDEX  = 'X'.                    " Express-Mail
+  APPEND RECEIVERS.
+
+  LS_EMAIL-TDLINE = '######? ###### ### ######.'.
+  APPEND LS_EMAIL TO TEXTLINES.
+  LS_EMAIL-TDLINE = 'STO_PO ## ## :' && GS_DISP_RIGHT-EBELN && '# ### ######.'.
+  APPEND LS_EMAIL TO TEXTLINES.
+  "### ## ##
+
+
+  CALL FUNCTION 'TERM_CONTROL_EDIT'
+    EXPORTING
+      TITEL          = '5131##### ### ##### #####'
+      LANGU          = SY-LANGU
+    TABLES
+      TEXTLINES      = TEXTLINES
+    EXCEPTIONS
+      USER_CANCELLED = 1
+      OTHERS         = 2.
+
+  IF SY-SUBRC = 0.
+    LOOP AT TEXTLINES INTO LS_EMAIL.
+      LV_EMAIL_TEXT = LV_EMAIL_TEXT && LS_EMAIL-TDLINE.
+    ENDLOOP.
+    CLEAR : OBJCONT.
+    OBJCONT-LINE = LV_EMAIL_TEXT.
+    APPEND OBJCONT.
+
+    CALL FUNCTION 'SO_OBJECT_SEND'
+      EXPORTING
+        OBJECT_HD_CHANGE           = OBJECT_HD_CHANGE
+        OBJECT_TYPE                = 'RAW'
+<font color ="#0000FF">*       OUTBOX_FLAG                = 'X'</font>
+        OWNER                      = SY-UNAME "###
+      TABLES
+        OBJCONT                    = OBJCONT
+        RECEIVERS                  = RECEIVERS
+      EXCEPTIONS
+        ACTIVE_USER_NOT_EXIST      = 1
+        COMMUNICATION_FAILURE      = 2
+        COMPONENT_NOT_AVAILABLE    = 3
+        FOLDER_NOT_EXIST           = 4
+        FOLDER_NO_AUTHORIZATION    = 5
+        FORWARDER_NOT_EXIST        = 6
+        NOTE_NOT_EXIST             = 7
+        OBJECT_NOT_EXIST           = 8
+        OBJECT_NOT_SENT            = 9
+        OBJECT_NO_AUTHORIZATION    = 10
+        OBJECT_TYPE_NOT_EXIST      = 11
+        OPERATION_NO_AUTHORIZATION = 12
+        OWNER_NOT_EXIST            = 13
+        PARAMETER_ERROR            = 14
+        SUBSTITUTE_NOT_ACTIVE      = 15
+        SUBSTITUTE_NOT_DEFINED     = 16
+        SYSTEM_FAILURE             = 17
+        TOO_MUCH_RECEIVERS         = 18
+        USER_NOT_EXIST             = 19
+        ORIGINATOR_NOT_EXIST       = 20
+        X_ERROR                    = 21
+        OTHERS                     = 22.
+
+    IF SY-SUBRC = 0.
+
+      MESSAGE S021. "### ##### #######.
+    ELSE.
+      MESSAGE S005 DISPLAY LIKE 'E'. "### ######.
+    ENDIF.
+    "#### ##
+    EXIT.
+  ENDIF.
+
+ENDFORM.
+<font color ="#0000FF">*&---------------------------------------------------------------------*</font>
+<font color ="#0000FF">*& Form WRITE_EMAIL_WITHOUT_PO</font>
+<font color ="#0000FF">*&---------------------------------------------------------------------*</font>
+<font color ="#0000FF">*& text</font>
+<font color ="#0000FF">*&---------------------------------------------------------------------*</font>
+<font color ="#0000FF">*& --&gt;  p1        text</font>
+<font color ="#0000FF">*& &lt;--  p2        text</font>
+<font color ="#0000FF">*&---------------------------------------------------------------------*</font>
+FORM WRITE_EMAIL_WITHOUT_PO .
+  DATA TEXTLINES    LIKE TLINE OCCURS 0 WITH HEADER LINE.
+  DATA LS_EMAIL LIKE TEXTLINES.
+  DATA LV_EMAIL_TEXT TYPE SO_TEXT255.
+
+  DATA: OBJECT_HD_CHANGE LIKE SOOD1 OCCURS 0 WITH HEADER LINE,
+        OBJCONT          LIKE SOLI  OCCURS 0 WITH HEADER LINE,
+        RECEIVERS        LIKE SOOS1 OCCURS 0 WITH HEADER LINE.
+
+  CLEAR : OBJECT_HD_CHANGE, OBJECT_HD_CHANGE[],
+          OBJCONT, OBJCONT[], RECEIVERS, RECEIVERS[].
+
+  OBJECT_HD_CHANGE-OBJLA  = SY-LANGU.
+  OBJECT_HD_CHANGE-OBJDES = '##### ## ##'.
+  OBJECT_HD_CHANGE-OBJSNS = 'F'.
+  OBJECT_HD_CHANGE-VMTYP  = 'T'.
+  OBJECT_HD_CHANGE-SKIPS  = 'X'.
+  OBJECT_HD_CHANGE-ACNAM  = SY-UNAME.        "###
+  OBJECT_HD_CHANGE-OBJCP  = 'X'.
+  APPEND OBJECT_HD_CHANGE.
+
+  RECEIVERS-RCDAT  = SY-DATUM.
+  RECEIVERS-RCTIM  = SY-UZEIT.
+  RECEIVERS-RECNAM = 'IITPEDU_A22'.          "###
+  RECEIVERS-SNDEX  = 'X'.                    " Express-Mail
+  APPEND RECEIVERS.
+
+  LS_EMAIL-TDLINE = '######? ###### ### ######.'.
+  APPEND LS_EMAIL TO TEXTLINES.
+  "### ## ##
+  CALL FUNCTION 'TERM_CONTROL_EDIT'
+    EXPORTING
+      TITEL          = '5131##### ### ##### #####'
+      LANGU          = SY-LANGU
+    TABLES
+      TEXTLINES      = TEXTLINES
+    EXCEPTIONS
+      USER_CANCELLED = 1
+      OTHERS         = 2.
+
+  IF SY-SUBRC = 0.
+    LOOP AT TEXTLINES INTO LS_EMAIL.
+      LV_EMAIL_TEXT = LV_EMAIL_TEXT && LS_EMAIL-TDLINE.
+    ENDLOOP.
+    CLEAR : OBJCONT.
+    OBJCONT-LINE = LV_EMAIL_TEXT.
+    APPEND OBJCONT.
+
+    CALL FUNCTION 'SO_OBJECT_SEND'
+      EXPORTING
+        OBJECT_HD_CHANGE           = OBJECT_HD_CHANGE
+        OBJECT_TYPE                = 'RAW'
+<font color ="#0000FF">*       OUTBOX_FLAG                = 'X'</font>
+        OWNER                      = SY-UNAME "###
+      TABLES
+        OBJCONT                    = OBJCONT
+        RECEIVERS                  = RECEIVERS
+      EXCEPTIONS
+        ACTIVE_USER_NOT_EXIST      = 1
+        COMMUNICATION_FAILURE      = 2
+        COMPONENT_NOT_AVAILABLE    = 3
+        FOLDER_NOT_EXIST           = 4
+        FOLDER_NO_AUTHORIZATION    = 5
+        FORWARDER_NOT_EXIST        = 6
+        NOTE_NOT_EXIST             = 7
+        OBJECT_NOT_EXIST           = 8
+        OBJECT_NOT_SENT            = 9
+        OBJECT_NO_AUTHORIZATION    = 10
+        OBJECT_TYPE_NOT_EXIST      = 11
+        OPERATION_NO_AUTHORIZATION = 12
+        OWNER_NOT_EXIST            = 13
+        PARAMETER_ERROR            = 14
+        SUBSTITUTE_NOT_ACTIVE      = 15
+        SUBSTITUTE_NOT_DEFINED     = 16
+        SYSTEM_FAILURE             = 17
+        TOO_MUCH_RECEIVERS         = 18
+        USER_NOT_EXIST             = 19
+        ORIGINATOR_NOT_EXIST       = 20
+        X_ERROR                    = 21
+        OTHERS                     = 22.
+
+    IF SY-SUBRC = 0.
+
+      MESSAGE S021. "### ##### #######.
+    ELSE.
+      MESSAGE S005 DISPLAY LIKE 'E'. "### ######.
+    ENDIF.
+    "#### ##
+    EXIT.
+  ENDIF.
+ENDFORM.
+<font color ="#0000FF">*&---------------------------------------------------------------------*</font>
+<font color ="#0000FF">*& Form GET_DATA_TRANSFER</font>
+<font color ="#0000FF">*&---------------------------------------------------------------------*</font>
+</pre>
+<hr>
+<font size="2" face = "Sans Serif">Extracted by Direct Download Enterprise version 1.3.1 - E.G.Mellodew. 1998-2005 UK. Sap Release 751
+</font>
+</body>
+</html>

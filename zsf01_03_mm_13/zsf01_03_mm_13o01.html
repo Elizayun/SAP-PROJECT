@@ -1,0 +1,206 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<html>
+<head>
+<title>ZSF01_03_MM_13O01</title>
+</head>
+<body bgcolor="#FFFFE0">
+<font size="3" face = "Arial" color="#000000"><b>Code listing for: ZSF01_03_MM_13O01</b></font>
+<br>
+<font size="3" face = "Arial" color="#000000"><b>Description:  Include YR0117_990O01</b></font>
+<hr>
+<pre width="100">
+<font color ="#0000FF">*&---------------------------------------------------------------------*</font>
+<font color ="#0000FF">*& Include          YR0117_990O01</font>
+<font color ="#0000FF">*&---------------------------------------------------------------------*</font>
+<font color ="#0000FF">*&---------------------------------------------------------------------*</font>
+<font color ="#0000FF">*& Module SET_ALV_0100 OUTPUT</font>
+<font color ="#0000FF">*&---------------------------------------------------------------------*</font>
+<font color ="#0000FF">*&</font>
+<font color ="#0000FF">*&---------------------------------------------------------------------*</font>
+MODULE SET_ALV_0100 OUTPUT.
+
+  IF GO_DOCKING IS INITIAL.
+
+<font color ="#0000FF">*INSTANCE</font>
+    PERFORM SET_INSTANCE.
+
+<font color ="#0000FF">*####</font>
+    PERFORM SET_FCAT1.
+    PERFORM SET_FCAT2.
+    PERFORM SET_FCAT3.
+
+<font color ="#0000FF">*LAYOUT</font>
+    PERFORM SET_LAYOUT1.
+    PERFORM SET_LATOUT2.
+    PERFORM SET_LAYOUT3.
+
+<font color ="#0000FF">*EVENT</font>
+    PERFORM SET_EVENT.
+
+<font color ="#0000FF">*SORT</font>
+    PERFORM SET_SORT.
+
+<font color ="#0000FF">*ALV</font>
+    PERFORM DISPLAY_ALV.
+
+  ELSE.
+<font color ="#0000FF">*REFRESH</font>
+    PERFORM REFRESH_ALV.
+
+  ENDIF.
+
+ENDMODULE.
+<font color ="#0000FF">*&---------------------------------------------------------------------*</font>
+<font color ="#0000FF">*& Module STATUS_0100 OUTPUT</font>
+<font color ="#0000FF">*&---------------------------------------------------------------------*</font>
+<font color ="#0000FF">*&</font>
+<font color ="#0000FF">*&---------------------------------------------------------------------*</font>
+MODULE STATUS_0100 OUTPUT.
+  SET PF-STATUS '0100'.
+  SET TITLEBAR '0100'.
+ENDMODULE.
+<font color ="#0000FF">*&---------------------------------------------------------------------*</font>
+<font color ="#0000FF">*& Module STATUS_0200 OUTPUT</font>
+<font color ="#0000FF">*&---------------------------------------------------------------------*</font>
+<font color ="#0000FF">*&</font>
+<font color ="#0000FF">*&---------------------------------------------------------------------*</font>
+MODULE STATUS_0200 OUTPUT.
+ SET PF-STATUS '0200'.
+ SET TITLEBAR '0200'.
+ENDMODULE.
+<font color ="#0000FF">*&---------------------------------------------------------------------*</font>
+<font color ="#0000FF">*& Module SET_SCREEN_0200 OUTPUT</font>
+<font color ="#0000FF">*&---------------------------------------------------------------------*</font>
+<font color ="#0000FF">*&</font>
+<font color ="#0000FF">*&---------------------------------------------------------------------*</font>
+MODULE SET_SCREEN_0200 OUTPUT.
+
+  LOOP AT SCREEN.
+
+    CASE GS_DISP_0200-OKCODE.
+
+      WHEN 'MOVE'.  " ### #, ### ### ## ## #### #!
+        IF SCREEN-NAME = 'GS_DISP_0200-MATNR' OR
+           SCREEN-NAME = 'GS_DISP_0200-MEINS' OR
+           SCREEN-NAME = 'GS_DISP_0200-WERKS'.
+<font color ="#0000FF">*           SCREEN-NAME = 'GS_DISP_0200-LGORT'.</font>
+<font color ="#0000FF">*           SCREEN-NAME = 'GS_DISP_0200-CHARG'.</font>
+
+           SCREEN-INPUT = 0.
+
+        ENDIF.
+
+        MODIFY SCREEN.
+
+    ENDCASE.
+
+  ENDLOOP.
+
+    LOOP AT SCREEN.
+
+    CASE GS_DISP_0200-OKCODE.
+
+      WHEN 'SAVE'.
+
+                IF SCREEN-NAME = 'GS_DISP_0200-CLABS NE 0'.
+
+           SCREEN-INPUT = 0.
+
+        ENDIF.
+
+        MODIFY SCREEN.
+
+    ENDCASE.
+
+  ENDLOOP.
+
+ENDMODULE.
+<font color ="#0000FF">*&---------------------------------------------------------------------*</font>
+<font color ="#0000FF">*& Module STATUS_0300 OUTPUT</font>
+<font color ="#0000FF">*&---------------------------------------------------------------------*</font>
+<font color ="#0000FF">*&</font>
+<font color ="#0000FF">*&---------------------------------------------------------------------*</font>
+MODULE STATUS_0300 OUTPUT.
+ SET PF-STATUS '0300'.
+ SET TITLEBAR '0300'.
+ENDMODULE.
+<font color ="#0000FF">*&---------------------------------------------------------------------*</font>
+<font color ="#0000FF">*& Module SET_SCREEN_0300 OUTPUT</font>
+<font color ="#0000FF">*&---------------------------------------------------------------------*</font>
+<font color ="#0000FF">*&</font>
+<font color ="#0000FF">*&---------------------------------------------------------------------*</font>
+MODULE SET_SCREEN_0300 OUTPUT.
+
+  LOOP AT SCREEN.
+
+    CASE GS_DISP_0300-OKCODE.
+
+      WHEN 'MV_MICHAK'.
+        IF SCREEN-NAME = 'GS_DISP_0300-MEINS' OR
+           SCREEN-NAME = 'GS_DISP_0300-MATNR' OR
+           SCREEN-NAME = 'GS_DISP_0300-MENGE' OR
+           SCREEN-NAME = 'GS_DISP_0300-WERKS' OR
+           SCREEN-NAME = 'GS_DISP_0300-LGORT' OR
+           SCREEN-NAME = 'GS_DISP_0300-CHARG' OR
+           SCREEN-NAME = 'GS_DISP_0300-EBELN' OR
+
+           SCREEN-INPUT = 0.
+
+        ENDIF.
+
+
+
+        MODIFY SCREEN.
+
+    ENDCASE.
+
+  ENDLOOP.
+
+
+
+
+ENDMODULE.
+<font color ="#0000FF">*&---------------------------------------------------------------------*</font>
+<font color ="#0000FF">*& Module STATUS_0400 OUTPUT</font>
+<font color ="#0000FF">*&---------------------------------------------------------------------*</font>
+<font color ="#0000FF">*&</font>
+<font color ="#0000FF">*&---------------------------------------------------------------------*</font>
+MODULE STATUS_0400 OUTPUT.
+ SET PF-STATUS '0400'.
+ SET TITLEBAR '0400'.
+ENDMODULE.
+<font color ="#0000FF">*&---------------------------------------------------------------------*</font>
+<font color ="#0000FF">*& Module SET_SCREEN_0400 OUTPUT</font>
+<font color ="#0000FF">*&---------------------------------------------------------------------*</font>
+<font color ="#0000FF">*&</font>
+<font color ="#0000FF">*&---------------------------------------------------------------------*</font>
+MODULE SET_SCREEN_0400 OUTPUT.
+
+  LOOP AT SCREEN.
+
+    CASE GS_DISP_0400-OKCODE.
+
+      WHEN 'CRTE_STO'.
+        IF SCREEN-NAME = 'GS_DISP_0400-MEINS' OR
+           SCREEN-NAME = 'GS_DISP_0400-MATNR' OR
+           SCREEN-NAME = 'GS_DISP_0400-WERKS' OR
+           SCREEN-NAME = 'GS_DISP_0400-LGORT' OR
+           SCREEN-NAME = 'GS_DISP_0400-CHARG'.
+
+           SCREEN-INPUT = '0'.
+
+       MODIFY SCREEN.
+
+       ENDIF.
+    ENDCASE.
+  ENDLOOP.
+
+
+
+ENDMODULE.
+</pre>
+<hr>
+<font size="2" face = "Sans Serif">Extracted by Direct Download Enterprise version 1.3.1 - E.G.Mellodew. 1998-2005 UK. Sap Release 751
+</font>
+</body>
+</html>

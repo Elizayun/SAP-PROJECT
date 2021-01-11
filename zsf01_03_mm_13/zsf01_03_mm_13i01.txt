@@ -1,0 +1,219 @@
+*&---------------------------------------------------------------------*
+*& Include          YR0117_990I01
+*&---------------------------------------------------------------------*
+*&---------------------------------------------------------------------*
+*&      Module  EXIT_0100  INPUT
+*&---------------------------------------------------------------------*
+*       text
+*----------------------------------------------------------------------*
+MODULE EXIT_0100 INPUT.
+
+  LEAVE TO SCREEN 0.
+
+ENDMODULE.
+*&---------------------------------------------------------------------*
+*&      Module  USER_COMMAND_0100  INPUT
+*&---------------------------------------------------------------------*
+*       text
+*----------------------------------------------------------------------*
+MODULE USER_COMMAND_0100 INPUT.
+
+
+* 400# ## (STO_PO ##)
+  CASE GV_OKCODE.
+*    WHEN 'CRTE_STO'.
+*
+*      PERFORM CRTE_STO.
+*IF GV_BAPI = 'X'.
+*  "####
+*PERFORM SET_AFTER_CRTE_STO.
+*  PERFORM REFRESH_ALV.
+*  ENDIF.
+
+* 300# ## (#### -> 5132 ##)
+
+    WHEN 'MV_MICHAK'.
+
+      PERFORM BUTTON_MICHAK.
+
+
+      IF GV_BAPI = 'X'.
+        "#### ####
+        PERFORM GET_DATA.
+        PERFORM SET_AFTER_BAPI.
+
+        PERFORM REFRESH_ALV.
+        MESSAGE S020. "##### #### #####.
+      ENDIF.
+
+
+  ENDCASE.
+
+ENDMODULE.
+*&---------------------------------------------------------------------*
+*&      Module  EXIT_0200  INPUT
+*&---------------------------------------------------------------------*
+*       text
+*----------------------------------------------------------------------*
+MODULE EXIT_0200 INPUT.
+
+  LEAVE TO SCREEN 0.
+
+ENDMODULE.
+*&---------------------------------------------------------------------*
+*&      Module  USER_COMMAND_0200  INPUT
+*&---------------------------------------------------------------------*
+*       text
+*&      Module  EXIT_0300  INPUT
+*&---------------------------------------------------------------------*
+*       text
+*----------------------------------------------------------------------*
+MODULE EXIT_0300 INPUT.
+  LEAVE TO SCREEN 0.
+ENDMODULE.
+*&---------------------------------------------------------------------*
+*&      Module  USER_COMMAND_0300  INPUT
+*&---------------------------------------------------------------------*
+*       text
+*----------------------------------------------------------------------*
+MODULE USER_COMMAND_0300 INPUT.
+IF GV_OKCODE ='SAVE'.
+  DATA : LV_ANSWER.
+
+  IF GS_DISP_0300-MENGE EQ 0.
+    MESSAGE S015 DISPLAY LIKE 'E'.    "### #####
+    EXIT.
+  ENDIF.
+
+  " -> 300# ## ### ## ##
+  CALL FUNCTION 'POPUP_TO_CONFIRM'
+    EXPORTING
+      TITLEBAR              = TEXT-005 " '#### >> 5132'
+      TEXT_QUESTION         = TEXT-006 " '5132 #### ##### ## ########?'
+      TEXT_BUTTON_1         = TEXT-003 " 'YES'
+      TEXT_BUTTON_2         = TEXT-004 " 'NO'
+      DISPLAY_CANCEL_BUTTON = SPACE    " ''
+    IMPORTING
+      ANSWER                = LV_ANSWER.
+
+  IF LV_ANSWER = '2'.
+
+  ELSE.
+    PERFORM BAPI_GR_5132.
+  ENDIF.
+
+
+  LEAVE TO SCREEN 0.
+ENDIF.
+
+
+
+
+
+
+
+
+ENDMODULE.
+*&---------------------------------------------------------------------*
+*&      Module  F4_EBELN  INPUT
+*&---------------------------------------------------------------------*
+*       text
+*----------------------------------------------------------------------*
+*MODULE F4_EBELN INPUT.
+*
+*DATA : BEGIN OF LS_EBELN,
+*         EBELN TYPE EKPO-EBELN,
+*         MENGE TYPE EKPO-MENGE,
+*       END OF LS_EBELN.
+*
+*  DATA : LT_EBELN LIKE TABLE OF LS_EBELN,
+*         LT_RETURN TYPE TABLE OF DDSHRETVAL.
+*
+*  LS_EBELN-EBELN = 'A'.
+*  LS_EBELN-MENGE = '##'.
+*  APPEND LS_EBELN TO LT_EBELN.
+**
+**  LS_MATNR-MATNR = 'MAT03'.
+**  LS_MATNR-MAKTX = '##03'.
+**  APPEND LS_MATNR TO LT_MATNR.
+*
+*  CALL FUNCTION 'F4IF_INT_TABLE_VALUE_REQUEST'
+*    EXPORTING
+**     DDIC_STRUCTURE         = ' '
+*      RETFIELD               = 'EBELN'
+**     PVALKEY                = ' '
+*     DYNPPROG               = SY-REPID
+*     DYNPNR                 = SY-DYNNR
+*     DYNPROFIELD            = 'GV_EBELN'
+**     STEPL                  = 0
+*     WINDOW_TITLE           = '5131## ##### ##'
+**     VALUE                  = ' '
+*     VALUE_ORG              = 'S'
+**     MULTIPLE_CHOICE        = ' '
+**     DISPLAY                = ' '
+**     CALLBACK_PROGRAM       = ' '
+**     CALLBACK_FORM          = ' '
+**     CALLBACK_METHOD        =
+**     MARK_TAB               =
+**   IMPORTING
+**     USER_RESET             =
+*    TABLES
+*      VALUE_TAB              = LT_EBELN
+**     FIELD_TAB              =
+*      RETURN_TAB             = LT_RETURN
+**     DYNPFLD_MAPPING        =
+**   EXCEPTIONS
+**     PARAMETER_ERROR        = 1
+**     NO_VALUES_FOUND        = 2
+**     OTHERS                 = 3
+*            .
+*  IF SY-SUBRC <> 0.
+** Implement suitable error handling here
+*  ENDIF.
+*
+*ENDMODULE.
+*&---------------------------------------------------------------------*
+*&      Module  USER_COMMAND_0400  INPUT
+*&---------------------------------------------------------------------*
+*       text
+*----------------------------------------------------------------------*
+MODULE USER_COMMAND_0400 INPUT.
+
+  " -> 400# ## ### ## ##
+  CALL FUNCTION 'POPUP_TO_CONFIRM'
+    EXPORTING
+      TITLEBAR              = TEXT-007 " 'STO_PO ##'
+      TEXT_QUESTION         = TEXT-008 " 'STO_PO# ########?'
+      TEXT_BUTTON_1         = TEXT-003 " 'YES'
+      TEXT_BUTTON_2         = TEXT-004 " 'NO'
+      DISPLAY_CANCEL_BUTTON = SPACE    " ''
+    IMPORTING
+      ANSWER                = LV_ANSWER.
+
+  IF LV_ANSWER = '1'.
+
+    PERFORM BAPI_STO_PO_CREATE.
+
+
+    LEAVE TO SCREEN 0.
+  ELSE.
+    EXIT.
+  ENDIF.
+
+
+
+
+ENDMODULE.
+*&---------------------------------------------------------------------*
+*&      Module  EXIT_0400  INPUT
+*&---------------------------------------------------------------------*
+*       text
+*----------------------------------------------------------------------*
+MODULE EXIT_0400 INPUT.
+
+  LEAVE TO SCREEN 0.
+
+ENDMODULE.
+
+----------------------------------------------------------------------------------
+Extracted by Direct Download Enterprise version 1.3.1 - E.G.Mellodew. 1998-2005 UK. Sap Release 751
