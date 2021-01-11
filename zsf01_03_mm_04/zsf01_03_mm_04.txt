@@ -1,0 +1,46 @@
+*&---------------------------------------------------------------------*
+*& Report YR0127_0360
+*&---------------------------------------------------------------------*
+*&
+*&---------------------------------------------------------------------*
+REPORT ZSF01_03_MM_04 MESSAGE-ID ZMM5131.
+
+INCLUDE ZSF01_03_MM_04CLS.
+INCLUDE ZSF01_03_MM_04TOP.
+INCLUDE ZSF01_03_MM_04SEL.
+INCLUDE ZSF01_03_MM_04F01.
+INCLUDE ZSF01_03_MM_04I01.
+INCLUDE ZSF01_03_MM_04O01.
+
+
+
+
+INITIALIZATION.
+  PERFORM SEARCH_PERIOD.
+
+START-OF-SELECTION.
+
+  PERFORM SCRAP_DATA .
+
+
+  CALL SCREEN '0100'.
+
+*GUI Texts
+*----------------------------------------------------------
+* 0100 --> #### ## ##
+
+*Text elements
+*----------------------------------------------------------
+* 001 ## ## ##
+* 002 ## ##
+
+
+*Selection texts
+*----------------------------------------------------------
+* S_BUKRS         ####
+* S_DATE         ##
+* S_EBELN
+* S_MATNR         ####
+
+----------------------------------------------------------------------------------
+Extracted by Direct Download Enterprise version 1.3.1 - E.G.Mellodew. 1998-2005 UK. Sap Release 751
