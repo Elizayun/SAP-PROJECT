@@ -1,0 +1,34 @@
+*&---------------------------------------------------------------------*
+*& Include          YR0127_0360SEL
+*&---------------------------------------------------------------------*
+
+TABLES : EKKO, EKPO, MATDOC.
+
+SELECTION-SCREEN BEGIN OF BLOCK BL2 WITH FRAME TITLE TEXT-T02.
+SELECTION-SCREEN BEGIN OF LINE.
+
+
+
+.
+SELECTION-SCREEN POSITION 11.
+PARAMETERS P_RAD1 RADIOBUTTON GROUP GR1 DEFAULT 'X' USER-COMMAND F_GR1. "###### ##### ## ## ##.
+SELECTION-SCREEN COMMENT (15) TEXT-R01.
+
+
+
+SELECTION-SCREEN POSITION 30.
+PARAMETERS P_RAD2 RADIOBUTTON GROUP GR1.
+SELECTION-SCREEN COMMENT (15) TEXT-R02.
+
+SELECTION-SCREEN END OF LINE.
+SELECTION-SCREEN END OF BLOCK BL2.
+SELECTION-SCREEN SKIP 2.
+SELECTION-SCREEN BEGIN OF BLOCK BL1 WITH FRAME TITLE TEXT-T01.
+
+SELECT-OPTIONS : S_MATNR FOR EKPO-MATNR, "####
+                 S_MBLNR FOR MATDOC-MBLNR,
+                 S_DATE FOR SYST-DATUM. "##\
+SELECTION-SCREEN END OF BLOCK BL1.
+
+----------------------------------------------------------------------------------
+Extracted by Direct Download Enterprise version 1.3.1 - E.G.Mellodew. 1998-2005 UK. Sap Release 751

@@ -1,0 +1,60 @@
+*&---------------------------------------------------------------------*
+*& Include          YR0127_0360TOP
+*&---------------------------------------------------------------------*
+
+
+
+"## TABLE -> MATDOC## ###
+DATA : BEGIN OF GS_SCRAP,
+         CHECK TYPE CHAR01,
+         MBLNR TYPE MSEG-MBLNR, "DO##
+         BUDAT TYPE MKPF-CPUDT,     "###.
+         CPUTM TYPE MKPF-CPUTM,     "##
+         USNAM TYPE MATDOC-USNAM, "###
+         WERKS TYPE EKPO-WERKS,     "Plant
+         LGORT TYPE EKPO-LGORT,     "Storage location
+         MATNR TYPE MARA-MATNR,
+         MAKTX TYPE MAKT-MAKTX,
+         MENGE TYPE MSEG-MENGE,         "##
+         MEINS TYPE MSEG-MEINS,
+         BWART TYPE MSEG-BWART, "####
+         MVTKO TYPE CHAR15, "######
+         CHARG_SID TYPE MATDOC-CHARG_SID, "####
+         COLOR TYPE CHAR04,  "##
+         STYLE TYPE LVC_T_STYL,  "# EDIT
+         SMBLN TYPE MATDOC-SMBLN, "#### ##
+         SJAHR TYPE MATDOC-SJAHR, "##
+         SMBLP TYPE MATDOC-SMBLP, "ITEM ##
+       END OF GS_SCRAP,
+       GT_SCRAP LIKE TABLE OF GS_SCRAP.
+
+  DATA : GS_ROWS_HEADER TYPE LVC_S_ROW,
+        GT_ROWS_HEADER TYPE LVC_T_ROW.
+  DATA : GV_OKCODE TYPE SY-UCOMM.
+******************************************************
+*-- BAPI ## ## --*
+*******************************************************
+DATA GV_MBLNR TYPE MSEG-MBLNR.
+DATA: RT_BAPIRET   TYPE STANDARD TABLE OF BAPIRET2  WITH HEADER LINE
+.
+DATA GV_EXIT TYPE C.
+
+
+*******************************************************
+*-- ALV ## ## --*
+*******************************************************
+DATA : GO_DOCKING TYPE REF TO CL_GUI_DOCKING_CONTAINER,
+       GO_CONT    TYPE REF TO CL_GUI_CONTAINER,
+
+       GO_GRID    TYPE REF TO CL_GUI_ALV_GRID.
+
+DATA : GT_FCAT   TYPE LVC_T_FCAT,    "##
+       GS_FCAT   TYPE LVC_S_FCAT,    "#### ##
+       GS_LAYOUT TYPE LVC_S_LAYO.    "##
+
+DATA : GO_EVENT_RECEIVER TYPE REF TO LCL_EVENT_RECEIVER.
+DATA : GT_SORT TYPE LVC_T_SORT,
+       GS_SORT  LIKE LINE OF GT_SORT.
+
+----------------------------------------------------------------------------------
+Extracted by Direct Download Enterprise version 1.3.1 - E.G.Mellodew. 1998-2005 UK. Sap Release 751

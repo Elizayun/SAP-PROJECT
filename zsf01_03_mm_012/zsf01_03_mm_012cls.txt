@@ -1,0 +1,50 @@
+*&---------------------------------------------------------------------*
+*& Include          YR0127_0360CLS
+*&---------------------------------------------------------------------*
+
+CLASS LCL_EVENT_RECEIVER DEFINITION.
+  PUBLIC SECTION.
+
+    METHODS HANDLE_DOUBLE_CLICK
+                  FOR EVENT DOUBLE_CLICK OF CL_GUI_ALV_GRID
+      IMPORTING   E_ROW
+                  E_COLUMN
+                  ES_ROW_NO.
+
+    METHODS HANDLE_HOTSPOT_CLICK
+                  FOR EVENT HOTSPOT_CLICK OF CL_GUI_ALV_GRID
+      IMPORTING   E_ROW_ID
+                  E_COLUMN_ID
+                  SENDER.
+
+    METHODS HANDLE_DATA_CHANGED
+                  FOR EVENT DATA_CHANGED OF CL_GUI_ALV_GRID
+      IMPORTING ER_DATA_CHANGED.
+
+ENDCLASS.
+
+
+
+CLASS LCL_EVENT_RECEIVER IMPLEMENTATION.
+
+  METHOD HANDLE_DOUBLE_CLICK.
+    PERFORM HANDLE_DOUBLE_CLICK USING E_ROW
+                                      E_COLUMN.
+  ENDMETHOD.
+
+
+  METHOD HANDLE_HOTSPOT_CLICK.
+  PERFORM HANDLE_HOTSPOT_CLICK USING E_ROW_ID
+                                     E_COLUMN_ID
+                                     SENDER.
+  ENDMETHOD.
+
+    METHOD HANDLE_DATA_CHANGED.
+
+    PERFORM HANDLE_DATA_CHNAGED USING ER_DATA_CHANGED.
+
+  ENDMETHOD.
+ENDCLASS.
+
+----------------------------------------------------------------------------------
+Extracted by Direct Download Enterprise version 1.3.1 - E.G.Mellodew. 1998-2005 UK. Sap Release 751

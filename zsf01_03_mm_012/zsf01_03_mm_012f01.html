@@ -1,0 +1,700 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<html>
+<head>
+<title>ZSF01_03_MM_012F01</title>
+</head>
+<body bgcolor="#FFFFE0">
+<font size="3" face = "Arial" color="#000000"><b>Code listing for: ZSF01_03_MM_012F01</b></font>
+<br>
+<font size="3" face = "Arial" color="#000000"><b>Description:  Include YR0127_0360F01</b></font>
+<hr>
+<pre width="100">
+<font color ="#0000FF">*&---------------------------------------------------------------------*</font>
+<font color ="#0000FF">*& Include          YR0127_0360F01</font>
+<font color ="#0000FF">*&---------------------------------------------------------------------*</font>
+<font color ="#0000FF">*&---------------------------------------------------------------------*</font>
+<font color ="#0000FF">*& Form DISPLAY_ALV</font>
+<font color ="#0000FF">*&---------------------------------------------------------------------*</font>
+<font color ="#0000FF">*& text</font>
+<font color ="#0000FF">*&---------------------------------------------------------------------*</font>
+<font color ="#0000FF">*& --&gt;  p1        text</font>
+<font color ="#0000FF">*& &lt;--  p2        text</font>
+<font color ="#0000FF">*&---------------------------------------------------------------------*</font>
+FORM DISPLAY_ALV .
+  CALL METHOD GO_GRID-&gt;SET_TABLE_FOR_FIRST_DISPLAY
+    EXPORTING
+      IS_LAYOUT       = GS_LAYOUT
+    CHANGING
+      IT_OUTTAB       = GT_SCRAP
+      IT_SORT         = GT_SORT
+      IT_FIELDCATALOG = GT_FCAT.
+
+ENDFORM.
+<font color ="#0000FF">*&---------------------------------------------------------------------*</font>
+<font color ="#0000FF">*& Form SET_FIELDCAT</font>
+<font color ="#0000FF">*&---------------------------------------------------------------------*</font>
+<font color ="#0000FF">*& text</font>
+<font color ="#0000FF">*&---------------------------------------------------------------------*</font>
+<font color ="#0000FF">*& --&gt;  p1        text</font>
+<font color ="#0000FF">*& &lt;--  p2        text</font>
+<font color ="#0000FF">*&---------------------------------------------------------------------*</font>
+FORM SET_FIELDCAT .
+
+  CLEAR : GT_FCAT.
+
+  PERFORM SET_FCAT2 CHANGING GT_FCAT. "## ## GT_SCRAP
+
+
+
+ENDFORM.
+<font color ="#0000FF">*&---------------------------------------------------------------------*</font>
+<font color ="#0000FF">*& Form SET_LAYOUT</font>
+<font color ="#0000FF">*&---------------------------------------------------------------------*</font>
+<font color ="#0000FF">*& text</font>
+<font color ="#0000FF">*&---------------------------------------------------------------------*</font>
+<font color ="#0000FF">*& --&gt;  p1        text</font>
+<font color ="#0000FF">*& &lt;--  p2        text</font>
+<font color ="#0000FF">*&---------------------------------------------------------------------*</font>
+FORM SET_LAYOUT .
+
+
+
+  CLEAR GS_LAYOUT.
+  GS_LAYOUT-ZEBRA = 'X'.
+  GS_LAYOUT-CWIDTH_OPT = 'A'.
+  GS_LAYOUT-SEL_MODE = 'D'.
+  GS_LAYOUT-INFO_FNAME = 'COLOR'.
+<font color ="#0000FF">*  GS_LAYOUT2-GRID_TITLE = TEXT-002.   "## ##</font>
+  GS_LAYOUT-STYLEFNAME  ='STYLE'.
+
+ENDFORM.
+<font color ="#0000FF">*&---------------------------------------------------------------------*</font>
+<font color ="#0000FF">*& Form REFRESH_ALV</font>
+<font color ="#0000FF">*&---------------------------------------------------------------------*</font>
+<font color ="#0000FF">*& text</font>
+<font color ="#0000FF">*&---------------------------------------------------------------------*</font>
+<font color ="#0000FF">*& --&gt;  p1        text</font>
+<font color ="#0000FF">*& &lt;--  p2        text</font>
+<font color ="#0000FF">*&---------------------------------------------------------------------*</font>
+FORM REFRESH_ALV .
+
+
+  .
+
+  CALL METHOD GO_GRID-&gt;REFRESH_TABLE_DISPLAY.
+
+
+ENDFORM.
+<font color ="#0000FF">*&---------------------------------------------------------------------*</font>
+<font color ="#0000FF">*& Form HANDLE_DOUBLE_CLICK</font>
+<font color ="#0000FF">*&---------------------------------------------------------------------*</font>
+<font color ="#0000FF">*& text</font>
+<font color ="#0000FF">*&---------------------------------------------------------------------*</font>
+<font color ="#0000FF">*      --&gt;P_E_ROW  text</font>
+<font color ="#0000FF">*      --&gt;P_E_COLUMN  text</font>
+<font color ="#0000FF">*&---------------------------------------------------------------------*</font>
+FORM HANDLE_DOUBLE_CLICK  USING    PS_ROW TYPE LVC_S_ROW
+                                   PS_COL TYPE LVC_S_COL.
+
+<font color ="#0000FF">*  CLEAR GT_DISP_ITEM.</font>
+<font color ="#0000FF">*</font>
+<font color ="#0000FF">*  READ TABLE GT_DISP_HEADER INTO GS_DISP_HEADER</font>
+<font color ="#0000FF">*                            INDEX PS_ROW-INDEX.</font>
+<font color ="#0000FF">*  IF SY-SUBRC = 0.</font>
+<font color ="#0000FF">*</font>
+<font color ="#0000FF">*    SELECT EBELN EBELP TXZ01 MATNR MENGE MEINS</font>
+<font color ="#0000FF">*      INTO CORRESPONDING FIELDS OF TABLE GT_DISP_ITEM</font>
+<font color ="#0000FF">*      FROM EKPO</font>
+<font color ="#0000FF">*     WHERE EBELN = GS_DISP_HEADER-EBELN.</font>
+<font color ="#0000FF">*</font>
+<font color ="#0000FF">*    SORT GT_DISP_ITEM BY EBELN EBELP.</font>
+<font color ="#0000FF">*</font>
+<font color ="#0000FF">*  ENDIF.</font>
+<font color ="#0000FF">*</font>
+<font color ="#0000FF">*  PERFORM REFRESH_GRID2.</font>
+
+<font color ="#0000FF">*PFSTATUS TOOLBAR# ## ## ###, ########</font>
+<font color ="#0000FF">*##, EVENT# ## ## ### PAI PBO######,</font>
+<font color ="#0000FF">*### #### ######.</font>
+
+
+ENDFORM.
+<font color ="#0000FF">*&---------------------------------------------------------------------*</font>
+<font color ="#0000FF">*& Form SET_EVENT</font>
+<font color ="#0000FF">*&---------------------------------------------------------------------*</font>
+<font color ="#0000FF">*& text</font>
+<font color ="#0000FF">*&---------------------------------------------------------------------*</font>
+<font color ="#0000FF">*& --&gt;  p1        text</font>
+<font color ="#0000FF">*& &lt;--  p2        text</font>
+<font color ="#0000FF">*&---------------------------------------------------------------------*</font>
+FORM SET_EVENT .
+
+  CREATE OBJECT GO_EVENT_RECEIVER.
+
+
+  SET HANDLER GO_EVENT_RECEIVER-&gt;HANDLE_DOUBLE_CLICK
+          FOR GO_GRID.
+
+  SET HANDLER GO_EVENT_RECEIVER-&gt;HANDLE_HOTSPOT_CLICK
+         FOR GO_GRID.
+
+  SET HANDLER GO_EVENT_RECEIVER-&gt;HANDLE_DATA_CHANGED
+        FOR GO_GRID.
+  CALL METHOD GO_GRID-&gt;REGISTER_EDIT_EVENT
+    EXPORTING
+      I_EVENT_ID = CL_GUI_ALV_GRID=&gt;MC_EVT_MODIFIED.
+
+ENDFORM.
+<font color ="#0000FF">*&---------------------------------------------------------------------*</font>
+<font color ="#0000FF">*& Form GET_HEADER_DATA</font>
+<font color ="#0000FF">*&---------------------------------------------------------------------*</font>
+<font color ="#0000FF">*& text</font>
+<font color ="#0000FF">*&---------------------------------------------------------------------*</font>
+<font color ="#0000FF">*& --&gt;  p1        text</font>
+<font color ="#0000FF">*& &lt;--  p2        text</font>
+<font color ="#0000FF">*&---------------------------------------------------------------------*</font>
+FORM GET_HEADER_DATA .
+
+
+
+
+
+
+ENDFORM.
+<font color ="#0000FF">*&---------------------------------------------------------------------*</font>
+<font color ="#0000FF">*& Form HANDLE_HOTSPOT_CLICK</font>
+<font color ="#0000FF">*&---------------------------------------------------------------------*</font>
+<font color ="#0000FF">*& text</font>
+<font color ="#0000FF">*&---------------------------------------------------------------------*</font>
+<font color ="#0000FF">*      --&gt;P_E_ROW_ID  text</font>
+<font color ="#0000FF">*      --&gt;P_E_COLUMN_ID  text</font>
+<font color ="#0000FF">*&---------------------------------------------------------------------*</font>
+FORM HANDLE_HOTSPOT_CLICK  USING    PS_ROW TYPE LVC_S_ROW
+                                    PS_COLUMN_ID TYPE LVC_S_COL
+                                    P_SENDER.
+
+<font color ="#0000FF">*  CASE P_SENDER.</font>
+<font color ="#0000FF">*    WHEN GO_GRID.</font>
+<font color ="#0000FF">*      "## ##### ### #### ## (######:EBELN)</font>
+<font color ="#0000FF">*      READ TABLE GT_DISP_HEADER INTO GS_DISP_HEADER</font>
+<font color ="#0000FF">*                                INDEX PS_ROW-INDEX.</font>
+<font color ="#0000FF">*      IF SY-SUBRC = 0.</font>
+<font color ="#0000FF">*</font>
+<font color ="#0000FF">*        SET PARAMETER ID 'BES' FIELD GS_DISP_HEADER-EBELN.</font>
+<font color ="#0000FF">*        CALL TRANSACTION 'ME23N'.</font>
+<font color ="#0000FF">*</font>
+<font color ="#0000FF">*      ENDIF.</font>
+<font color ="#0000FF">*</font>
+<font color ="#0000FF">*</font>
+<font color ="#0000FF">*  ENDCASE.</font>
+
+ENDFORM.
+<font color ="#0000FF">*&---------------------------------------------------------------------*</font>
+<font color ="#0000FF">*& Form REFRESH_GRID2</font>
+<font color ="#0000FF">*&---------------------------------------------------------------------*</font>
+<font color ="#0000FF">*& text</font>
+<font color ="#0000FF">*&---------------------------------------------------------------------*</font>
+<font color ="#0000FF">*& --&gt;  p1        text</font>
+<font color ="#0000FF">*& &lt;--  p2        text</font>
+<font color ="#0000FF">*&---------------------------------------------------------------------*</font>
+FORM REFRESH_GRID .
+
+  CALL METHOD GO_GRID-&gt;REFRESH_TABLE_DISPLAY.
+
+ENDFORM.
+<font color ="#0000FF">*&---------------------------------------------------------------------*</font>
+<font color ="#0000FF">*& Form CREATE_GR</font>
+<font color ="#0000FF">*&---------------------------------------------------------------------*</font>
+<font color ="#0000FF">*& text</font>
+<font color ="#0000FF">*&---------------------------------------------------------------------*</font>
+<font color ="#0000FF">*& --&gt;  p1        text</font>
+<font color ="#0000FF">*& &lt;--  p2        text</font>
+<font color ="#0000FF">*&---------------------------------------------------------------------*</font>
+
+<font color ="#0000FF">*&---------------------------------------------------------------------*</font>
+<font color ="#0000FF">*& Form GET_PERIOD</font>
+<font color ="#0000FF">*&---------------------------------------------------------------------*</font>
+<font color ="#0000FF">*& text</font>
+<font color ="#0000FF">*&---------------------------------------------------------------------*</font>
+<font color ="#0000FF">*& --&gt;  p1        text</font>
+<font color ="#0000FF">*& &lt;--  p2        text</font>
+<font color ="#0000FF">*&---------------------------------------------------------------------*</font>
+
+<font color ="#0000FF">*&---------------------------------------------------------------------*</font>
+<font color ="#0000FF">*& Form GET_BATCH</font>
+<font color ="#0000FF">*&---------------------------------------------------------------------*</font>
+<font color ="#0000FF">*& text</font>
+<font color ="#0000FF">*&---------------------------------------------------------------------*</font>
+<font color ="#0000FF">*& --&gt;  p1        text</font>
+<font color ="#0000FF">*& &lt;--  p2        text</font>
+<font color ="#0000FF">*&---------------------------------------------------------------------*</font>
+
+<font color ="#0000FF">*&---------------------------------------------------------------------*</font>
+<font color ="#0000FF">*& Form BATCH_DAT1</font>
+<font color ="#0000FF">*&---------------------------------------------------------------------*</font>
+<font color ="#0000FF">*& text</font>
+<font color ="#0000FF">*&---------------------------------------------------------------------*</font>
+<font color ="#0000FF">*& --&gt;  p1        text</font>
+<font color ="#0000FF">*& &lt;--  p2        text</font>
+<font color ="#0000FF">*&---------------------------------------------------------------------*</font>
+
+<font color ="#0000FF">*&---------------------------------------------------------------------*</font>
+<font color ="#0000FF">*& Form BATCH_DAT2</font>
+<font color ="#0000FF">*&---------------------------------------------------------------------*</font>
+<font color ="#0000FF">*& text</font>
+<font color ="#0000FF">*&---------------------------------------------------------------------*</font>
+<font color ="#0000FF">*& --&gt;  p1        text</font>
+<font color ="#0000FF">*& &lt;--  p2        text</font>
+<font color ="#0000FF">*&---------------------------------------------------------------------*</font>
+
+<font color ="#0000FF">*&---------------------------------------------------------------------*</font>
+<font color ="#0000FF">*& Form BATCH_DAT4</font>
+<font color ="#0000FF">*&---------------------------------------------------------------------*</font>
+<font color ="#0000FF">*& text</font>
+<font color ="#0000FF">*&---------------------------------------------------------------------*</font>
+<font color ="#0000FF">*& --&gt;  p1        text</font>
+<font color ="#0000FF">*& &lt;--  p2        text</font>
+<font color ="#0000FF">*&---------------------------------------------------------------------*</font>
+
+
+
+
+
+<font color ="#0000FF">*&---------------------------------------------------------------------*</font>
+<font color ="#0000FF">*& Form SCRAP_QUANTITY</font>
+<font color ="#0000FF">*&---------------------------------------------------------------------*</font>
+<font color ="#0000FF">*& text</font>
+<font color ="#0000FF">*&---------------------------------------------------------------------*</font>
+<font color ="#0000FF">*& --&gt;  p1        text</font>
+<font color ="#0000FF">*& &lt;--  p2        text</font>
+<font color ="#0000FF">*&---------------------------------------------------------------------*</font>
+FORM SCRAP_DATA .
+  DATA : LT_MAKT TYPE TABLE OF MAKT,
+         LS_MAKT TYPE MAKT.
+  DATA : LS_SCRAP LIKE GS_SCRAP.
+  CLEAR :  GT_SCRAP, LT_MAKT.
+  CASE 'X'.
+    WHEN P_RAD1. "####
+      SELECT MBLNR USNAM WERKS LGORT MATNR BUDAT CPUTM MEINS MENGE BWART CHARG_SID SMBLN SJAHR SMBLP "#### ##, ##,
+      INTO CORRESPONDING FIELDS OF TABLE GT_SCRAP
+      FROM matdoc
+      WHERE BWART BETWEEN 'Z11' AND 'Z14'      "Z11 : #### Z13 : ########
+      AND STOCK_QTY &lt; 0          "####
+      AND BUDAT IN S_DATE
+      AND MBLNR IN S_MBLNR
+      AND MATNR IN S_MATNR.
+
+
+      SELECT MAKTX MATNR
+        INTO CORRESPONDING FIELDS OF TABLE LT_MAKT
+        FROM MAKT
+        WHERE MATNR LIKE 'JG-A03-%'.
+
+      LOOP AT GT_SCRAP INTO GS_SCRAP.
+
+        IF GS_SCRAP-SMBLN IS NOT INITIAL.
+          DELETE GT_SCRAP WHERE MBLNR = GS_SCRAP-SMBLN.
+        ENDIF.
+        READ TABLE LT_MAKT INTO LS_MAKT WITH KEY MATNR = GS_SCRAP-MATNR.
+        GS_SCRAP-MAKTX = LS_MAKT-MAKTX.
+        IF GS_SCRAP-BWART = 'Z11'.
+          GS_SCRAP-MVTKO = 'QUALITY ## ##'.
+          GS_SCRAP-COLOR = 'C300'.
+        ELSEIF GS_SCRAP-BWART = 'Z13'.
+          GS_SCRAP-MVTKO = '#### ## ##'.
+          GS_SCRAP-COLOR = 'C400'.
+        ENDIF.
+
+        MODIFY GT_SCRAP FROM GS_SCRAP.
+
+        CLEAR GS_SCRAP.
+      ENDLOOP.
+      "#######
+      DELETE GT_SCRAP WHERE BWART = 'Z14'.
+
+
+    WHEN P_RAD2. "####
+      SELECT MBLNR USNAM WERKS LGORT MATNR BUDAT CPUTM MEINS MENGE BWART CHARG_SID SMBLN SJAHR SMBLP "#### ##, ##,
+      INTO CORRESPONDING FIELDS OF TABLE GT_SCRAP
+      FROM MATDOC
+      WHERE BWART BETWEEN 'Z11' AND 'Z14'
+      AND STOCK_QTY &lt; 0          "####
+      AND BUDAT IN S_DATE
+      AND MBLNR IN S_MBLNR
+      AND MATNR IN S_MATNR.
+
+
+
+      SELECT MAKTX MATNR
+        INTO CORRESPONDING FIELDS OF TABLE LT_MAKT
+        FROM MAKT
+        WHERE MATNR LIKE 'JG-A03-%'.
+
+      LOOP AT GT_SCRAP INTO GS_SCRAP.
+        READ TABLE LT_MAKT INTO LS_MAKT WITH KEY MATNR = GS_SCRAP-MATNR.
+        GS_SCRAP-MAKTX = LS_MAKT-MAKTX.
+        IF GS_SCRAP-BWART = 'Z11'.
+          GS_SCRAP-MVTKO = 'QUALITY ## ##'.
+          GS_SCRAP-COLOR = 'C300'.
+        ELSEIF GS_SCRAP-BWART = 'Z13'.
+          GS_SCRAP-MVTKO = '#### ## ##'.
+          GS_SCRAP-COLOR = 'C400'.
+        ELSEIF GS_SCRAP-BWART = 'Z14'.
+          GS_SCRAP-MVTKO = '#### ## ## ##'.
+          GS_SCRAP-COLOR = 'C600'.
+        ENDIF.
+
+        MODIFY GT_SCRAP FROM GS_SCRAP.
+        CLEAR GS_SCRAP.
+      ENDLOOP.
+  ENDCASE.
+  SORT GT_SCRAP BY  MBLNR DESCENDING  . "#### ### "ALV# ## # SORT### #####
+  PERFORM SET_EDIT.
+ENDFORM.
+<font color ="#0000FF">*&---------------------------------------------------------------------*</font>
+<font color ="#0000FF">*& Form SET_FCAT2</font>
+<font color ="#0000FF">*&---------------------------------------------------------------------*</font>
+<font color ="#0000FF">*& text</font>
+<font color ="#0000FF">*&---------------------------------------------------------------------*</font>
+<font color ="#0000FF">*      &lt;--P_GT_FCAT2  text</font>
+<font color ="#0000FF">*&---------------------------------------------------------------------*</font>
+FORM SET_FCAT2  CHANGING PT_FCAT LIKE GT_FCAT.
+
+
+  CLEAR GS_FCAT.
+  GS_FCAT-FIELDNAME  = 'CHECK'.
+  GS_FCAT-COLTEXT    = '##'.
+  GS_FCAT-CHECKBOX = 'X'.
+  GS_FCAT-EDIT = 'X'.
+  APPEND GS_FCAT TO PT_FCAT.
+
+  CLEAR GS_FCAT.
+  GS_FCAT-FIELDNAME  = 'MBLNR'.
+  GS_FCAT-COLTEXT    = '####'.
+  APPEND GS_FCAT TO PT_FCAT.
+
+  CLEAR GS_FCAT.
+  GS_FCAT-FIELDNAME = 'MATNR'.
+  GS_FCAT-COLTEXT   = '####'.
+  APPEND GS_FCAT TO PT_FCAT.
+
+  CLEAR GS_FCAT.
+  GS_FCAT-FIELDNAME  = 'MAKTX'.
+  GS_FCAT-COLTEXT    = '##'.
+  APPEND GS_FCAT TO PT_FCAT.
+
+  CLEAR GS_FCAT.
+  GS_FCAT-FIELDNAME  = 'CHARG_SID'.
+  GS_FCAT-COLTEXT    = '## ##'.
+  APPEND GS_FCAT TO PT_FCAT.
+
+  CLEAR GS_FCAT.
+  GS_FCAT-FIELDNAME  = 'BWART'.
+  GS_FCAT-COLTEXT    = 'MVT'.
+  APPEND GS_FCAT TO PT_FCAT.
+
+  CLEAR GS_FCAT.
+  GS_FCAT-FIELDNAME  = 'MVTKO'.
+  GS_FCAT-COLTEXT    = '####'.
+  APPEND GS_FCAT TO PT_FCAT.
+
+  CLEAR GS_FCAT.
+  GS_FCAT-FIELDNAME  = 'MENGE'.
+  GS_FCAT-COLTEXT    = '##'.
+  GS_FCAT-QFIELDNAME = 'MEINS'.
+  APPEND GS_FCAT TO PT_FCAT.
+
+  CLEAR GS_FCAT.
+  GS_FCAT-FIELDNAME  = 'MEINS'.
+  GS_FCAT-COLTEXT    = '##'.
+  APPEND GS_FCAT TO PT_FCAT.
+
+
+
+  CLEAR GS_FCAT.
+  GS_FCAT-FIELDNAME  = 'BUDAT'.
+  GS_FCAT-COLTEXT    = '####'.
+  APPEND GS_FCAT TO PT_FCAT.
+
+  CLEAR GS_FCAT.
+  GS_FCAT-FIELDNAME  = 'CPUTM'.
+  GS_FCAT-COLTEXT    = '####'.
+  APPEND GS_FCAT TO PT_FCAT.
+
+
+
+
+
+
+
+  CLEAR GS_FCAT.
+  GS_FCAT-FIELDNAME = 'WERKS'.
+  GS_FCAT-COLTEXT   = '###'.
+  APPEND GS_FCAT TO PT_FCAT.
+
+  CLEAR GS_FCAT.
+  GS_FCAT-FIELDNAME = 'LGORT'.
+  GS_FCAT-COLTEXT   = '####'.
+  APPEND GS_FCAT TO PT_FCAT.
+
+
+  CLEAR GS_FCAT.
+  GS_FCAT-FIELDNAME = 'USNAM'.
+  GS_FCAT-COLTEXT   = '#####'.
+  APPEND GS_FCAT TO PT_FCAT.
+
+  CASE 'X'.
+    WHEN P_RAD2. "####
+      CLEAR GS_FCAT.
+      GS_FCAT-FIELDNAME  = 'SMBLN'.
+      GS_FCAT-COLTEXT    = '######'.
+      APPEND GS_FCAT TO PT_FCAT.
+<font color ="#0000FF">*    CLEAR GS_FCAT.</font>
+<font color ="#0000FF">*  GS_FCAT-FIELDNAME  = 'SMBLP'.</font>
+<font color ="#0000FF">*  GS_FCAT-COLTEXT    = '##ITEM##'.</font>
+<font color ="#0000FF">*  APPEND GS_FCAT TO PT_FCAT.</font>
+  ENDCASE.
+
+ENDFORM.
+<font color ="#0000FF">*&---------------------------------------------------------------------*</font>
+<font color ="#0000FF">*& Form SEARCH_PERIOD</font>
+<font color ="#0000FF">*&---------------------------------------------------------------------*</font>
+<font color ="#0000FF">*& text</font>
+<font color ="#0000FF">*&---------------------------------------------------------------------*</font>
+<font color ="#0000FF">*& --&gt;  p1        text</font>
+<font color ="#0000FF">*& &lt;--  p2        text</font>
+<font color ="#0000FF">*&---------------------------------------------------------------------*</font>
+FORM SEARCH_PERIOD .
+
+  DATA LV_DATA TYPE SYST-DATUM.
+  CLEAR : LV_DATA, S_DATE, S_DATE[].
+<font color ="#0000FF">*  LV_DATA = SY-DATUM+0(6) && 01.</font>
+<font color ="#0000FF">*  S_DATE-SIGN = 'I'.</font>
+<font color ="#0000FF">*  S_DATE-OPTION = 'BT'.</font>
+<font color ="#0000FF">*  S_DATE-LOW = LV_DATA.</font>
+<font color ="#0000FF">*  S_DATE-HIGH = SY-DATUM.</font>
+LV_DATA = '20201101'.
+  S_DATE-SIGN = 'I'.
+  S_DATE-OPTION = 'BT'.
+  S_DATE-LOW = LV_dATA.
+  S_DATE-HIGH = '20201130'.
+  APPEND S_DATE.
+ENDFORM.
+<font color ="#0000FF">*&---------------------------------------------------------------------*</font>
+<font color ="#0000FF">*& Form UNDO_MVT</font>
+<font color ="#0000FF">*&---------------------------------------------------------------------*</font>
+<font color ="#0000FF">*& text</font>
+<font color ="#0000FF">*&---------------------------------------------------------------------*</font>
+<font color ="#0000FF">*& --&gt;  p1        text</font>
+<font color ="#0000FF">*& &lt;--  p2        text</font>
+<font color ="#0000FF">*&---------------------------------------------------------------------*</font>
+FORM UNDO_MVT .
+
+
+  CLEAR : GV_EXIT,RT_BAPIRET, RT_BAPIRET[].
+
+
+  "### ### #### ##
+  CALL METHOD GO_GRID-&gt;CHECK_CHANGED_DATA.
+
+
+  PERFORM CHECK_SELECTED_ROWS.
+
+
+  CALL FUNCTION 'BAPI_GOODSMVT_CANCEL'
+    EXPORTING
+      MATERIALDOCUMENT = GV_MBLNR
+      MATDOCUMENTYEAR  = SY-DATUM+0(4)
+<font color ="#0000FF">*     GOODSMVT_PSTNG_DATE       =</font>
+<font color ="#0000FF">*     GOODSMVT_PR_UNAME         =</font>
+<font color ="#0000FF">*     DOCUMENTHEADER_TEXT       =</font>
+<font color ="#0000FF">* IMPORTING</font>
+<font color ="#0000FF">*     GOODSMVT_HEADRET =</font>
+    TABLES
+      RETURN           = RT_BAPIRET[]
+<font color ="#0000FF">*     GOODSMVT_MATDOCITEM       =</font>
+    .
+
+
+  IF SY-SUBRC = 0 AND RT_BAPIRET[] IS INITIAL.
+
+<font color ="#0000FF">*   COMMIT</font>
+    CALL FUNCTION 'BAPI_TRANSACTION_COMMIT'
+      EXPORTING
+        WAIT = 'X'.
+    MESSAGE S000. "## ## #####.
+
+  ELSE.
+    "####
+    CALL FUNCTION 'BAPI_TRANSACTION_ROLLBACK'
+<font color ="#0000FF">*         IMPORTING</font>
+<font color ="#0000FF">*           RETURN        =</font>
+      .
+
+    MESSAGE S999 DISPLAY LIKE 'E' WITH RT_BAPIRET-MESSAGE.  "#######
+  ENDIF.
+ENDFORM.
+<font color ="#0000FF">*&---------------------------------------------------------------------*</font>
+<font color ="#0000FF">*& Form CHECK_SELECTED_ROWS</font>
+<font color ="#0000FF">*&---------------------------------------------------------------------*</font>
+<font color ="#0000FF">*& text</font>
+<font color ="#0000FF">*&---------------------------------------------------------------------*</font>
+<font color ="#0000FF">*& --&gt;  p1        text</font>
+<font color ="#0000FF">*& &lt;--  p2        text</font>
+<font color ="#0000FF">*&---------------------------------------------------------------------*</font>
+FORM CHECK_SELECTED_ROWS .
+  DATA LV_ANSWER  TYPE C.
+
+
+
+  CALL FUNCTION 'POPUP_TO_CONFIRM'
+    EXPORTING
+      TITLEBAR              = '#### ## ##'
+      TEXT_QUESTION         = '### ### ########?'
+      TEXT_BUTTON_1         = '#'
+      ICON_BUTTON_1         = 'ICON_CHECKED'
+      TEXT_BUTTON_2         = '###'
+      ICON_BUTTON_2         = 'ICON_INCOMPLETE'
+      DISPLAY_CANCEL_BUTTON = SPACE
+    IMPORTING
+      ANSWER                = LV_ANSWER.
+
+  IF LV_ANSWER = 2.
+    GV_EXIT = 'X'.
+  ELSE.
+    READ TABLE  GT_SCRAP INTO GS_SCRAP WITH KEY CHECK = 'X'.
+
+    GV_MBLNR = GS_SCRAP-MBLNR.
+
+  ENDIF.
+
+
+
+
+ENDFORM.
+<font color ="#0000FF">*&---------------------------------------------------------------------*</font>
+<font color ="#0000FF">*& Form SET_SORT</font>
+<font color ="#0000FF">*&---------------------------------------------------------------------*</font>
+<font color ="#0000FF">*& text</font>
+<font color ="#0000FF">*&---------------------------------------------------------------------*</font>
+<font color ="#0000FF">*& --&gt;  p1        text</font>
+<font color ="#0000FF">*& &lt;--  p2        text</font>
+<font color ="#0000FF">*&---------------------------------------------------------------------*</font>
+FORM SET_SORT .
+
+  CLEAR GS_SORT.
+  GS_SORT-FIELDNAME = 'MBLNR'.
+  GS_SORT-DOWN = 'X'.
+  APPEND GS_SORT TO GT_SORT.
+
+ENDFORM.
+<font color ="#0000FF">*&---------------------------------------------------------------------*</font>
+<font color ="#0000FF">*& Form HANDLE_DATA_CHNAGED</font>
+<font color ="#0000FF">*&---------------------------------------------------------------------*</font>
+<font color ="#0000FF">*& text</font>
+<font color ="#0000FF">*&---------------------------------------------------------------------*</font>
+<font color ="#0000FF">*      --&gt;P_ER_DATA_CHANGED  text</font>
+<font color ="#0000FF">*&---------------------------------------------------------------------*</font>
+FORM HANDLE_DATA_CHNAGED  USING PO_DATA_CHANGED
+                          TYPE REF TO CL_ALV_CHANGED_DATA_PROTOCOL.
+  DATA : LS_GOOD_CELLS TYPE LVC_S_MODI,
+         LT_GOOD_CELLS TYPE LVC_T_MODI.
+  DATA : LS_SCRAP LIKE GS_SCRAP.
+  CLEAR : LT_GOOD_CELLS, LS_GOOD_CELLS.
+  LT_GOOD_CELLS = PO_DATA_CHANGED-&gt;MT_GOOD_CELLS.
+
+  DATA: LV_MBLNR LIKE GS_SCRAP-MBLNR.
+  LOOP AT LT_GOOD_CELLS INTO LS_GOOD_CELLS.
+
+
+    CASE LS_GOOD_CELLS-FIELDNAME.
+        "### ## ##### ## # ## ##
+      WHEN 'CHECK'.
+<font color ="#0000FF">*</font>
+        READ TABLE GT_SCRAP INTO LS_SCRAP INDEX LS_GOOD_CELLS-ROW_ID.
+        LOOP AT GT_SCRAP INTO GS_SCRAP .
+          IF GS_SCRAP-MBLNR = LS_SCRAP-MBLNR.
+            IF GS_SCRAP-CHECK = ''.
+            GS_SCRAP-CHECK = 'X'.
+<font color ="#0000FF">*            CALL METHOD PO_DATA_CHANGED-&gt;MODIFY_CELL "## ### ##### CHANGE# ROW# #### ###</font>
+<font color ="#0000FF">*              EXPORTING</font>
+<font color ="#0000FF">*                I_ROW_ID    = SY-TABIX</font>
+<font color ="#0000FF">*                I_FIELDNAME = 'CHECK'</font>
+<font color ="#0000FF">*                I_VALUE     = 'X'.</font>
+ELSEIF GS_SCRAP-CHECK = 'X'.
+       "### ## ## ## ##
+  CLEAR GS_SCRAP-CHECK.
+       ENDIF.
+          ELSE.
+            CLEAR GS_SCRAP-CHECK. "### DO# ###
+          ENDIF.
+          MODIFY GT_SCRAP FROM GS_SCRAP.
+          CLEAR GS_SCRAP.
+        ENDLOOP.
+
+
+
+
+        "## ### ##
+<font color ="#0000FF">*        IF LS_GOOD_CELLS-VALUE eq 'X'.</font>
+<font color ="#0000FF">*          CLEAR: GS_SCRAP.</font>
+<font color ="#0000FF">*          READ TABLE GT_SCRAP INTO GS_SCRAP INDEX LS_GOOD_CELLS-ROW_ID.</font>
+<font color ="#0000FF">*          IF SY-SUBRC EQ 0.</font>
+"## ## ##### #### ### #### ## ###
+"GS_SCRAP-MBLNR ### #### ###
+<font color ="#0000FF">**            DATA(LV_MBLNR) = GS_SCRAP-MBLNR.</font>
+<font color ="#0000FF">*            LV_MBLNR = GS_SCRAP-MBLNR.</font>
+<font color ="#0000FF">*            CLEAR: GS_SCRAP.</font>
+<font color ="#0000FF">*            LOOP AT GT_SCRAP INTO GS_SCRAP WHERE MBLNR = LV_MBLNR.</font>
+<font color ="#0000FF">*              GS_SCRAP-CHECK = 'X'.</font>
+<font color ="#0000FF">*</font>
+<font color ="#0000FF">*            ENDLOOP.</font>
+<font color ="#0000FF">*            ELSE.</font>
+<font color ="#0000FF">*              CLEAR GS_SCRAP-CHECK.</font>
+<font color ="#0000FF">*ENDIF.</font>
+
+
+
+    ENDCASE.
+
+  ENDLOOP.
+
+  PERFORM REFRESH_ALV.
+ENDFORM.
+<font color ="#0000FF">*&---------------------------------------------------------------------*</font>
+<font color ="#0000FF">*& Form SET_EDIT</font>
+<font color ="#0000FF">*&---------------------------------------------------------------------*</font>
+<font color ="#0000FF">*& text</font>
+<font color ="#0000FF">*&---------------------------------------------------------------------*</font>
+<font color ="#0000FF">*& --&gt;  p1        text</font>
+<font color ="#0000FF">*& &lt;--  p2        text</font>
+<font color ="#0000FF">*&---------------------------------------------------------------------*</font>
+FORM SET_EDIT .
+
+  CLEAR : GS_SCRAP.
+
+  DATA LS_STYLE TYPE LVC_S_STYL.
+
+  LOOP AT GT_SCRAP INTO GS_SCRAP WHERE BWART &lt;&gt; 'Z13'.
+
+
+    LS_STYLE-FIELDNAME = 'CHECK'.
+    LS_STYLE-STYLE = CL_GUI_ALV_GRID=&gt;MC_STYLE_DISABLED.
+
+    APPEND LS_STYLE TO GS_SCRAP-STYLE.
+    CLEAR LS_STYLE.
+    MODIFY GT_SCRAP FROM GS_SCRAP.
+
+
+
+  ENDLOOP.
+
+
+
+ENDFORM.
+</pre>
+<hr>
+<font size="2" face = "Sans Serif">Extracted by Direct Download Enterprise version 1.3.1 - E.G.Mellodew. 1998-2005 UK. Sap Release 751
+</font>
+</body>
+</html>
