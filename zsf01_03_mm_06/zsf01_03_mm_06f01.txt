@@ -1,0 +1,1405 @@
+*&---------------------------------------------------------------------*
+*& Include          YR0122_0220F01
+*&---------------------------------------------------------------------*
+*&---------------------------------------------------------------------*
+*& Form GET_DATA
+*&---------------------------------------------------------------------*
+*& text
+*&---------------------------------------------------------------------*
+*& -->  p1        text
+*& <--  p2        text
+*&---------------------------------------------------------------------*
+
+*&---------------------------------------------------------------------*
+*& Form SET_INSTANCE
+*&---------------------------------------------------------------------*
+*& text
+*&---------------------------------------------------------------------*
+*& -->  p1        text
+*& <--  p2        text
+*&---------------------------------------------------------------------*
+FORM SET_INSTANCE .
+
+
+  CREATE OBJECT GO_CONTAINER
+    EXPORTING
+      CONTAINER_NAME = 'GO_CONTAINER'.
+
+*## #### ## (MAIN CONTAINER ##)
+
+  CREATE OBJECT GO_SPLITTER
+    EXPORTING
+      PARENT  = GO_CONTAINER
+      ROWS    = 1  "1#
+      COLUMNS = 2. "2#
+
+
+
+* ## ### GUI CONTAINER ##
+
+  CALL METHOD GO_SPLITTER->GET_CONTAINER
+    EXPORTING
+      ROW       = 1
+      COLUMN    = 1
+    RECEIVING
+      CONTAINER = GO_CONT1.
+
+
+
+  CALL METHOD GO_SPLITTER->GET_CONTAINER
+    EXPORTING
+      ROW       = 1
+      COLUMN    = 2
+    RECEIVING
+      CONTAINER = GO_CONT2.
+*### ### #####  GRID ##
+  CREATE OBJECT GO_GRID1
+    EXPORTING
+      I_PARENT = GO_CONT1.
+
+  CREATE OBJECT GO_GRID2
+    EXPORTING
+      I_PARENT = GO_CONT2.
+
+
+ENDFORM.
+*&---------------------------------------------------------------------*
+*& Form SET_FCAT
+*&---------------------------------------------------------------------*
+*& text
+*&---------------------------------------------------------------------*
+*& -->  p1        text
+*& <--  p2        text
+*&---------------------------------------------------------------------*
+FORM SET_FCAT .
+  CLEAR GT_FCAT.
+
+  CLEAR GS_FCAT.
+  GS_FCAT-FIELDNAME = 'MATNR'.
+  GS_FCAT-COLTEXT   = '##'.
+  GS_FCAT-REF_TABLE = 'MSEG'.
+  APPEND GS_FCAT TO GT_FCAT.
+
+  CLEAR GS_FCAT.
+  GS_FCAT-FIELDNAME = 'LIFNR'.
+  GS_FCAT-COLTEXT   = '####'.
+  GS_FCAT-REF_TABLE = 'MSEG'.
+  APPEND GS_FCAT TO GT_FCAT.
+
+  CLEAR GS_FCAT.
+  GS_FCAT-FIELDNAME = 'RANK'.
+  GS_FCAT-COLTEXT   = '##'.
+  APPEND GS_FCAT TO GT_FCAT.
+
+  CLEAR GS_FCAT.
+  GS_FCAT-FIELDNAME = 'TOTAL'.
+  GS_FCAT-COLTEXT   = '####'.
+  APPEND GS_FCAT TO GT_FCAT.
+
+
+
+  CLEAR GS_FCAT.
+  GS_FCAT-FIELDNAME = 'DELAY_SCORE'.
+  GS_FCAT-COLTEXT   = '####'.
+  APPEND GS_FCAT TO GT_FCAT.
+  CLEAR GS_FCAT.
+  GS_FCAT-FIELDNAME = 'PRICE_SCORE'.
+  GS_FCAT-COLTEXT   = '## ##'.
+  APPEND GS_FCAT TO GT_FCAT.
+  CLEAR GS_FCAT.
+  GS_FCAT-FIELDNAME = 'BADSC'.
+  GS_FCAT-COLTEXT   = '####'.
+  APPEND GS_FCAT TO GT_FCAT.
+  CLEAR GS_FCAT.
+  GS_FCAT-FIELDNAME = 'FRESH'.
+  GS_FCAT-COLTEXT   = '#####'.
+  APPEND GS_FCAT TO GT_FCAT.
+  CLEAR GS_FCAT.
+  GS_FCAT-FIELDNAME = 'DELAY'.
+  GS_FCAT-COLTEXT   = '#######'.
+  APPEND GS_FCAT TO GT_FCAT.
+
+
+
+  CLEAR GS_FCAT.
+  GS_FCAT-FIELDNAME = 'UNTPR'.
+  GS_FCAT-COLTEXT   = '## ##'.
+  APPEND GS_FCAT TO GT_FCAT.
+  CLEAR GS_FCAT.
+  GS_FCAT-FIELDNAME = 'UNTPR_SCORE'.
+  GS_FCAT-COLTEXT   = '## ##'.
+  APPEND GS_FCAT TO GT_FCAT.
+
+  CLEAR GS_FCAT.
+  GS_FCAT-FIELDNAME = 'PRCHG'.
+  GS_FCAT-COLTEXT   = '#####'.
+  APPEND GS_FCAT TO GT_FCAT.
+  CLEAR GS_FCAT.
+  GS_FCAT-FIELDNAME = 'PRCHG_SCORE'.
+  GS_FCAT-COLTEXT   = '### ##'.
+  APPEND GS_FCAT TO GT_FCAT.
+
+
+  CLEAR GS_FCAT.
+  GS_FCAT-FIELDNAME = 'BADRT'.
+  GS_FCAT-COLTEXT   = '###'.
+  APPEND GS_FCAT TO GT_FCAT.
+
+
+
+
+
+
+
+ENDFORM.
+*&---------------------------------------------------------------------*
+*& Form SET_LAYOUT
+*&---------------------------------------------------------------------*
+*& text
+*&---------------------------------------------------------------------*
+*& -->  p1        text
+*& <--  p2        text
+*&---------------------------------------------------------------------*
+FORM SET_LAYOUT .
+
+  CLEAR GS_LAYOUT.
+
+  GS_LAYOUT-ZEBRA       = 'X'.
+  GS_LAYOUT-CWIDTH_OPT  = 'A'.
+  GS_LAYOUT-SEL_MODE    = 'D'.
+  GS_LAYOUT-INFO_FNAME = 'COLOR'.
+*  GS_LAYOUT-NUMC_TOTAL  ='A'.
+
+ENDFORM.
+*&---------------------------------------------------------------------*
+*& Form DISPLAY_ALV
+*&---------------------------------------------------------------------*
+*& text
+*&---------------------------------------------------------------------*
+*& -->  p1        text
+*& <--  p2        text
+*&---------------------------------------------------------------------*
+FORM DISPLAY_ALV .
+  PERFORM DISPLAY_GO_GRID1.
+  PERFORM DISPLAY_GO_GRID2.
+
+
+ENDFORM.
+*&---------------------------------------------------------------------*
+*& Form REFRESH_ALV
+*&---------------------------------------------------------------------*
+*& text
+*&---------------------------------------------------------------------*
+*& -->  p1        text
+*& <--  p2        text
+*&---------------------------------------------------------------------*
+FORM REFRESH_ALV .
+
+  CALL METHOD GO_GRID1->REFRESH_TABLE_DISPLAY.
+*    EXPORTING
+*      IS_STABLE      =  "### #### ## ##
+*      I_SOFT_REFRESH =
+*    EXCEPTIONS
+*      FINISHED       = 1
+*      OTHERS         = 2.
+
+
+
+ENDFORM.
+*&---------------------------------------------------------------------*
+*& Form HANDLE_DOUBLE_CLICK
+*&---------------------------------------------------------------------*
+*& text
+*&---------------------------------------------------------------------*
+*      -->P_E_ROW  text
+*      -->P_E_COLUMN  text
+*&---------------------------------------------------------------------*
+FORM HANDLE_DOUBLE_CLICK  USING    PS_ROW TYPE LVC_S_ROW
+                                   PS_COLUMN TYPE LVC_S_COL.
+*  CLEAR GS_DISP.
+*  CHECK PS_COLUMN-FIELDNAME = 'MATNR'.
+*
+*  READ TABLE GT_DISP INTO GS_DISP INDEX PS_ROW-INDEX.
+*
+**### ### ##### ### ### ##
+*  SET PARAMETER ID 'MAT' FIELD GS_DISP-MATNR.
+*
+**TCODE ##
+*  CALL TRANSACTION 'MM03' AND SKIP FIRST SCREEN.
+*  " FIRST SCREEN# ## ## ## ##### ##### SELECT VIEW.
+*  "## ## #### ## => ## ### ####
+ENDFORM.
+*&---------------------------------------------------------------------*
+*& Form SET_EVENT
+*&---------------------------------------------------------------------*
+*& text
+*&---------------------------------------------------------------------*
+*& -->  p1        text
+*& <--  p2        text
+*&---------------------------------------------------------------------*
+FORM SET_EVENT .
+
+  CREATE OBJECT GO_EVENT_RECEIVER.
+
+  SET HANDLER GO_EVENT_RECEIVER->HANDLE_DOUBLE_CLICK
+          FOR GO_GRID1.
+
+
+  CALL METHOD GO_GRID1->REGISTER_EDIT_EVENT
+    EXPORTING
+      I_EVENT_ID = CL_GUI_ALV_GRID=>MC_EVT_MODIFIED.
+
+ENDFORM.
+*&---------------------------------------------------------------------*
+*& Form GET_SCORE
+*&---------------------------------------------------------------------*
+*& text
+*&---------------------------------------------------------------------*
+*& -->  p1        text
+*& <--  p2        text
+*&---------------------------------------------------------------------*
+FORM GET_SCORE .
+  "1. ##### ###
+  PERFORM DELAY_DATE.
+  "2. ##### ( ## & ## ##)
+  PERFORM UNIT_PRICE.
+  "3. #####
+  PERFORM BADRT_DATA.
+
+  "4. ### ###
+  PERFORM FRESH_DATA.
+
+ENDFORM.
+*&---------------------------------------------------------------------*
+*& Form DELAY_DATE
+*&---------------------------------------------------------------------*
+*& text
+*&---------------------------------------------------------------------*
+*& -->  p1        text
+*& <--  p2        text
+*&---------------------------------------------------------------------*
+FORM DELAY_DATE .
+
+  "STEP A. ### ##, COUNT####
+  CLEAR GS_DISP.
+  LOOP AT GT_DISP INTO GS_DISP.
+    "1. ### - ## ###
+    GS_DISP-DIFF = GS_DISP-DLDAT - GS_DISP-EINDT.
+    "2. BP # ### ##
+    GS_DISP-COUNT = 1.
+    MODIFY GT_DISP FROM GS_DISP.
+  ENDLOOP.
+  SORT : GT_DISP BY MBLNR.
+
+
+  "STEP B ## TOTAL# ##
+  CLEAR : GT_TOTAL, GS_TOTAL, GS_DISP.
+  LOOP AT GT_DISP INTO GS_DISP.
+    GS_TOTAL-DELAY = GS_DISP-DIFF.
+    GS_TOTAL-LIFNR = GS_DISP-LIFNR.
+    GS_TOTAL-COUNT = GS_DISP-COUNT.
+    GS_TOTAL-MATNR = GS_DISP-MATNR.
+    COLLECT GS_TOTAL INTO GT_TOTAL.
+    CLEAR GS_TOTAL.
+  ENDLOOP.
+
+
+
+  "STEP C.## ###
+  PERFORM GET_DELAY_SCORE.
+
+
+ENDFORM.
+*&---------------------------------------------------------------------*
+*& Form GET_PRICE
+*&---------------------------------------------------------------------*
+*& text
+*&---------------------------------------------------------------------*
+*& -->  p1        text
+*& <--  p2        text
+*&---------------------------------------------------------------------*
+*&---------------------------------------------------------------------*
+*& Form GET_DATA
+*&---------------------------------------------------------------------*
+*& text
+*&---------------------------------------------------------------------*
+*& -->  p1        text
+*& <--  p2        text
+*&---------------------------------------------------------------------*
+FORM GET_DATA .
+
+
+
+  CLEAR : GT_DISP.
+
+  SELECT
+        EKET~EINDT EKET~EBELN "EKET ## ### PO#
+         EKPO~AEDAT EKPO~ELIKZ "EKPO PO### ######
+         MSEG~MBLNR MSEG~LIFNR MSEG~MATNR MSEG~BUDAT_MKPF AS DLDAT MSEG~USNAM_MKPF AS USNAM  "MSEG DO# ###
+         MSEG~WEMPF AS BADEA MSEG~ABLAD AS FRESH MSEG~MENGE AS ENTEA
+         EKPO~MEINS EKPO~MENGE EKPO~NETPR      " ## #### ### ##
+    INTO CORRESPONDING FIELDS OF TABLE GT_DISP
+    FROM EKET
+    INNER JOIN EKPO
+      ON EKET~EBELN = EKPO~EBELN
+    INNER JOIN MSEG
+    ON EKPO~EBELN = MSEG~EBELN
+    WHERE MSEG~MBLNR <> ''
+    AND MSEG~WERKS = '5131'
+    AND MSEG~BUDAT_MKPF BETWEEN S_DATE-LOW AND S_DATE-HIGH.
+
+  SORT GT_DISP BY EINDT.
+
+
+
+
+ENDFORM.
+*&---------------------------------------------------------------------*
+*& Form UNIT_PRICE
+*&---------------------------------------------------------------------*
+*& text
+*&---------------------------------------------------------------------*
+*& -->  p1        text
+*& <--  p2        text
+*&---------------------------------------------------------------------*
+FORM UNIT_PRICE .
+  "##
+  PERFORM GET_UNIT_PRICE.
+
+  "##### ## #####
+  PERFORM PRICE_FLUCTUATION.
+
+  "## # ##
+  PERFORM PRICE_SCORE.
+
+
+
+ENDFORM.
+*&---------------------------------------------------------------------*
+*& Form GET_DELAY_SCORE
+*&---------------------------------------------------------------------*
+*& text
+*&---------------------------------------------------------------------*
+*& -->  p1        text
+*& <--  p2        text
+*&---------------------------------------------------------------------*
+FORM GET_DELAY_SCORE .
+
+  LOOP AT GT_TOTAL INTO GS_TOTAL.
+
+    GS_TOTAL-DELAY = ( GS_TOTAL-DELAY / GS_TOTAL-COUNT ).
+
+    IF GS_TOTAL-DELAY < 0.                                "#### ### ## #### ######
+      GS_TOTAL-DELAY_SCORE = 100 - ( GS_TOTAL-DELAY * 10 ).
+    ELSEIF GS_TOTAL-DELAY < 3.                            "## 2#### #####
+      GS_TOTAL-DELAY_SCORE = 100 - ( GS_TOTAL-DELAY * 10 ).
+    ELSEIF GS_TOTAL-DELAY >= 3.                            "## 3# ## ## ###
+      GS_TOTAL-DELAY_SCORE = 100 - ( GS_TOTAL-DELAY * 15 ).
+    ENDIF.
+
+    MODIFY GT_TOTAL FROM GS_TOTAL.
+    CLEAR GS_TOTAL.
+  ENDLOOP.
+
+  SORT GT_TOTAL BY MATNR LIFNR.
+
+ENDFORM.
+*&---------------------------------------------------------------------*
+*& Form FRESH_DATA
+*&---------------------------------------------------------------------*
+*& text
+*&---------------------------------------------------------------------*
+*& -->  p1        text
+*& <--  p2        text
+*&---------------------------------------------------------------------*
+FORM FRESH_DATA .
+
+  "DO# ### ####
+  LOOP AT GT_DISP INTO GS_DISP.
+
+    IF GS_DISP-MATNR+0(8) = 'JG-A03-R'.
+      CASE GS_DISP-FRESH. "### ## # ### ## 90#
+        WHEN 'A'.
+          GS_DISP-FRSHP = 100.
+        WHEN 'B'.
+          GS_DISP-FRSHP = 90.
+        WHEN 'C'.
+          GS_DISP-FRSHP = 80.
+        WHEN OTHERS.
+          GS_DISP-FRSHP = 90.
+      ENDCASE.
+
+      GS_TOTAL-FRESH = GS_DISP-FRSHP.
+      GS_TOTAL-MATNR = GS_DISP-MATNR.
+      GS_TOTAL-LIFNR = GS_DISP-LIFNR.
+
+
+      COLLECT GS_TOTAL INTO GT_TOTAL.
+      CLEAR : GS_TOTAL, GS_DISP.
+    ENDIF.
+  ENDLOOP.
+
+  "### ## # / ##
+  LOOP AT GT_TOTAL INTO GS_TOTAL.
+    GS_TOTAL-FRESH = ( GS_TOTAL-FRESH / GS_TOTAL-COUNT ).
+    MODIFY GT_TOTAL FROM GS_TOTAL.
+    CLEAR GS_TOTAL.
+  ENDLOOP.
+
+
+
+
+
+
+
+
+
+ENDFORM.
+*&---------------------------------------------------------------------*
+*& Form BADRT_DATA
+*&---------------------------------------------------------------------*
+*& text
+*&---------------------------------------------------------------------*
+*& -->  p1        text
+*& <--  p2        text
+*&---------------------------------------------------------------------*
+FORM BADRT_DATA .
+
+
+
+  DATA :LV_HTYPE TYPE DD01V-DATATYPE.
+
+
+  CLEAR: GS_DISP, GS_TOTAL.
+  LOOP AT GT_DISP INTO GS_DISP.
+
+    "##CHECK
+    CLEAR LV_HTYPE.
+    CALL FUNCTION 'NUMERIC_CHECK'
+      EXPORTING
+        STRING_IN = GS_DISP-BADEA
+      IMPORTING
+*       STRING_OUT       = LV_NUM_OUT
+        HTYPE     = LV_HTYPE.
+
+    IF LV_HTYPE = 'NUMC'.
+      GS_TOTAL-BADEA = GS_DISP-BADEA.
+    ELSE.
+      GS_TOTAL-BADEA = '0'.
+
+    ENDIF.
+
+    GS_TOTAL-ENTEA = GS_DISP-ENTEA.
+    GS_TOTAL-MATNR = GS_DISP-MATNR.
+    GS_TOTAL-LIFNR = GS_DISP-LIFNR.
+    COLLECT GS_TOTAL INTO GT_TOTAL.
+
+    CLEAR GS_TOTAL.
+  ENDLOOP.
+
+  "### = ( ## ## / ## ## ) * 100.
+  "#### ##
+  "1. 5% #### 100-###*4
+  "2. 3~5% 100 - ###*3
+  "3. 1~3% 100 - ### *2
+  "4. 0~1% 100 - ### *1
+  "4. 0% 100#
+
+  CLEAR GS_TOTAL.
+  LOOP AT GT_TOTAL INTO GS_TOTAL.
+
+    IF  GS_TOTAL-ENTEA <> 0.
+
+      GS_TOTAL-BADRT = ( GS_TOTAL-BADEA / GS_TOTAL-ENTEA ) * 100.
+
+      IF GS_TOTAL-BADRT > 5.
+        GS_TOTAL-BADSC = 100 - ( GS_TOTAL-BADRT * 4 ).
+      ELSEIF GS_TOTAL-BADRT > 3 AND GS_TOTAL-BADRT < 5 .
+        GS_TOTAL-BADSC = 100 - ( GS_TOTAL-BADRT * 3 ) .
+      ELSEIF GS_TOTAL-BADRT > 1 AND GS_TOTAL-BADRT < 3 .
+        GS_TOTAL-BADSC = 100 - ( GS_TOTAL-BADRT * 2 ) .
+      ELSEIF GS_TOTAL-BADRT > 0 AND GS_TOTAL-BADRT < 1 .
+        GS_TOTAL-BADSC = 100 - ( GS_TOTAL-BADRT * 1 ) .
+      ELSE.
+        GS_TOTAL-BADSC = 100.
+
+      ENDIF.
+    ELSE.
+      "##### 0#
+    ENDIF.
+    IF GS_TOTAL-BADSC < 0.
+      GS_TOTAL-BADSC = 0.
+    ENDIF.
+
+    MODIFY GT_TOTAL FROM GS_TOTAL.
+    CLEAR GS_TOTAL.
+  ENDLOOP.
+
+
+
+
+
+
+
+
+
+
+
+ENDFORM.
+*&---------------------------------------------------------------------*
+*& Form GET_UNIT_PRICE
+*&---------------------------------------------------------------------*
+*& text
+*&---------------------------------------------------------------------*
+*& -->  p1        text
+*& <--  p2        text
+*&---------------------------------------------------------------------*
+FORM GET_UNIT_PRICE .
+
+
+  " ## ####
+  "## ## : 1.### # #### 2.## # ## # ## 3. 1# ### 2# : ## # ####
+
+
+  "1.### # #### 2. ###
+  " GT_DISP->LT_NETPR
+  CLEAR : GS_TOTAL, GS_DISP.
+  LOOP AT GT_DISP INTO GS_DISP.
+    GS_TOTAL-NETPR = GS_DISP-NETPR.
+    GS_TOTAL-MENGE = GS_DISP-MENGE.
+    GS_TOTAL-LIFNR = GS_DISP-LIFNR.
+    GS_TOTAL-MATNR = GS_DISP-MATNR.
+    COLLECT GS_TOTAL  INTO GT_TOTAL.
+    CLEAR GS_TOTAL.
+  ENDLOOP.
+
+  "3. 1# ### 2# : ## # #####
+
+  LOOP AT GT_TOTAL INTO GS_TOTAL.
+    IF GS_TOTAL-MENGE <> 0.
+      CASE GS_TOTAL-MATNR.
+        WHEN 'JG-A03-P01' OR 'JG-A03-P02' OR 'JG-A03-P03'.
+          GS_TOTAL-UNTPR = ( GS_TOTAL-NETPR / GS_TOTAL-MENGE ) * 100.
+        WHEN 'JG-A03-R01' OR 'JG-A03-R02' OR 'JG-A03-R03' OR 'JG-A03-R04' OR 'JG-A03-R05' OR 'JG-A03-R06'.
+          GS_TOTAL-UNTPR = ( GS_TOTAL-NETPR / GS_TOTAL-MENGE ) * 10.
+        WHEN OTHERS.
+          "# ## ##
+      ENDCASE.
+    ELSE.
+      "### ##
+    ENDIF.
+
+    MODIFY GT_TOTAL FROM GS_TOTAL.
+    CLEAR GS_TOTAL.
+  ENDLOOP.
+
+
+
+
+
+
+
+ENDFORM.
+*&---------------------------------------------------------------------*
+*& Form PRICE_FLUCTUATION
+*&---------------------------------------------------------------------*
+*& text
+*&---------------------------------------------------------------------*
+*& -->  p1        text
+*& <--  p2        text
+*&---------------------------------------------------------------------*
+FORM PRICE_FLUCTUATION .
+  DATA : LV_DATE_LOW  TYPE SCAL-DATE,
+         LV_DATE_HIGH TYPE SCAL-DATE.
+
+
+
+  LV_DATE_LOW = '20201014'.   "#### ###
+  LV_DATE_HIGH = '20201021'.  "#### ####
+
+  "### ## ## ######
+  PERFORM STANDARD_PERIOD USING LV_DATE_LOW
+                                LV_DATE_HIGH
+                                GT_PERIOD.
+
+
+  "## ## ## ###
+  PERFORM PRICE_PERIOD USING LV_DATE_LOW
+                             LV_DATE_HIGH
+                       CHANGING GS_TOTAL
+                                GT_TOTAL.
+
+  "1## ##GT_TOTAL-STPRC # #### ##GT_TOTAL-UNTPR
+  "#### / ###### *100 = ###
+  CLEAR : GS_TOTAL.
+  LOOP AT GT_TOTAL INTO GS_TOTAL.
+    IF GS_TOTAL-STPRC <> 0.
+      GS_TOTAL-PRCHG = ( GS_TOTAL-UNTPR / GS_TOTAL-STPRC ) * 100.
+    ENDIF.
+
+    MODIFY GT_TOTAL FROM GS_TOTAL.
+    CLEAR GS_TOTAL.
+  ENDLOOP.
+
+ENDFORM.
+*&---------------------------------------------------------------------*
+*& Form GET_DATE
+*&---------------------------------------------------------------------*
+*& text
+*&---------------------------------------------------------------------*
+*& -->  p1        text
+*& <--  p2        text
+*&---------------------------------------------------------------------*
+*&---------------------------------------------------------------------*
+*& Form GET_PERIOD
+*&---------------------------------------------------------------------*
+*& text
+*&---------------------------------------------------------------------*
+*& -->  p1        text
+*& <--  p2        text
+*&---------------------------------------------------------------------*
+FORM GET_PERIOD .
+
+  CLEAR : S_DATE-LOW, S_DATE-HIGH.
+  CALL FUNCTION 'DATE_GET_WEEK'
+    EXPORTING
+      DATE = P_DATE
+    IMPORTING
+      WEEK = GV_WEEK.
+
+
+  CALL FUNCTION 'WEEK_GET_FIRST_DAY'
+    EXPORTING
+      WEEK = GV_WEEK
+    IMPORTING
+      DATE = S_DATE-LOW.
+
+  S_DATE-HIGH = S_DATE-LOW + 7.
+
+
+ENDFORM.
+*&---------------------------------------------------------------------*
+*& Form TOTAL_SCORE
+*&---------------------------------------------------------------------*
+*& text
+*&---------------------------------------------------------------------*
+*& -->  p1        text
+*& <--  p2        text
+*&---------------------------------------------------------------------*
+FORM TOTAL_SCORE .
+
+
+  "1. ####
+
+  LOOP AT GT_TOTAL INTO GS_TOTAL.
+    IF GS_WEIGHT IS INITIAL.
+      READ TABLE GT_WEIGHT INTO GS_WEIGHT INDEX 1.
+    ENDIF.
+    CASE GS_TOTAL-MATNR+0(8).
+      WHEN 'JG-A03-R'. "### = 4## ##### ####
+        GS_TOTAL-TOTAL =
+        ( GS_TOTAL-DELAY_SCORE / 100 * GS_WEIGHT-R_DELAY )  + ( GS_TOTAL-PRICE_SCORE / 100 * GS_WEIGHT-R_PRICE )
+        +  ( GS_TOTAL-BADSC / 100 * GS_WEIGHT-R_BADSC ) +  ( GS_TOTAL-FRESH / 100 * GS_WEIGHT-R_FRESH ).
+
+      WHEN 'JG-A03-P'. "#### = 3## ##### ####
+        GS_TOTAL-TOTAL =
+     ( GS_TOTAL-DELAY_SCORE / 100 * GS_WEIGHT-P_DELAY )  + ( GS_TOTAL-PRICE_SCORE / 100 * GS_WEIGHT-P_PRICE )
+     +  ( GS_TOTAL-BADSC / 100 * GS_WEIGHT-P_BADSC ).
+      WHEN OTHERS.
+        GS_TOTAL-TOTAL = 0.
+    ENDCASE.
+    MODIFY GT_TOTAL FROM GS_TOTAL.
+    CLEAR GS_TOTAL.
+  ENDLOOP.
+
+  DELETE GT_TOTAL WHERE TOTAL = 0. "##### ### ####
+
+  " 2. ##
+  "##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  SORT GT_TOTAL  BY MATNR ASCENDING TOTAL  DESCENDING .
+  DATA : LV_RANK TYPE I.
+  CLEAR GS_TOTAL.
+
+  LOOP AT GT_TOTAL INTO GS_TOTAL.
+    AT NEW MATNR.
+      CLEAR : LV_RANK, GS_TOTAL-COLOR.
+    ENDAT.
+    LV_RANK = LV_RANK + 1.
+    GS_TOTAL-RANK = LV_RANK.
+    IF GS_TOTAL-RANK = 1.
+      GS_TOTAL-COLOR = 'C310'. "1### ###
+    ELSE.
+      CLEAR GS_TOTAL-COLOR.
+    ENDIF.
+    MODIFY GT_TOTAL FROM GS_TOTAL.
+
+    CLEAR GS_TOTAL.
+  ENDLOOP.
+  SORT GT_TOTAL BY MATNR RANK.
+
+  IF GV_OKCODE IS INITIAL.
+    CLEAR GT_STTOTAL.
+    GT_STTOTAL = GT_TOTAL.
+  ENDIF.
+
+
+ENDFORM.
+*&---------------------------------------------------------------------*
+*& Form PRICE_PERIOD
+*&---------------------------------------------------------------------*
+*& text
+*&---------------------------------------------------------------------*
+*& -->  p1        text
+*& <--  p2        text
+*&---------------------------------------------------------------------*
+FORM PRICE_PERIOD USING PV_DATE_LOW TYPE SCAL-DATE
+                        PV_DATE_HIGH TYPE SCAL-DATE
+
+                  CHANGING PS_TOTAL LIKE GS_TOTAL
+                           PT_TOTAL LIKE GT_TOTAL.
+
+
+  " ## ####
+  "## ## : 1.### # #### 2.## # ## # ## 3. 1# ### 2# : ## # ####
+
+
+  "1.### # #### 2. ### ###
+  CLEAR : PS_TOTAL, GS_DISP.
+  LOOP AT GT_PERIOD INTO GS_DISP WHERE DLDAT BETWEEN PV_DATE_LOW AND PV_DATE_HIGH.
+    PS_TOTAL-STPRC = GS_DISP-NETPR.
+    PS_TOTAL-STMEN = GS_DISP-MENGE.
+    PS_TOTAL-LIFNR = GS_DISP-LIFNR.
+    PS_TOTAL-MATNR = GS_DISP-MATNR.
+    COLLECT PS_TOTAL  INTO PT_TOTAL.
+    CLEAR PS_TOTAL.
+  ENDLOOP.
+
+  "3. 1# ### 2# : ## # ####
+
+  LOOP AT PT_TOTAL INTO PS_TOTAL.
+    IF PS_TOTAL-STMEN <> 0.
+      CASE PS_TOTAL-MATNR.
+        WHEN 'JG-A03-P01' OR 'JG-A03-P02' OR 'JG-A03-P03'.
+          PS_TOTAL-STPRC = ( PS_TOTAL-STPRC / PS_TOTAL-STMEN ) * 100.
+        WHEN 'JG-A03-R01' OR 'JG-A03-R02' OR 'JG-A03-R03' OR 'JG-A03-R04' OR 'JG-A03-R05' OR 'JG-A03-R06'.
+          PS_TOTAL-STPRC = ( PS_TOTAL-STPRC / PS_TOTAL-STMEN ) * 10.
+        WHEN OTHERS.
+          "# ## ## : ##### ##
+      ENDCASE.
+    ENDIF.
+
+    MODIFY PT_TOTAL FROM PS_TOTAL.
+    CLEAR PS_TOTAL.
+  ENDLOOP.
+
+
+ENDFORM.
+*&---------------------------------------------------------------------*
+*& Form UNIT_PRICE_SCORE
+*&---------------------------------------------------------------------*
+*& text
+*&---------------------------------------------------------------------*
+*& -->  p1        text
+*& <--  p2        text
+*&---------------------------------------------------------------------*
+FORM UNIT_PRICE_SCORE .
+  "## ### ## ## ##
+  PERFORM UNIT_PRICE_SCORE.
+
+  "##### ##
+  PERFORM PRICE_FLUCTUATION_SCORE.
+
+
+
+ENDFORM.
+*&---------------------------------------------------------------------*
+*& Form PRICE_SCORE
+*&---------------------------------------------------------------------*
+*& text
+*&---------------------------------------------------------------------*
+*& -->  p1        text
+*& <--  p2        text
+*&---------------------------------------------------------------------*
+FORM PRICE_SCORE .
+
+  PERFORM GET_STANDARD_PRICE. "##
+
+  "## ## = ## ## /## ##* 100.
+  "## ### ## = 100/ ### *100.
+  "## ## = #### *0.6 + ### ## *0.4
+  CLEAR GS_TOTAL.
+  LOOP AT GT_TOTAL INTO GS_TOTAL.
+    IF GS_TOTAL-UNTPR <> 0.
+      GS_TOTAL-UNTPR_SCORE = GS_TOTAL-PRICE /   GS_TOTAL-UNTPR * 100. "####
+    ENDIF.
+    IF GS_TOTAL-PRCHG <> 0.
+      GS_TOTAL-PRCHG_SCORE = 100 / GS_TOTAL-PRCHG * 100. "### ##
+    ENDIF.
+    CASE GS_TOTAL-PRCHG_SCORE.
+      WHEN 0.
+        GS_TOTAL-PRICE_SCORE = GS_TOTAL-UNTPR_SCORE. "### ### ##### ####
+      WHEN OTHERS.
+        GS_TOTAL-PRICE_SCORE = ( GS_TOTAL-UNTPR_SCORE * 6 / 10 ) + ( GS_TOTAL-PRCHG_SCORE * 4 / 10 ). "### 6#4### ## ##
+    ENDCASE.
+    MODIFY GT_TOTAL FROM GS_TOTAL.
+    CLEAR GS_TOTAL.
+  ENDLOOP.
+
+ENDFORM.
+*&---------------------------------------------------------------------*
+*& Form PRICE_FLUCTUATION_SCORE
+*&---------------------------------------------------------------------*
+*& text
+*&---------------------------------------------------------------------*
+*& -->  p1        text
+*& <--  p2        text
+*&---------------------------------------------------------------------*
+FORM PRICE_FLUCTUATION_SCORE .
+
+ENDFORM.
+*&---------------------------------------------------------------------*
+*& Form GET_STANDARD_PRICE
+*&---------------------------------------------------------------------*
+*& text
+*&---------------------------------------------------------------------*
+*& -->  p1        text
+*& <--  p2        text
+*&---------------------------------------------------------------------*
+FORM GET_STANDARD_PRICE .
+
+  DATA : BEGIN OF LS_MBEW,
+           BWPRH TYPE MBEW-BWPRH,
+           BWPEI TYPE MBEW-BWPEI,
+           MATNR TYPE MARA-MATNR,
+         END OF LS_MBEW,
+         LT_MBEW LIKE TABLE OF LS_MBEW.
+
+  SELECT BWPRH BWPEI MATNR
+    INTO CORRESPONDING FIELDS OF TABLE LT_MBEW
+    FROM MBEW
+    WHERE MATNR LIKE 'JG-A03-%'.
+
+  LOOP AT LT_MBEW INTO LS_MBEW.
+    LOOP AT GT_TOTAL INTO GS_TOTAL.
+      IF GS_TOTAL-MATNR = LS_MBEW-MATNR.
+        GS_TOTAL-PRICE = LS_MBEW-BWPRH / LS_MBEW-BWPEI * 10.
+        MODIFY GT_TOTAL FROM GS_TOTAL.
+      ENDIF.
+
+      CLEAR :   GS_TOTAL.
+    ENDLOOP.
+    CLEAR :   LS_MBEW.
+
+  ENDLOOP.
+
+ENDFORM.
+*&---------------------------------------------------------------------*
+*& Form UPLOAD_DATA
+*&---------------------------------------------------------------------*
+*& text
+*&---------------------------------------------------------------------*
+*& -->  p1        text
+*& <--  p2        text
+*&---------------------------------------------------------------------*
+FORM UPLOAD_DATA .
+
+  DATA : LT_UPLOAD TYPE TABLE OF YTJG_BP_EVAL,
+        LT_BP_EVAL TYPE TABLE OF YTJG_BP_EVAL,
+         LS_UPLOAD TYPE   YTJG_BP_EVAL.
+  DATA : LV_MODI TYPE CHAR01.
+
+  CLEAR : LV_MODI, LT_UPLOAD, LS_UPLOAD.
+  PERFORM ASK_POPUP.
+  PERFORM SAVE_WEIGHT. "DB# #### ####
+
+  IF GV_EXIT2 IS INITIAL AND GV_EXIT IS INITIAL.
+    SELECT *
+      INTO CORRESPONDING FIELDS OF TABLE LT_BP_EVAL
+      FROM YTJG_BP_EVAL
+      WHERE WEEK = GV_WEEK.
+
+    CLEAR : LS_UPLOAD.
+    LOOP AT GT_TOTAL INTO GS_TOTAL.
+
+READ TABLE LT_BP_EVAL INTO LS_UPLOAD WITH KEY MATNR = GS_TOTAL-MATNR LIFNR = GS_TOTAL-LIFNR WEEK = GV_WEEK.
+      IF SY-SUBRC <> 0 .  "######
+        LS_UPLOAD-ERDAT = SY-DATUM.
+        LS_UPLOAD-ERZET = SY-UZEIT.
+        LS_UPLOAD-ERNAM = SY-UNAME.
+
+      ELSE.             "####
+        LS_UPLOAD-AEDAT = SY-DATUM.
+        LS_UPLOAD-AEZET = SY-UZEIT.
+        LS_UPLOAD-AENAM = SY-UNAME.
+
+      ENDIF.
+
+
+      "####
+      LS_UPLOAD-WEEK = GV_WEEK.
+      LS_UPLOAD-MATNR = GS_TOTAL-MATNR.
+      LS_UPLOAD-LIFNR = GS_TOTAL-LIFNR.
+      LS_UPLOAD-DELAY = GS_TOTAL-DELAY.
+      LS_UPLOAD-DELAY_SCORE = GS_TOTAL-DELAY_SCORE.
+      LS_UPLOAD-UNTPR = GS_TOTAL-UNTPR.
+      LS_UPLOAD-PRCHG = GS_TOTAL-PRCHG.
+      LS_UPLOAD-UNTPR_SCORE = GS_TOTAL-UNTPR_SCORE.
+      LS_UPLOAD-PRCHG_SCORE = GS_TOTAL-PRCHG_SCORE.
+      LS_UPLOAD-PRICE_SCORE = GS_TOTAL-PRICE_SCORE.
+      LS_UPLOAD-BADRT =  GS_TOTAL-BADRT.
+      LS_UPLOAD-BADSC =  GS_TOTAL-BADSC.
+      LS_UPLOAD-FRESH_SCORE =   GS_TOTAL-FRESH.
+      LS_UPLOAD-TOTAL =    GS_TOTAL-TOTAL.
+      LS_UPLOAD-WAERS = 'USD'.
+
+      IF SY-BATCH = 'X'."### ##
+        LS_UPLOAD-UPLOAD = 'B'. "batchjob ## ###
+      ELSE.
+        LS_UPLOAD-UPLOAD = 'X'.  "#### ###
+      ENDIF.
+
+
+
+      APPEND LS_UPLOAD TO LT_UPLOAD.
+
+      CLEAR LS_UPLOAD.
+    ENDLOOP.
+
+    IF LT_UPLOAD IS NOT INITIAL.
+
+      MODIFY YTJG_BP_EVAL FROM TABLE LT_UPLOAD.
+      IF SY-SUBRC = 0.
+
+        MESSAGE S005. "##### ########.
+        COMMIT WORK.
+
+      ELSE.
+        MESSAGE S004 DISPLAY LIKE 'E'. "######.
+        ROLLBACK WORK.
+      ENDIF.
+    ENDIF.
+
+
+  ELSEIF GV_EXIT = 'X' OR GV_EXIT2 = 'X'.
+    MESSAGE S020 DISPLAY LIKE 'E'.     "##
+  ENDIF.
+
+
+ENDFORM.
+*&---------------------------------------------------------------------*
+*& Form ASK_POPUP
+*&---------------------------------------------------------------------*
+*& text
+*&---------------------------------------------------------------------*
+*& -->  p1        text
+*& <--  p2        text
+*&---------------------------------------------------------------------*
+FORM ASK_POPUP .
+
+  DATA : LV_COMMAND TYPE CHAR50,
+         LV_ANSWER  TYPE CHAR02,
+         LV_WEEK    TYPE CHAR02.
+  LV_WEEK = GV_WEEK+4(2).
+  LV_COMMAND = '### ###'&& LV_WEEK && '# : ' && S_DATE-LOW && '~' && S_DATE-HIGH && '###.'.
+  CLEAR GV_EXIT.
+  CALL FUNCTION 'POPUP_TO_CONFIRM'
+    EXPORTING
+      TITLEBAR              = '## ## ####'
+      TEXT_QUESTION         = LV_COMMAND
+      TEXT_BUTTON_1         = '#'
+      ICON_BUTTON_1         = 'ICON_CHECKED'
+      TEXT_BUTTON_2         = '###'
+      ICON_BUTTON_2         = 'ICON_INCOMPLETE'
+      DISPLAY_CANCEL_BUTTON = SPACE
+    IMPORTING
+      ANSWER                = LV_ANSWER.
+
+  IF LV_ANSWER = 2.
+    GV_EXIT = 'X'.
+  ENDIF.
+
+ENDFORM.
+*&---------------------------------------------------------------------*
+*& Form SET_DATE
+*&---------------------------------------------------------------------*
+*& text
+*&---------------------------------------------------------------------*
+*& -->  p1        text
+*& <--  p2        text
+*&---------------------------------------------------------------------*
+FORM SET_DATE .
+  IF SY-BATCH = 'X'.
+    P_DATE = SY-DATUM - 1.  "## #### ####
+  ENDIF.
+ENDFORM.
+*&---------------------------------------------------------------------*
+*& Form SET_SORT
+*&---------------------------------------------------------------------*
+*& text
+*&---------------------------------------------------------------------*
+*& -->  p1        text
+*& <--  p2        text
+*&---------------------------------------------------------------------*
+FORM SET_SORT .
+  CLEAR GS_SORT.
+  GS_SORT-FIELDNAME = 'MATNR'.
+  GS_SORT-UP = 'X'.
+  APPEND GS_SORT TO GT_SORT.
+
+
+ENDFORM.
+*&---------------------------------------------------------------------*
+*& Form GET_WEIGHT
+*&---------------------------------------------------------------------*
+*& text
+*&---------------------------------------------------------------------*
+*& -->  p1        text
+*& <--  p2        text
+*&---------------------------------------------------------------------*
+FORM GET_WEIGHT .
+  "###  ####
+  CLEAR GT_WEIGHT.
+  SELECT *
+    INTO CORRESPONDING FIELDS OF TABLE GT_WEIGHT
+    FROM YTJG_WEIGHT.
+
+  SORT GT_WEIGHT DESCENDING BY ERDAT ERZET.
+
+
+  READ TABLE GT_WEIGHT INTO GS_FIRST INDEX 1. "### ####
+
+
+
+ENDFORM.
+*&---------------------------------------------------------------------*
+*& Form APPLY_WEIGHT
+*&---------------------------------------------------------------------*
+*& text
+*&---------------------------------------------------------------------*
+*& -->  p1        text
+*& <--  p2        text
+*&---------------------------------------------------------------------*
+FORM APPLY_WEIGHT .
+*DATA : LS_WEIGHT LIKE GS_WEIGHT.
+*LS_WEIGHT = GS_WEIGHT.
+
+
+  CALL METHOD GO_GRID1->CHECK_CHANGED_DATA.
+*  IF GS_WEIGHT-R_BADSC <> LS_WEIGHT-R_BADSC OR "##### ## #
+*     GS_WEIGHT-R_FRESH <> LS_WEIGHT-R_FRESH OR
+*     GS_WEIGHT-R_DELAY <> LS_WEIGHT-R_DELAY OR
+*     GS_WEIGHT-R_PRICE <> LS_WEIGHT-R_PRICE OR
+*     GS_WEIGHT-P_BADSC <> LS_WEIGHT-P_BADSC OR
+*     GS_WEIGHT-P_DELAY <> LS_WEIGHT-P_DELAY OR
+*     GS_WEIGHT-P_PRICE <> LS_WEIGHT-P_PRICE.
+    IF GS_WEIGHT-R_BADSC + GS_WEIGHT-R_FRESH + GS_WEIGHT-R_DELAY + GS_WEIGHT-R_PRICE <> 100.
+      MESSAGE S021 DISPLAY LIKE 'E'.  "## #### ## 100# ######.
+    ELSE.
+      IF GS_WEIGHT-P_BADSC + GS_WEIGHT-P_DELAY + GS_WEIGHT-P_PRICE <> 100.
+        MESSAGE S022 DISPLAY LIKE 'E'.  "## #### ## 100# ######.
+      ELSE.
+        "####
+        "#### #### #### #######.
+        MESSAGE S024.
+        PERFORM TOTAL_SCORE.
+        PERFORM REFRESH_ALV.
+      ENDIF.
+    ENDIF.
+
+*  ENDIF.
+ENDFORM.
+*&---------------------------------------------------------------------*
+*& Form SAVE_WEIGHT
+*&---------------------------------------------------------------------*
+*& text
+*&---------------------------------------------------------------------*
+*& -->  p1        text
+*& <--  p2        text
+*&---------------------------------------------------------------------*
+FORM SAVE_WEIGHT .
+
+  IF GV_EXIT <> 'X'.
+
+
+    CALL METHOD GO_GRID1->CHECK_CHANGED_DATA.
+    IF GS_WEIGHT-R_BADSC <> GS_FIRST-R_BADSC OR "##### ## #
+       GS_WEIGHT-R_FRESH <> GS_FIRST-R_FRESH OR
+       GS_WEIGHT-R_DELAY <> GS_FIRST-R_DELAY OR
+       GS_WEIGHT-R_PRICE <> GS_FIRST-R_PRICE OR
+       GS_WEIGHT-P_BADSC <> GS_FIRST-P_BADSC OR
+       GS_WEIGHT-P_DELAY <> GS_FIRST-P_DELAY OR
+       GS_WEIGHT-P_PRICE <> GS_FIRST-P_PRICE.
+
+
+      IF GS_WEIGHT-R_BADSC + GS_WEIGHT-R_FRESH + GS_WEIGHT-R_DELAY + GS_WEIGHT-R_PRICE <> 100.
+        MESSAGE S021 DISPLAY LIKE 'E'.  "## #### ## 100# ######.
+      ELSE.
+        IF GS_WEIGHT-P_BADSC + GS_WEIGHT-P_DELAY + GS_WEIGHT-P_PRICE <> 100.
+          MESSAGE S022 DISPLAY LIKE 'E'.  "## #### ## 100# ######.
+        ELSE.
+          "####
+          CLEAR GV_EXIT2.
+          PERFORM POPUP_TO_COMFIRM.
+          IF GV_EXIT2 <> 'X'.
+
+            GS_WEIGHT-ERDAT = SY-DATUM.
+            GS_WEIGHT-ERZET = SY-UZEIT.
+            GS_WEIGHT-ERNAM = SY-UNAME.
+
+            MODIFY YTJG_WEIGHT FROM GS_WEIGHT.
+
+            IF SY-SUBRC = 0.
+              "####
+              COMMIT WORK.
+              MESSAGE S023. "## #### #######.
+
+            ELSE.
+              ROLLBACK WORK.
+              "####
+              MESSAGE S004. "######.
+            ENDIF.
+          ELSE.
+            MESSAGE S005. "######.
+          ENDIF.
+        ENDIF.
+      ENDIF.
+    ELSE.
+      MESSAGE S025 DISPLAY LIKE 'E'. "#### ### ####.
+    ENDIF.
+
+  ENDIF.
+
+
+ENDFORM.
+*&---------------------------------------------------------------------*
+*& Form STANDARD_PERIOD
+*&---------------------------------------------------------------------*
+*& text
+*&---------------------------------------------------------------------*
+*& -->  p1        text
+*& <--  p2        text
+*&---------------------------------------------------------------------*
+FORM STANDARD_PERIOD USING PV_DATE_LOW TYPE SCAL-DATE
+                           PV_DATE_HIGH TYPE SCAL-DATE
+                           PT_DISP LIKE GT_DISP.
+
+
+  CLEAR : PT_DISP.
+
+  SELECT
+       EKET~EINDT EKET~EBELN "EKET ## ### PO#
+         EKPO~AEDAT EKPO~ELIKZ "EKPO PO### ######
+         MSEG~MBLNR MSEG~LIFNR MSEG~MATNR MSEG~BUDAT_MKPF AS DLDAT MSEG~USNAM_MKPF AS USNAM  "MSEG DO# ###
+         MSEG~WEMPF AS BADEA MSEG~ABLAD AS FRESH MSEG~MENGE AS ENTEA
+         EKPO~MEINS EKPO~MENGE EKPO~NETPR      " ## #### ### ##
+    INTO CORRESPONDING FIELDS OF TABLE PT_DISP
+    FROM EKET
+    INNER JOIN EKPO
+      ON EKET~EBELN = EKPO~EBELN
+    INNER JOIN MSEG
+    ON EKPO~EBELN = MSEG~EBELN
+    WHERE MSEG~MBLNR <> ''
+    AND MSEG~WERKS = '5131'
+    AND MSEG~BUDAT_MKPF BETWEEN PV_DATE_LOW AND PV_DATE_HIGH. "####
+
+
+
+ENDFORM.
+*&---------------------------------------------------------------------*
+*& Form POPUP
+*&---------------------------------------------------------------------*
+*& text
+*&---------------------------------------------------------------------*
+*      -->P_LV_TEXT  text
+*&---------------------------------------------------------------------*
+*& Form POPUP_TO_COMFIRM
+*&---------------------------------------------------------------------*
+*& text
+*&---------------------------------------------------------------------*
+*& -->  p1        text
+*& <--  p2        text
+*&---------------------------------------------------------------------*
+FORM POPUP_TO_COMFIRM .
+  DATA : LV_TEXT   TYPE CHAR50,
+         LV_ANSWER TYPE CHAR02.
+
+  LV_TEXT = '#### :' && SY-DATUM && '### : '&& SY-UNAME && '## #####. ########?'.
+  CLEAR GV_EXIT.
+  CALL FUNCTION 'POPUP_TO_CONFIRM'
+    EXPORTING
+      TITLEBAR              = '## ## ####'
+      TEXT_QUESTION         = LV_TEXT
+      TEXT_BUTTON_1         = '#'
+      ICON_BUTTON_1         = 'ICON_CHECKED'
+      TEXT_BUTTON_2         = '###'
+      ICON_BUTTON_2         = 'ICON_INCOMPLETE'
+      DISPLAY_CANCEL_BUTTON = SPACE
+    IMPORTING
+      ANSWER                = LV_ANSWER.
+
+  IF LV_ANSWER = 2.
+    GV_EXIT2 = 'X'.
+  ENDIF.
+
+
+ENDFORM.
+*&---------------------------------------------------------------------*
+*& Form DISPLAY_GO_GRID1
+*&---------------------------------------------------------------------*
+*& text
+*&---------------------------------------------------------------------*
+*& -->  p1        text
+*& <--  p2        text
+*&---------------------------------------------------------------------*
+FORM DISPLAY_GO_GRID1 .
+  CALL METHOD GO_GRID1->SET_TABLE_FOR_FIRST_DISPLAY
+    EXPORTING
+*     I_BUFFER_ACTIVE =
+*     I_BYPASSING_BUFFER            =
+*     I_CONSISTENCY_CHECK           =
+*     I_STRUCTURE_NAME              =
+*     IS_VARIANT      =
+*     I_SAVE          =
+*     I_DEFAULT       = 'X'
+      IS_LAYOUT       = GS_LAYOUT
+*     IS_PRINT        =
+*     IT_SPECIAL_GROUPS             =
+*     IT_TOOLBAR_EXCLUDING          =
+*     IT_HYPERLINK    =
+*     IT_ALV_GRAPHICS =
+*     IT_EXCEPT_QINFO =
+*     IR_SALV_ADAPTER =
+    CHANGING
+      IT_OUTTAB       = GT_TOTAL
+      IT_FIELDCATALOG = GT_FCAT
+      IT_SORT         = GT_SORT
+*     IT_FILTER       =
+*    EXCEPTIONS
+*     INVALID_PARAMETER_COMBINATION = 1
+*     PROGRAM_ERROR   = 2
+*     TOO_MANY_LINES  = 3
+*     OTHERS          = 4
+    .
+  IF SY-SUBRC <> 0.
+*   Implement suitable error handling here
+  ENDIF.
+ENDFORM.
+*&---------------------------------------------------------------------*
+*& Form DISPLAY_GO_GRID2
+*&---------------------------------------------------------------------*
+*& text
+*&---------------------------------------------------------------------*
+*& -->  p1        text
+*& <--  p2        text
+*&---------------------------------------------------------------------*
+FORM DISPLAY_GO_GRID2 .
+  CALL METHOD GO_GRID2->SET_TABLE_FOR_FIRST_DISPLAY
+    EXPORTING
+*     I_BUFFER_ACTIVE =
+*     I_BYPASSING_BUFFER            =
+*     I_CONSISTENCY_CHECK           =
+*     I_STRUCTURE_NAME              =
+*     IS_VARIANT      =
+*     I_SAVE          =
+*     I_DEFAULT       = 'X'
+      IS_LAYOUT       = GS_LAYOUT
+*     IS_PRINT        =
+*     IT_SPECIAL_GROUPS             =
+*     IT_TOOLBAR_EXCLUDING          =
+*     IT_HYPERLINK    =
+*     IT_ALV_GRAPHICS =
+*     IT_EXCEPT_QINFO =
+*     IR_SALV_ADAPTER =
+    CHANGING
+      IT_OUTTAB       = GT_STTOTAL
+      IT_FIELDCATALOG = GT_FCAT
+      IT_SORT         = GT_SORT
+*     IT_FILTER       =
+*    EXCEPTIONS
+*     INVALID_PARAMETER_COMBINATION = 1
+*     PROGRAM_ERROR   = 2
+*     TOO_MANY_LINES  = 3
+*     OTHERS          = 4
+    .
+  IF SY-SUBRC <> 0.
+*   Implement suitable error handling here
+  ENDIF.
+ENDFORM.
+*&---------------------------------------------------------------------*
+*& Form EVAL_TABLE
+*&---------------------------------------------------------------------*
+*& text
+*&---------------------------------------------------------------------*
+*& -->  p1        text
+*& <--  p2        text
+*&---------------------------------------------------------------------*
+FORM EVAL_TABLE .
+
+  CALL TRANSACTION 'ZSF01_03_MM_02' AND SKIP FIRST SCREEN.
+
+ENDFORM.
+*&---------------------------------------------------------------------*
+*& Form LOCK_OBJECT
+*&---------------------------------------------------------------------*
+*& text
+*&---------------------------------------------------------------------*
+*& -->  p1        text
+*& <--  p2        text
+*&---------------------------------------------------------------------*
+FORM LOCK_OBJECT .
+
+
+  CALL FUNCTION 'ENQUEUE_EZTAB1'
+    EXPORTING
+      MODE_YTJG_BP_EVAL = 'E'
+     MANDT             = SY-MANDT
+*     WEEK              = GV_WEEK
+*     MATNR             =
+*     LIFNR             =
+*     X_WEEK            = ' '
+*     X_MATNR           = ' '
+*     X_LIFNR           = ' '
+*     _SCOPE            = '2'
+*     _WAIT             = ' '
+*     _COLLECT          = ' '
+* EXCEPTIONS
+*     FOREIGN_LOCK      = 1
+*     SYSTEM_FAILURE    = 2
+*     OTHERS            = 3
+    .
+
+
+
+
+ENDFORM.
+*&---------------------------------------------------------------------*
+*& Form UNLOCK_OBJECT
+*&---------------------------------------------------------------------*
+*& text
+*&---------------------------------------------------------------------*
+*& -->  p1        text
+*& <--  p2        text
+*&---------------------------------------------------------------------*
+FORM UNLOCK_OBJECT .
+
+  CALL FUNCTION 'DEQUEUE_EZTAB1'
+    EXPORTING
+      MODE_YTJG_BP_EVAL = 'S'
+*     MANDT             = SY-MANDT
+*     WEEK              =
+*     MATNR             =
+*     LIFNR             =
+*     X_WEEK            = ' '
+*     X_MATNR           = ' '
+*     X_LIFNR           = ' '
+*     _SCOPE            = '3'
+*     _SYNCHRON         = ' '
+*     _COLLECT          = ' '
+    .
+
+
+
+ENDFORM.
+
+----------------------------------------------------------------------------------
+Extracted by Direct Download Enterprise version 1.3.1 - E.G.Mellodew. 1998-2005 UK. Sap Release 751
