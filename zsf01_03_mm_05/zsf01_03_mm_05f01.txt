@@ -1,0 +1,711 @@
+*&---------------------------------------------------------------------*
+*& Include          YR0127_0360F01
+*&---------------------------------------------------------------------*
+*&---------------------------------------------------------------------*
+*& Form DISPLAY_ALV
+*&---------------------------------------------------------------------*
+*& text
+*&---------------------------------------------------------------------*
+*& -->  p1        text
+*& <--  p2        text
+*&---------------------------------------------------------------------*
+FORM DISPLAY_ALV .
+
+  CALL METHOD GO_GRID1->SET_TABLE_FOR_FIRST_DISPLAY
+    EXPORTING
+      IS_LAYOUT       = GS_LAYOUT1
+    CHANGING
+      IT_OUTTAB       = GT_DISP
+      IT_FIELDCATALOG = GT_FCAT1
+      IT_SORT         = GT_SORT.
+
+
+ENDFORM.
+*&---------------------------------------------------------------------*
+*& Form SET_FIELDCAT
+*&---------------------------------------------------------------------*
+*& text
+*&---------------------------------------------------------------------*
+*& -->  p1        text
+*& <--  p2        text
+*&---------------------------------------------------------------------*
+FORM SET_FIELDCAT .
+
+  CLEAR : GT_FCAT1.
+  PERFORM SET_FCAT CHANGING GT_FCAT1. " ITEM ##(##  GRID)
+
+
+
+ENDFORM.
+*&---------------------------------------------------------------------*
+*& Form SET_LAYOUT
+*&---------------------------------------------------------------------*
+*& text
+*&---------------------------------------------------------------------*
+*& -->  p1        text
+*& <--  p2        text
+*&---------------------------------------------------------------------*
+FORM SET_LAYOUT .
+
+  CLEAR GS_LAYOUT1.
+  GS_LAYOUT1-ZEBRA = 'X'.
+  GS_LAYOUT1-CWIDTH_OPT = 'A'.
+  GS_LAYOUT1-SEL_MODE = 'D'.
+  GS_LAYOUT1-STYLEFNAME  ='STYLE'.
+
+ENDFORM.
+*&---------------------------------------------------------------------*
+*& Form REFRESH_ALV
+*&---------------------------------------------------------------------*
+*& text
+*&---------------------------------------------------------------------*
+*& -->  p1        text
+*& <--  p2        text
+*&---------------------------------------------------------------------*
+FORM REFRESH_ALV .
+
+  CALL METHOD GO_GRID1->REFRESH_TABLE_DISPLAY.
+
+ENDFORM.
+*&---------------------------------------------------------------------*
+*& Form HANDLE_DOUBLE_CLICK
+*&---------------------------------------------------------------------*
+*& text
+*&---------------------------------------------------------------------*
+*      -->P_E_ROW  text
+*      -->P_E_COLUMN  text
+*&---------------------------------------------------------------------*
+
+*&---------------------------------------------------------------------*
+*& Form SET_EVENT
+*&---------------------------------------------------------------------*
+*& text
+*&---------------------------------------------------------------------*
+*& -->  p1        text
+*& <--  p2        text
+*&---------------------------------------------------------------------*
+FORM SET_EVENT .
+
+  CREATE OBJECT GO_EVENT_RECEIVER.
+
+
+  SET HANDLER GO_EVENT_RECEIVER->HANDLE_DOUBLE_CLICK
+          FOR GO_GRID1.
+
+  SET HANDLER GO_EVENT_RECEIVER->HANDLE_HOTSPOT_CLICK
+         FOR GO_GRID1.
+
+
+  CALL METHOD GO_GRID1->REGISTER_EDIT_EVENT
+    EXPORTING
+      I_EVENT_ID = CL_GUI_ALV_GRID=>MC_EVT_MODIFIED.
+
+
+
+
+ENDFORM.
+*&---------------------------------------------------------------------*
+*& Form GET_HEADER_DATA
+*&---------------------------------------------------------------------*
+*& text
+*&---------------------------------------------------------------------*
+*& -->  p1        text
+*& <--  p2        text
+*&---------------------------------------------------------------------*
+FORM GET_HEADER_DATA .
+
+
+
+
+
+
+ENDFORM.
+*&---------------------------------------------------------------------*
+*& Form HANDLE_HOTSPOT_CLICK
+*&---------------------------------------------------------------------*
+*& text
+*&---------------------------------------------------------------------*
+*      -->P_E_ROW_ID  text
+*      -->P_E_COLUMN_ID  text
+*&---------------------------------------------------------------------*
+
+*&---------------------------------------------------------------------*
+*& Form REFRESH_GRID2
+*&---------------------------------------------------------------------*
+*& text
+*&---------------------------------------------------------------------*
+*& -->  p1        text
+*& <--  p2        text
+*&---------------------------------------------------------------------*
+FORM REFRESH_GRID2 .
+
+  CALL METHOD GO_GRID2->REFRESH_TABLE_DISPLAY.
+
+ENDFORM.
+*&---------------------------------------------------------------------*
+*& Form CREATE_GR
+*&---------------------------------------------------------------------*
+*& text
+*&---------------------------------------------------------------------*
+*& -->  p1        text
+*& <--  p2        text
+*&---------------------------------------------------------------------*
+
+*&---------------------------------------------------------------------*
+*& Form GET_PERIOD
+*&---------------------------------------------------------------------*
+*& text
+*&---------------------------------------------------------------------*
+*& -->  p1        text
+*& <--  p2        text
+*&---------------------------------------------------------------------*
+
+*&---------------------------------------------------------------------*
+*& Form GET_BATCH
+*&---------------------------------------------------------------------*
+*& text
+*&---------------------------------------------------------------------*
+*& -->  p1        text
+*& <--  p2        text
+*&---------------------------------------------------------------------*
+
+*&---------------------------------------------------------------------*
+*& Form BATCH_DAT1
+*&---------------------------------------------------------------------*
+*& text
+*&---------------------------------------------------------------------*
+*& -->  p1        text
+*& <--  p2        text
+*&---------------------------------------------------------------------*
+FORM BATCH_DAT1 .
+
+  IF GV_DAY = 1.
+    GV_BATCH = 10.
+  ELSEIF GV_DAY = 2.
+    GV_BATCH = 20.
+  ELSEIF GV_DAY = 3.
+    GV_BATCH = 30.
+  ELSEIF GV_DAY = 4.
+    GV_BATCH = 40.
+  ELSEIF GV_DAY = 5.
+    GV_BATCH = 50.
+  ELSEIF GV_DAY = 6.
+    GV_BATCH = 60.
+  ELSEIF GV_DAY = 7.
+    GV_BATCH = 70.
+  ENDIF.
+
+
+
+ENDFORM.
+*&---------------------------------------------------------------------*
+*& Form BATCH_DAT2
+*&---------------------------------------------------------------------*
+*& text
+*&---------------------------------------------------------------------*
+*& -->  p1        text
+*& <--  p2        text
+*&---------------------------------------------------------------------*
+FORM BATCH_DAT2 .
+
+  IF GV_DAY = 1.
+    GV_BATCH = 'Y10'.
+  ELSEIF GV_DAY = 2.
+    GV_BATCH = 'Y20'.
+  ELSEIF GV_DAY = 3.
+    GV_BATCH = 'Y30'.
+  ELSEIF GV_DAY = 4.
+    GV_BATCH = 'Y40'.
+  ELSEIF GV_DAY = 5.
+    GV_BATCH = 'Y50'.
+  ELSEIF GV_DAY = 6.
+    GV_BATCH = 'Y60'.
+  ELSEIF GV_DAY = 7.
+    GV_BATCH = 'Y70'.
+  ENDIF.
+
+
+ENDFORM.
+*&---------------------------------------------------------------------*
+*& Form BATCH_DAT4
+*&---------------------------------------------------------------------*
+*& text
+*&---------------------------------------------------------------------*
+*& -->  p1        text
+*& <--  p2        text
+*&---------------------------------------------------------------------*
+FORM BATCH_DAT4 .
+
+  IF GV_DAY = 1.
+    GV_BATCH = 'M10'.
+  ELSEIF GV_DAY = 2.
+    GV_BATCH = 'M20'.
+  ELSEIF GV_DAY = 3.
+    GV_BATCH = 'M30'.
+  ELSEIF GV_DAY = 4.
+    GV_BATCH = 'M40'.
+  ELSEIF GV_DAY = 5.
+    GV_BATCH = 'M50'.
+  ELSEIF GV_DAY = 6.
+    GV_BATCH = 'M60'.
+  ELSEIF GV_DAY = 7.
+    GV_BATCH = 'M70'.
+  ENDIF.
+
+
+ENDFORM.
+
+*&---------------------------------------------------------------------*
+*& Form CHECK_TERMS
+*&---------------------------------------------------------------------*
+*& text
+*&---------------------------------------------------------------------*
+*& -->  p1        text
+*& <--  p2        text
+*&---------------------------------------------------------------------*
+
+*&---------------------------------------------------------------------*
+*& Form GET_ITEM
+*&---------------------------------------------------------------------*
+*& text
+*&---------------------------------------------------------------------*
+*& -->  p1        text
+*& <--  p2        text
+*&---------------------------------------------------------------------*
+FORM GET_ITEM .
+
+  DATA : LT_EKPO TYPE TABLE OF EKPO,
+         LS_EKPO TYPE EKPO.
+
+  CLEAR GT_DISP_ITEM.
+
+  SELECT LGORT WERKS CHARG MATNR CLABS
+
+    INTO CORRESPONDING FIELDS OF TABLE GT_DISP_ITEM
+    FROM MCHB
+  WHERE WERKS = '5131'
+  AND LGORT = '1000' "###### 1000##
+
+  AND MATNR BETWEEN 'JG-A03-P01' AND 'JG-A03-R06'.
+
+
+
+
+  IF SY-SUBRC NE 0.
+    MESSAGE S004.         "### ## #### ####.
+    LEAVE LIST-PROCESSING.
+  ENDIF.
+
+  SELECT MATNR MEINS TXZ01 MATKL
+    INTO CORRESPONDING FIELDS OF TABLE LT_EKPO
+    FROM EKPO
+    WHERE WERKS = '5131'
+     AND  MATKL = 'JG01'.
+
+  LOOP AT GT_DISP_ITEM INTO GS_DISP_ITEM.
+    READ TABLE LT_EKPO INTO LS_EKPO WITH KEY MATNR = GS_DISP_ITEM-MATNR.
+    GS_DISP_ITEM-MEINS = LS_EKPO-MEINS.
+    GS_DISP_ITEM-TXZ01 = LS_EKPO-TXZ01.
+    MODIFY GT_DISP_ITEM FROM GS_DISP_ITEM.
+  ENDLOOP.
+
+  SORT GT_DISP_ITEM BY MATNR.
+
+
+
+  PERFORM COLLECT_ITEM.
+  "### ## DEFAULT### #######
+  "#### # ## ### ##### ##
+
+   DATA : LV_DATE TYPE SYST-DATUM.
+ CLEAR LV_DATE.
+  LOOP AT GT_DISP INTO GS_DISP.
+    GS_DISP-MENGE = GS_DISP-CLABS.
+    MODIFY GT_DISP FROM GS_DISP.
+    LV_DATE = '20' && GS_DISP-CHARG.
+    IF + LV_DATE  < - 7 + SY-DATUM .
+      ELSE.
+      DELETE TABLE GT_DISP FROM GS_DISP.
+      ENDIF.
+  ENDLOOP.
+
+
+
+ENDFORM.
+*&---------------------------------------------------------------------*
+*& Form SET_INPUT_MODE
+*&---------------------------------------------------------------------*
+*& text
+*&---------------------------------------------------------------------*
+*& -->  p1        text
+*& <--  p2        text
+*&---------------------------------------------------------------------*
+
+*&---------------------------------------------------------------------*
+*& Form GET_ITEM_BATCH
+*&---------------------------------------------------------------------*
+*& text
+*&---------------------------------------------------------------------*
+*& -->  p1        text
+*& <--  p2        text
+*&---------------------------------------------------------------------*
+
+*&---------------------------------------------------------------------*
+*& Form ARRANGE_GT_DISP_ITEM
+*&---------------------------------------------------------------------*
+*& text
+*&---------------------------------------------------------------------*
+*& -->  p1        text
+*& <--  p2        text
+*&---------------------------------------------------------------------*
+
+*&---------------------------------------------------------------------*
+*& Form NUMERIC_CHECK
+*&---------------------------------------------------------------------*
+*& text
+*&---------------------------------------------------------------------*
+*& -->  p1        text
+*& <--  p2        text
+*&---------------------------------------------------------------------*
+
+*&---------------------------------------------------------------------*
+*& Form SET_FCAT1
+*&---------------------------------------------------------------------*
+*& text
+*&---------------------------------------------------------------------*
+*      <--P_GT_FCAT1  text
+*&---------------------------------------------------------------------*
+FORM SET_FCAT  CHANGING PT_FCAT LIKE GT_FCAT1.
+
+  CLEAR GS_FCAT.
+  GS_FCAT-FIELDNAME = 'STAT'.
+  GS_FCAT-COLTEXT   = 'STATUS'.
+  APPEND GS_FCAT TO PT_FCAT.
+  CLEAR GS_FCAT.
+  GS_FCAT-FIELDNAME = 'MENGE'.
+  GS_FCAT-COLTEXT   = '### ##'.
+  GS_FCAT-EDIT      = 'X'.
+
+  APPEND GS_FCAT TO PT_FCAT.
+
+  CLEAR GS_FCAT.
+  GS_FCAT-FIELDNAME = 'MATNR'.
+  GS_FCAT-COLTEXT   = '####'.
+  APPEND GS_FCAT TO PT_FCAT.
+
+  CLEAR GS_FCAT.
+  GS_FCAT-FIELDNAME = 'TXZ01'.
+  GS_FCAT-COLTEXT   = '##'.
+  APPEND GS_FCAT TO PT_FCAT.
+
+  CLEAR GS_FCAT.
+  GS_FCAT-FIELDNAME = 'CHARG'.
+  GS_FCAT-COLTEXT   = '####'.
+  APPEND GS_FCAT TO PT_FCAT.
+
+  CLEAR GS_FCAT.
+  GS_FCAT-FIELDNAME = 'CLABS'.
+  GS_FCAT-COLTEXT   = '## ##'.
+  APPEND GS_FCAT TO PT_FCAT.
+
+  CLEAR GS_FCAT.
+  GS_FCAT-FIELDNAME = 'MEINS'.
+  GS_FCAT-COLTEXT   = '##'.
+  APPEND GS_FCAT TO PT_FCAT.
+
+  CLEAR GS_FCAT.
+  GS_FCAT-FIELDNAME = 'MBLNR'.
+  GS_FCAT-COLTEXT   = '####'.
+  GS_FCAT-HOTSPOT = 'X'.
+  APPEND GS_FCAT TO PT_FCAT.
+
+
+
+
+ENDFORM.
+*&---------------------------------------------------------------------*
+*& Form COLLECT_ITEM
+*&---------------------------------------------------------------------*
+*& text
+*&---------------------------------------------------------------------*
+*& -->  p1        text
+*& <--  p2        text
+*&---------------------------------------------------------------------*
+FORM COLLECT_ITEM .
+DATA : BEGIN OF LS_DISP,
+
+          LGORT TYPE MCHB-LGORT,      "STORAGE LOCATION
+         WERKS TYPE MCHB-WERKS,      "PLANT
+         CHARG TYPE MCHB-CHARG,      "####
+         MATNR TYPE MCHB-MATNR,      "####
+*         MTART TYPE MARA-MTART,      "####
+         CLABS TYPE MCHB-CLABS,      "##
+         MENGE TYPE MCHB-CLABS,      "####
+         MEINS TYPE MARA-MEINS,      "##-##
+         TXZ01 TYPE EKPO-TXZ01, "####
+         MBLNR TYPE MSEG-MBLNR,     "######
+*         STAT  TYPE ICON-ID,
+*STYLE TYPE LVC_T_STYL,
+       END OF LS_DISP.
+       DATA : LT_DISP LIKE TABLE OF LS_DISP.
+  CLEAR GS_DISP_ITEM.
+  LOOP AT GT_DISP_ITEM INTO GS_DISP_ITEM.
+    IF GS_DISP_ITEM-CLABS <> 0.
+      MOVE-CORRESPONDING GS_DISP_ITEM TO LS_DISP.
+      COLLECT LS_DISP INTO LT_DISP.
+    ENDIF.
+    CLEAR GS_DISP_ITEM.
+  ENDLOOP.
+
+CLEAR: LS_DISP, GT_DISP, GS_DISP.
+LOOP AT LT_DISP INTO LS_DISP.
+  MOVE-CORRESPONDING LS_DISP TO GS_DISP.
+  APPEND GS_DISP TO  GT_DISP.
+  CLEAR GS_DISP.
+  ENDLOOP.
+
+
+ENDFORM.
+*&---------------------------------------------------------------------*
+*& Form SET_SORT
+*&---------------------------------------------------------------------*
+*& text
+*&---------------------------------------------------------------------*
+*& -->  p1        text
+*& <--  p2        text
+*&---------------------------------------------------------------------*
+FORM SET_SORT .
+  CLEAR GS_SORT.
+  GS_SORT-FIELDNAME = 'MATNR'.
+  GS_SORT-UP = 'X'.
+  APPEND GS_SORT TO GT_SORT.
+  CLEAR GS_SORT.
+  GS_SORT-FIELDNAME = 'TXZ01'.
+  GS_SORT-UP = 'X'.
+  APPEND GS_SORT TO GT_SORT.
+
+
+ENDFORM.
+*&---------------------------------------------------------------------*
+*& Form MOVE_TO_1100
+*&---------------------------------------------------------------------*
+*& text
+*&---------------------------------------------------------------------*
+*& -->  p1        text
+*& <--  p2        text
+*&---------------------------------------------------------------------*
+FORM MOVE_TO_1100 .
+
+  DATA: LV_MESSAGE TYPE CHAR50.
+CLEAR : GV_EXIT, GMVT_HEADER, GMVT_HEADRET,  GT_GMVT_ITEM, GT_GMVT_ITEM[], RT_BAPIRET, RT_BAPIRET[], lv_message.
+PERFORM CHECK_SELECTED_ROWS.
+
+CHECK GV_EXIT IS INITIAL.
+
+  LOOP AT GT_ROWS_HEADER INTO GS_ROWS_HEADER.
+    READ TABLE GT_DISP INTO GS_DISP INDEX GS_ROWS_HEADER-INDEX.
+
+
+* BAPI HEADER STRUCTURE
+    GMVT_HEADER-PSTNG_DATE = SY-DATUM.
+    GMVT_HEADER-DOC_DATE = SY-DATUM.
+    GMVT_HEADER-PR_UNAME = SY-UNAME.
+
+* BAPI ITEM STRUCTURE
+    GS_GMVT_ITEM-MATERIAL = GS_DISP-MATNR.
+    GS_GMVT_ITEM-PLANT = '5131'.
+    GS_GMVT_ITEM-STGE_LOC = '1000'.
+    GS_GMVT_ITEM-MOVE_TYPE = 'Z13'. "###### ##
+    GS_GMVT_ITEM-ENTRY_QNT = GS_DISP-MENGE.
+    GS_GMVT_ITEM-ENTRY_UOM = GS_DISP-MEINS.
+    GS_GMVT_ITEM-MOVE_MAT = GS_DISP-MATNR.
+    GS_GMVT_ITEM-MOVE_PLANT = '5131'.
+    GS_GMVT_ITEM-MOVE_STLOC = '1100'.
+    GS_GMVT_ITEM-MOVE_BATCH = GS_DISP-CHARG.
+    GS_GMVT_ITEM-BATCH = GS_DISP-CHARG.      " ## ##
+
+
+
+    APPEND GS_GMVT_ITEM TO GT_GMVT_ITEM.
+
+
+* Call the BAPI FM for GR posting
+  ENDLOOP.
+  CALL FUNCTION 'BAPI_GOODSMVT_CREATE'
+    EXPORTING
+      GOODSMVT_HEADER  = GMVT_HEADER
+      GOODSMVT_CODE    = '04'       "### ##
+    IMPORTING
+      GOODSMVT_HEADRET = GMVT_HEADRET
+      MATERIALDOCUMENT = GV_DOC
+    TABLES
+      GOODSMVT_ITEM    = GT_GMVT_ITEM
+      RETURN           = RT_BAPIRET[].
+
+
+
+*      MESSAGE ID SY-MSGID TYPE SY-MSGTY NUMBER SY-MSGNO
+*             INTO LV_MESSAGE
+*             WITH SY-MSGV1 SY-MSGV2 SY-MSGV3 SY-MSGV4.
+
+  CLEAR GV_GR.
+  IF SY-SUBRC = 0 AND RT_BAPIRET[] IS INITIAL.
+
+*   COMMIT
+    CALL FUNCTION 'BAPI_TRANSACTION_COMMIT'
+      EXPORTING
+        WAIT = 'X'.
+
+    GV_GR = 'X'.
+    MESSAGE S999 WITH '## ##' && GV_DOC && '# #######.'.
+
+  ELSE.
+    "####
+    CALL FUNCTION 'BAPI_TRANSACTION_ROLLBACK'
+*         IMPORTING
+*           RETURN        =
+      .
+  READ TABLE RT_BAPIRET[] INTO RT_BAPIRET INDEX 1.
+LV_MESSAGE = RT_BAPIRET-MESSAGE.
+    MESSAGE S999 DISPLAY LIKE 'E' WITH LV_MESSAGE.  "#######
+  ENDIF.
+
+ENDFORM.
+*&---------------------------------------------------------------------*
+*& Form MOVE_TO_1100
+*&---------------------------------------------------------------------*
+*& text
+*&---------------------------------------------------------------------*
+*& -->  p1        text
+*& <--  p2        text
+*&---------------------------------------------------------------------*
+*&---------------------------------------------------------------------*
+*& Form STAT_UPDATE
+*&---------------------------------------------------------------------*
+*& text
+*&---------------------------------------------------------------------*
+*& -->  p1        text
+*& <--  p2        text
+*&---------------------------------------------------------------------*
+FORM STAT_UPDATE .
+CLEAR : GS_ROWS_HEADER, GS_DISP.
+
+  IF GV_GR = 'X'.
+
+
+    LOOP AT GT_ROWS_HEADER INTO GS_ROWS_HEADER.
+      READ TABLE GT_DISP INTO GS_DISP INDEX GS_ROWS_HEADER-INDEX.
+      GS_DISP-MBLNR = GV_DOC.
+      GS_DISP-STAT = ICON_CHECKED.
+      GS_DISP-CLABS = GS_DISP-CLABS - GS_DISP-MENGE.
+      MODIFY GT_DISP FROM GS_DISP INDEX GS_ROWS_HEADER-INDEX.
+    ENDLOOP.
+
+
+
+  ENDIF.
+
+
+ENDFORM.
+*&---------------------------------------------------------------------*
+*& Form HANDLE_DOUBLE_CLICK
+*&---------------------------------------------------------------------*
+*& text
+*&---------------------------------------------------------------------*
+*      -->P_E_ROW  text
+*      -->P_E_COLUMN  text
+*&---------------------------------------------------------------------*
+FORM HANDLE_HOTSPOT_CLICK  USING    PS_ROW TYPE LVC_S_ROW
+                                    PS_COLUMN_ID TYPE LVC_S_COL
+                                    .
+
+      READ TABLE GT_DISP INTO GS_DISP
+                          INDEX PS_ROW-INDEX.
+      IF SY-SUBRC = 0 AND GS_DISP-MBLNR IS NOT INITIAL.
+
+        SET PARAMETER ID 'MBN' FIELD GS_DISP-MBLNR.
+        CALL TRANSACTION 'MIGO' AND SKIP FIRST SCREEN.
+      ENDIF.
+
+
+
+ENDFORM.
+*&---------------------------------------------------------------------*
+*& Form CHECK_SELECTED_ROWS
+*&---------------------------------------------------------------------*
+*& text
+*&---------------------------------------------------------------------*
+*& -->  p1        text
+*& <--  p2        text
+*&---------------------------------------------------------------------*
+FORM CHECK_SELECTED_ROWS .
+      DATA LV_ANSWER  TYPE C.
+  CALL METHOD GO_GRID1->CHECK_CHANGED_DATA. .
+
+  CLEAR : GT_ROWS_HEADER, GS_ROWS_HEADER.
+  CALL METHOD GO_GRID1->GET_SELECTED_ROWS
+    IMPORTING
+      ET_INDEX_ROWS = GT_ROWS_HEADER
+*     ET_ROW_NO     =
+    .
+
+    IF LINES( GT_ROWS_HEADER ) = 0.
+    MESSAGE S003 DISPLAY LIKE 'E'. "### #####
+GV_EXIT = 'X'.
+
+  ELSE.
+    CALL FUNCTION 'POPUP_TO_CONFIRM'
+      EXPORTING
+        TITLEBAR              = '##### ####'
+        TEXT_QUESTION         = '### ### ########?'
+        TEXT_BUTTON_1         = '#'
+        ICON_BUTTON_1         = 'ICON_CHECKED'
+        TEXT_BUTTON_2         = '###'
+        ICON_BUTTON_2         = 'ICON_INCOMPLETE'
+        DISPLAY_CANCEL_BUTTON = SPACE
+      IMPORTING
+        ANSWER                = LV_ANSWER.
+
+    IF LV_ANSWER = 2.
+      GV_EXIT = 'X'.
+    ENDIF.
+  ENDIF.
+  LOOP AT GT_ROWS_HEADER INTO GS_ROWS_HEADER.
+    READ TABLE GT_DISP INTO GS_DISP INDEX GS_ROWS_HEADER-INDEX.
+
+    IF GS_DISP-MENGE > GS_DISP-CLABS .
+      MESSAGE S011 DISPLAY LIKE 'E'. "##### ###### ####.
+      GV_EXIT = 'X'.
+    ENDIF.
+ENDLOOP.
+ENDFORM.
+*&---------------------------------------------------------------------*
+*& Form CLOSE_EDIT
+*&---------------------------------------------------------------------*
+*& text
+*&---------------------------------------------------------------------*
+*& -->  p1        text
+*& <--  p2        text
+*&---------------------------------------------------------------------*
+FORM CLOSE_EDIT .
+
+    DATA : LS_STYLE TYPE LVC_S_STYL.
+
+  CLEAR : GS_DISP, LS_STYLE.
+
+
+LOOP AT GT_DISP INTO GS_DISP WHERE MBLNR <> ''.
+CLEAR GS_DISP-STYLE.
+LS_STYLE-FIELDNAME = 'MENGE'.
+LS_STYLE-STYLE = CL_GUI_ALV_GRID=>MC_STYLE_DISABLED.
+
+APPEND LS_STYLE TO  GS_DISP-STYLE.
+
+MODIFY GT_DISP FROM GS_DISP.
+CLEAR LS_STYLE.
+ENDLOOP.
+
+ENDFORM.
+
+----------------------------------------------------------------------------------
+Extracted by Direct Download Enterprise version 1.3.1 - E.G.Mellodew. 1998-2005 UK. Sap Release 751

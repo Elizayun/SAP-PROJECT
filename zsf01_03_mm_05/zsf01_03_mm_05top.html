@@ -1,0 +1,86 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<html>
+<head>
+<title>ZSF01_03_MM_05TOP</title>
+</head>
+<body bgcolor="#FFFFE0">
+<font size="3" face = "Arial" color="#000000"><b>Code listing for: ZSF01_03_MM_05TOP</b></font>
+<br>
+<font size="3" face = "Arial" color="#000000"><b>Description:  Include YR0127_0360TOP</b></font>
+<hr>
+<pre width="100">
+<font color ="#0000FF">*&---------------------------------------------------------------------*</font>
+<font color ="#0000FF">*& Include          YR0127_0360TOP</font>
+<font color ="#0000FF">*&---------------------------------------------------------------------*</font>
+
+DATA : BEGIN OF GS_DISP_ITEM,
+
+          LGORT TYPE MCHB-LGORT,      "STORAGE LOCATION
+         WERKS TYPE MCHB-WERKS,      "PLANT
+         CHARG TYPE MCHB-CHARG,      "####
+         MATNR TYPE MCHB-MATNR,      "####
+<font color ="#0000FF">*         MTART TYPE MARA-MTART,      "####</font>
+         CLABS TYPE P DECIMALS 2,      "##
+         MENGE TYPE P DECIMALS 2,      "####
+         MEINS TYPE MSEG-MEINS,      "##-##
+         TXZ01 TYPE EKPO-TXZ01, "####
+         MBLNR TYPE MSEG-MBLNR,     "######
+         STAT  TYPE ICON-ID,
+STYLE TYPE LVC_T_STYL,
+       END OF GS_DISP_ITEM,
+       GT_DISP LIKE TABLE OF GS_DISP_ITEM.
+
+DATA : GT_DISP_ITEM LIKE TABLE OF GS_DISP_ITEM,
+       GS_DISP LIKE GS_DISP_ITEM.
+
+  DATA : GS_ROWS_HEADER TYPE LVC_S_ROW,
+        GT_ROWS_HEADER TYPE LVC_T_ROW.
+
+
+<font color ="#0000FF">*******************************************************</font>
+<font color ="#0000FF">*-- ALV ## ## --*</font>
+<font color ="#0000FF">*******************************************************</font>
+DATA : GO_DOCKING  TYPE REF TO CL_GUI_DOCKING_CONTAINER,
+       GO_SPLITTER TYPE REF TO CL_GUI_SPLITTER_CONTAINER,
+       GO_CONT1    TYPE REF TO CL_GUI_CONTAINER,
+       GO_CONT2    TYPE REF TO CL_GUI_CONTAINER,
+       GO_GRID1    TYPE REF TO CL_GUI_ALV_GRID,
+       GO_GRID2    TYPE REF TO CL_GUI_ALV_GRID.
+
+DATA : GT_FCAT1   TYPE LVC_T_FCAT,    "##
+       GT_FCAT2   TYPE LVC_T_FCAT,    "##
+       GS_FCAT    TYPE LVC_S_FCAT,    "#### ##
+       GS_LAYOUT1 TYPE LVC_S_LAYO,    "##
+       GS_LAYOUT2 TYPE LVC_S_LAYO.    "##
+
+DATA : GO_EVENT_RECEIVER TYPE REF TO LCL_EVENT_RECEIVER.
+
+DATA : GT_SORT TYPE LVC_T_SORT,
+       GS_SORT  LIKE LINE OF GT_SORT.
+
+DATA : GV_OKCODE TYPE SY-UCOMM.
+
+<font color ="#0000FF">*******************************************************</font>
+<font color ="#0000FF">*-- BAPI ## ## --*</font>
+<font color ="#0000FF">*******************************************************</font>
+
+DATA :GV_DAY   TYPE C,
+      GV_BATCH TYPE MSEG-CHARG,
+      GV_FRESH TYPE CHAR01,
+      GV_BADEA TYPE CHAR10.
+
+DATA: GMVT_HEADER  TYPE BAPI2017_GM_HEAD_01,
+      GS_GMVT_ITEM TYPE BAPI2017_GM_ITEM_CREATE,
+      GMVT_HEADRET TYPE BAPI2017_GM_HEAD_RET,
+      RT_BAPIRET   TYPE STANDARD TABLE OF BAPIRET2  WITH HEADER LINE,
+      GT_GMVT_ITEM TYPE STANDARD TABLE OF BAPI2017_GM_ITEM_CREATE WITH HEADER LINE,
+      GV_DOC TYPE BAPI2017_GM_HEAD_RET-MAT_DOC.
+
+DATA GV_EXIT TYPE CHAR01.
+DATA GV_GR TYPE CHAR01.
+</pre>
+<hr>
+<font size="2" face = "Sans Serif">Extracted by Direct Download Enterprise version 1.3.1 - E.G.Mellodew. 1998-2005 UK. Sap Release 751
+</font>
+</body>
+</html>
