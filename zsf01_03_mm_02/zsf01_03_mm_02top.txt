@@ -1,0 +1,62 @@
+*&---------------------------------------------------------------------*
+*& Include          YR0122_0220TOP
+*&---------------------------------------------------------------------*
+TABLES : LFA1.
+************************************
+
+DATA : BEGIN OF GS_DISP, "### ####
+
+   "####
+  MATNR TYPE EINA-MATNR, "####
+  MAKTX TYPE MAKT-MAKTX, "####
+  MATKL TYPE EINA-MATKL, "####
+  COLOR TYPE CHAR04,  "##
+  SCORE TYPE I, "##
+  GRADE TYPE I, "##
+
+  "#### ##
+  LIFNR TYPE LFA1-LIFNR,   "#####
+  LAND1 TYPE LFA1-LAND1, "##
+  NAME1 TYPE LFA1-NAME1, "####
+  ORT01 TYPE LFA1-ORT01, "##
+  TELF1 TYPE LFA1-TELF1, "##
+
+  DETAIL TYPE ICON-ID,    "###
+       END OF GS_DISP.
+
+DATA : GT_DISP LIKE TABLE OF GS_DISP.
+DATA : GV_FIRST TYPE SCAL-DATE,
+       GV_LAST TYPE SCAL-DATE.
+
+
+DATA : GT_DETAIL TYPE TABLE OF YTJG_BP_EVAL,
+       GS_DETAIL TYPE YTJG_BP_EVAL.
+***********************************************
+*ALV## ##
+**********************************************
+"100# ##
+DATA : GO_CONTAINER TYPE REF TO CL_GUI_CUSTOM_CONTAINER,
+       GO_GRID      TYPE REF TO CL_GUI_ALV_GRID.
+
+DATA GV_OKCODE TYPE SY-UCOMM.
+
+DATA : GT_FCAT   TYPE LVC_T_FCAT,
+       GS_FCAT   TYPE LVC_S_FCAT,
+       GS_LAYOUT TYPE LVC_S_LAYO.
+
+DATA : GT_SORT TYPE LVC_T_SORT,
+       GS_SORT LIKE LINE OF GT_SORT.
+"200# ##
+DATA : GO_CONTAINER200 TYPE REF TO CL_GUI_CUSTOM_CONTAINER,
+      GO_GRID200      TYPE REF TO CL_GUI_ALV_GRID.
+
+DATA : GT_FCAT200   TYPE LVC_T_FCAT,
+       GS_FCAT200   TYPE LVC_S_FCAT.
+************************************************************
+*EVENT ## ##
+****************************************************
+
+DATA : GO_EVENT_RECEIVER TYPE REF TO LCL_EVENT_RECEIVER.
+
+----------------------------------------------------------------------------------
+Extracted by Direct Download Enterprise version 1.3.1 - E.G.Mellodew. 1998-2005 UK. Sap Release 751

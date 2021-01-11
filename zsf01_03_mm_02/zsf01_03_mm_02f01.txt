@@ -1,0 +1,576 @@
+*&---------------------------------------------------------------------*
+*& Include          YR0122_0220F01
+*&---------------------------------------------------------------------*
+*&---------------------------------------------------------------------*
+*& Form GET_DATA
+*&---------------------------------------------------------------------*
+*& text
+*&---------------------------------------------------------------------*
+*& -->  p1        text
+*& <--  p2        text
+*&---------------------------------------------------------------------*
+FORM GET_DATA .
+
+  CLEAR GT_DISP.
+  DATA: LV_DATUM TYPE SY-DATUM.
+  RANGES : GR_SDAT FOR SY-DATUM.
+
+
+  SELECT
+         LFA1~LIFNR LFA1~NAME1 LFA1~LAND1 LFA1~ORT01 LFA1~TELF1
+         EINA~MATNR EINA~MATKL
+         MAKT~MAKTX
+    INTO CORRESPONDING FIELDS OF TABLE GT_DISP
+    FROM       LFA1
+    INNER JOIN EINA
+    ON LFA1~LIFNR = EINA~LIFNR
+    INNER JOIN MAKT
+    ON EINA~MATNR = MAKT~MATNR
+    WHERE LFA1~LIFNR LIKE 'BT_%'
+    and eina~matnr = 'JG-A03-R01' OR eina~matnr = 'JG-A03-R02' OR eina~matnr = 'JG-A03-R04'
+    OR eina~matnr = 'JG-A03-P01' OR eina~matnr = 'JG-A03-P02'.
+
+
+
+  SORT GT_DISP BY MATNR LIFNR.
+  DATA :
+    BEGIN OF LS_BP,
+      TOTAL TYPE YTJG_BP_EVAL-TOTAL,
+      LIFNR TYPE EKKO-LIFNR,
+      MATNR TYPE MARA-MATNR,
+      WEEK  TYPE YTJG_BP_EVAL-WEEK,
+      COUNT TYPE I,
+    END OF LS_BP,LT_BP1 LIKE TABLE OF LS_BP,
+    LT_BP  LIKE TABLE OF LS_BP.
+  SELECT TOTAL LIFNR MATNR WEEK
+    INTO CORRESPONDING FIELDS OF TABLE LT_BP1
+    FROM YTJG_BP_EVAL
+    WHERE WEEK IN S_WEEK.
+
+  LOOP AT LT_BP1 INTO LS_BP.
+    CLEAR LS_BP-WEEK.
+    LS_BP-COUNT = 1.
+    COLLECT LS_BP INTO LT_BP.
+    CLEAR LS_BP.
+  ENDLOOP.
+
+
+  LOOP AT GT_DISP INTO GS_DISP.
+    READ TABLE LT_BP INTO LS_BP WITH KEY MATNR = GS_DISP-MATNR LIFNR = GS_DISP-LIFNR.
+    IF SY-SUBRC = 0.
+      GS_DISP-SCORE = LS_BP-TOTAL / LS_BP-COUNT ."#### = ### ## # # / ### ## #
+    ENDIF.
+    GS_DISP-DETAIL = '@59@'.
+    MODIFY GT_DISP FROM GS_DISP.
+    CLEAR GS_DISP.
+  ENDLOOP.
+
+  DATA : LV_GRADE TYPE I.
+  CLEAR GS_DISP.
+  SORT GT_DISP  BY MATNR ASCENDING SCORE  DESCENDING .
+
+  LOOP AT GT_DISP INTO GS_DISP.
+    AT NEW MATNR.
+
+      CLEAR : LV_GRADE, GS_DISP-COLOR.
+    ENDAT.
+    LV_GRADE = LV_GRADE + 1. "####
+    GS_DISP-GRADE = LV_GRADE.
+    IF GS_DISP-GRADE = 1.
+      GS_DISP-COLOR = 'C310'. "1### ###
+    ELSE.
+      CLEAR GS_DISP-COLOR.
+    ENDIF.
+    MODIFY GT_DISP FROM GS_DISP.
+
+    CLEAR GS_DISP.
+
+
+  ENDLOOP.
+
+
+
+
+
+ENDFORM.
+*&---------------------------------------------------------------------*
+*& Form SET_INSTANCE
+*&---------------------------------------------------------------------*
+*& text
+*&---------------------------------------------------------------------*
+*& -->  p1        text
+*& <--  p2        text
+*&---------------------------------------------------------------------*
+FORM SET_INSTANCE .
+
+
+  CREATE OBJECT GO_CONTAINER
+    EXPORTING
+      CONTAINER_NAME = 'GO_CONTAINER'.
+
+  CREATE OBJECT GO_GRID
+    EXPORTING
+      I_PARENT = GO_CONTAINER.
+
+
+
+ENDFORM.
+*&---------------------------------------------------------------------*
+*& Form SET_FCAT
+*&---------------------------------------------------------------------*
+*& text
+*&---------------------------------------------------------------------*
+*& -->  p1        text
+*& <--  p2        text
+*&---------------------------------------------------------------------*
+FORM SET_FCAT .
+  CLEAR GT_FCAT.
+
+
+  CLEAR GS_FCAT.
+  GS_FCAT-FIELDNAME = 'MATNR'.
+  GS_FCAT-COLTEXT   = '####'.
+  GS_FCAT-REF_TABLE = 'EINA'.
+  APPEND GS_FCAT TO GT_FCAT.
+
+  CLEAR GS_FCAT.
+  GS_FCAT-FIELDNAME = 'MAKTX'.
+  GS_FCAT-COLTEXT   = '####'.
+  GS_FCAT-REF_TABLE = 'MAKT'.
+  APPEND GS_FCAT TO GT_FCAT.
+  CLEAR GS_FCAT.
+  GS_FCAT-FIELDNAME = 'LIFNR'.
+  GS_FCAT-COLTEXT   = '####'.
+  GS_FCAT-HOTSPOT = 'X'.
+  GS_FCAT-REF_TABLE = 'LFA1'.
+  APPEND GS_FCAT TO GT_FCAT.
+
+  CLEAR GS_FCAT.
+  GS_FCAT-FIELDNAME = 'GRADE'.
+  GS_FCAT-COLTEXT   = '##'.
+  APPEND GS_FCAT TO GT_FCAT.
+
+  CLEAR GS_FCAT.
+  GS_FCAT-FIELDNAME = 'SCORE'.
+  GS_FCAT-COLTEXT   = '##'.
+  APPEND GS_FCAT TO GT_FCAT.
+
+  CLEAR GS_FCAT.
+  GS_FCAT-FIELDNAME = 'NAME1'.
+  GS_FCAT-COLTEXT   = '#####'.
+  GS_FCAT-REF_TABLE = 'LFA1'.
+  APPEND GS_FCAT TO GT_FCAT.
+
+
+
+  CLEAR GS_FCAT.
+  GS_FCAT-FIELDNAME = 'ORT01'.
+  GS_FCAT-COLTEXT   = '##'.
+  GS_FCAT-REF_TABLE = 'LFA1'.
+  APPEND GS_FCAT TO GT_FCAT.
+
+  CLEAR GS_FCAT.
+  GS_FCAT-FIELDNAME = 'TELF1'.
+  GS_FCAT-COLTEXT   = '#####'.
+  GS_FCAT-REF_TABLE = 'LFA1'.
+  APPEND GS_FCAT TO GT_FCAT.
+
+
+  CLEAR GS_FCAT.
+  GS_FCAT-FIELDNAME = 'DETAIL'.
+  GS_FCAT-COLTEXT   = '####'.
+  GS_FCAT-HOTSPOT = 'X'.
+  APPEND GS_FCAT TO GT_FCAT.
+
+
+ENDFORM.
+*&---------------------------------------------------------------------*
+*& Form SET_LAYOUT
+*&---------------------------------------------------------------------*
+*& text
+*&---------------------------------------------------------------------*
+*& -->  p1        text
+*& <--  p2        text
+*&---------------------------------------------------------------------*
+FORM SET_LAYOUT .
+
+  CLEAR GS_LAYOUT.
+  GS_LAYOUT-ZEBRA       = 'X'.
+  GS_LAYOUT-CWIDTH_OPT  = 'A'.
+  GS_LAYOUT-SEL_MODE    = 'D'.
+  GS_LAYOUT-INFO_FNAME = 'COLOR'.
+
+ENDFORM.
+*&---------------------------------------------------------------------*
+*& Form DISPLAY_ALV
+*&---------------------------------------------------------------------*
+*& text
+*&---------------------------------------------------------------------*
+*& -->  p1        text
+*& <--  p2        text
+*&---------------------------------------------------------------------*
+FORM DISPLAY_ALV .
+
+  CALL METHOD GO_GRID->SET_TABLE_FOR_FIRST_DISPLAY
+    EXPORTING
+*     I_BUFFER_ACTIVE =
+*     I_BYPASSING_BUFFER            =
+*     I_CONSISTENCY_CHECK           =
+*     I_STRUCTURE_NAME              =
+*     IS_VARIANT      =
+*     I_SAVE          =
+*     I_DEFAULT       = 'X'
+      IS_LAYOUT       = GS_LAYOUT
+*     IS_PRINT        =
+*     IT_SPECIAL_GROUPS             =
+*     IT_TOOLBAR_EXCLUDING          =
+*     IT_HYPERLINK    =
+*     IT_ALV_GRAPHICS =
+*     IT_EXCEPT_QINFO =
+*     IR_SALV_ADAPTER =
+    CHANGING
+      IT_OUTTAB       = GT_DISP
+      IT_FIELDCATALOG = GT_FCAT
+      IT_SORT         = GT_SORT
+*     IT_FILTER       =
+*    EXCEPTIONS
+*     INVALID_PARAMETER_COMBINATION = 1
+*     PROGRAM_ERROR   = 2
+*     TOO_MANY_LINES  = 3
+*     OTHERS          = 4
+    .
+  IF SY-SUBRC <> 0.
+*   Implement suitable error handling here
+  ENDIF.
+
+
+ENDFORM.
+*&---------------------------------------------------------------------*
+*& Form REFRESH_ALV
+*&---------------------------------------------------------------------*
+*& text
+*&---------------------------------------------------------------------*
+*& -->  p1        text
+*& <--  p2        text
+*&---------------------------------------------------------------------*
+FORM REFRESH_ALV .
+
+  CALL METHOD GO_GRID->REFRESH_TABLE_DISPLAY.
+
+
+ENDFORM.
+*&---------------------------------------------------------------------*
+*& Form SET_SORT
+*&---------------------------------------------------------------------*
+*& text
+*&---------------------------------------------------------------------*
+*& -->  p1        text
+*& <--  p2        text
+*&---------------------------------------------------------------------*
+FORM SET_SORT .
+
+  CLEAR GS_SORT.
+  GS_SORT-FIELDNAME = 'MATNR'.
+  GS_SORT-UP = 'X'.
+  APPEND GS_SORT TO GT_SORT.
+
+  CLEAR GS_SORT.
+  GS_SORT-FIELDNAME = 'MAKTX'.
+  GS_SORT-UP = 'X'.
+  APPEND GS_SORT TO GT_SORT.
+
+
+ENDFORM.
+*&---------------------------------------------------------------------*
+*& Form HANDLE_HOTSPOT_CLICK
+*&---------------------------------------------------------------------*
+*& text
+*&---------------------------------------------------------------------*
+*      -->P_E_ROW_ID  text
+*      -->P_E_COLUMN_ID  text
+*      -->P_SENDER  text
+*&---------------------------------------------------------------------*
+FORM HANDLE_HOTSPOT_CLICK  USING    PS_ROW TYPE LVC_S_ROW
+                                    PS_COLUMN TYPE LVC_S_COL.
+  READ TABLE GT_DISP INTO GS_DISP INDEX PS_ROW-INDEX.
+  CASE PS_COLUMN.
+    WHEN 'DETAIL'.
+
+  SELECT *
+    INTO CORRESPONDING FIELDS OF TABLE GT_DETAIL
+    FROM YTJG_BP_EVAL
+    WHERE MATNR = GS_DISP-MATNR
+    AND LIFNR = GS_DISP-LIFNR
+    AND WEEK IN S_WEEK.
+
+  SORT GT_DETAIL BY WEEK MATNR LIFNR.
+
+
+  CALL SCREEN '200' STARTING AT 30 10.
+
+    WHEN 'LIFNR'.
+  SET PARAMETER ID 'LIF' FIELD GS_DISP-LIFNR. "VENDOR
+  SET PARAMETER ID 'EKO' FIELD '5130'.        "####
+
+
+  CALL TRANSACTION 'MK03'.
+  ENDCASE.
+
+
+ENDFORM.
+*&---------------------------------------------------------------------*
+*& Form SET_EVENT
+*&---------------------------------------------------------------------*
+*& text
+*&---------------------------------------------------------------------*
+*& -->  p1        text
+*& <--  p2        text
+*&---------------------------------------------------------------------*
+FORM SET_EVENT .
+  CREATE OBJECT GO_EVENT_RECEIVER.
+
+  SET HANDLER GO_EVENT_RECEIVER->HANDLE_HOTSPOT_CLICK
+            FOR GO_GRID.
+
+ENDFORM.
+*&---------------------------------------------------------------------*
+*& Form HANDLE_HOTSPOT_CLICK2
+*&---------------------------------------------------------------------*
+*& text
+*&---------------------------------------------------------------------*
+*      -->P_E_ROW_ID  text
+*      -->P_E_COLUMN_ID  text
+*&---------------------------------------------------------------------*
+*&---------------------------------------------------------------------*
+*& Form SET_WEEK
+*&---------------------------------------------------------------------*
+*& text
+*&---------------------------------------------------------------------*
+*& -->  p1        text
+*& <--  p2        text
+*&---------------------------------------------------------------------*
+FORM SET_WEEK .
+  DATA : LV_WEEK TYPE SCAL-WEEK,
+         LV_DAY  TYPE SCAL-DATE.
+  CLEAR : S_WEEK, S_WEEK[].
+
+  CALL FUNCTION 'DATE_GET_WEEK'
+    EXPORTING
+      DATE = SY-DATUM
+    IMPORTING
+      WEEK = LV_WEEK.
+
+  S_WEEK-SIGN = 'I'.
+  S_WEEK-OPTION = 'BT'.
+  S_WEEK-LOW = '202042'.
+  S_WEEK-HIGH = LV_WEEK.
+
+  APPEND S_WEEK.
+
+
+
+
+
+
+
+ENDFORM.
+*&---------------------------------------------------------------------*
+*& Form GET_DATE
+*&---------------------------------------------------------------------*
+*& text
+*&---------------------------------------------------------------------*
+*& -->  p1        text
+*& <--  p2        text
+*&---------------------------------------------------------------------*
+FORM GET_DATE .
+
+  DATA : LV_DAY TYPE SYST-DATUM.
+  "## ## ###
+  CLEAR : GV_FIRST, GV_LAST, LV_DAY.
+  "1. # #
+  CALL FUNCTION 'WEEK_GET_FIRST_DAY'
+    EXPORTING
+      WEEK = S_WEEK-LOW
+    IMPORTING
+      DATE = GV_FIRST.
+
+  CALL FUNCTION 'WEEK_GET_FIRST_DAY'
+    EXPORTING
+      WEEK = S_WEEK-HIGH
+    IMPORTING
+      DATE = LV_DAY.
+  GV_LAST = LV_DAY + 7.
+
+ENDFORM.
+*&---------------------------------------------------------------------*
+*& Form HANDLE_DOUBLE_CLICK
+*&---------------------------------------------------------------------*
+*& text
+*&---------------------------------------------------------------------*
+*      -->P_E_ROW  text
+*      -->P_E_COLUMN  text
+*&---------------------------------------------------------------------*
+FORM HANDLE_DOUBLE_CLICK USING    PS_ROW TYPE LVC_S_ROW
+                                  PS_COLUMN TYPE LVC_S_COL.
+
+
+  READ TABLE GT_DISP INTO GS_DISP INDEX PS_ROW-INDEX.
+  SELECT *
+    INTO CORRESPONDING FIELDS OF TABLE GT_DETAIL
+    FROM YTJG_BP_EVAL
+    WHERE MATNR = GS_DISP-MATNR
+    AND LIFNR = GS_DISP-LIFNR
+    AND WEEK IN S_WEEK.
+
+  SORT GT_DETAIL BY WEEK MATNR LIFNR.
+
+
+  CALL SCREEN '200' STARTING AT 30 10.
+
+
+ENDFORM.
+*&---------------------------------------------------------------------*
+*& Form SET_INSTANCE200
+*&---------------------------------------------------------------------*
+*& text
+*&---------------------------------------------------------------------*
+*& -->  p1        text
+*& <--  p2        text
+*&---------------------------------------------------------------------*
+FORM SET_INSTANCE200 .
+  CREATE OBJECT GO_CONTAINER200
+    EXPORTING
+      CONTAINER_NAME = 'GO_CONTAINER200'.
+
+  CREATE OBJECT GO_GRID200
+    EXPORTING
+      I_PARENT = GO_CONTAINER200.
+ENDFORM.
+*&---------------------------------------------------------------------*
+*& Form SET_FCAT200
+*&---------------------------------------------------------------------*
+*& text
+*&---------------------------------------------------------------------*
+*& -->  p1        text
+*& <--  p2        text
+*&---------------------------------------------------------------------*
+FORM SET_FCAT200 .
+  CLEAR GS_FCAT200.
+  GS_FCAT200-FIELDNAME = 'WEEK'.
+  GS_FCAT200-COLTEXT   = '##'.
+  GS_FCAT200-KEY = 'X'.
+  APPEND GS_FCAT200 TO GT_FCAT200.
+
+  CLEAR GS_FCAT200.
+  GS_FCAT200-FIELDNAME = 'MATNR'.
+  GS_FCAT200-COLTEXT   = '##'.
+  APPEND GS_FCAT200 TO GT_FCAT200.
+
+  CLEAR GS_FCAT200.
+  GS_FCAT200-FIELDNAME = 'LIFNR'.
+  GS_FCAT200-COLTEXT   = '####'.
+  APPEND GS_FCAT200 TO GT_FCAT200.
+
+
+  CLEAR GS_FCAT200.
+  GS_FCAT200-FIELDNAME = 'TOTAL'.
+  GS_FCAT200-COLTEXT   = '####'.
+  APPEND GS_FCAT200 TO GT_FCAT200.
+
+  CLEAR GS_FCAT200.
+  GS_FCAT200-FIELDNAME = 'DELAY_SCORE'.
+  GS_FCAT200-COLTEXT   = '####'.
+  APPEND GS_FCAT200 TO GT_FCAT200.
+
+  CLEAR GS_FCAT200.
+  GS_FCAT200-FIELDNAME = 'PRICE_SCORE'.
+  GS_FCAT200-COLTEXT   = '## ##'.
+  APPEND GS_FCAT200 TO GT_FCAT200.
+
+  CLEAR GS_FCAT200.
+  GS_FCAT200-FIELDNAME = 'BADSC'.
+  GS_FCAT200-COLTEXT   = '####'.
+  APPEND GS_FCAT200 TO GT_FCAT200.
+
+  CLEAR GS_FCAT200.
+  GS_FCAT200-FIELDNAME = 'FRESH'.
+  GS_FCAT200-COLTEXT   = '#####'.
+  APPEND GS_FCAT200 TO GT_FCAT200.
+
+  CLEAR GS_FCAT200.
+  GS_FCAT200-FIELDNAME = 'DELAY'.
+  GS_FCAT200-COLTEXT   = '#######'.
+  APPEND GS_FCAT200 TO GT_FCAT200.
+
+
+  CLEAR GS_FCAT200.
+  GS_FCAT200-FIELDNAME = 'UNTPR'.
+  GS_FCAT200-COLTEXT   = '## ##'.
+  APPEND GS_FCAT200 TO GT_FCAT200.
+  CLEAR GS_FCAT200.
+  GS_FCAT200-FIELDNAME = 'UNTPR_SCORE'.
+  GS_FCAT200-COLTEXT   = '## ##'.
+  APPEND GS_FCAT200 TO GT_FCAT200.
+
+  CLEAR GS_FCAT200.
+  GS_FCAT200-FIELDNAME = 'PRCHG'.
+  GS_FCAT200-COLTEXT   = '#####'.
+  APPEND GS_FCAT200 TO GT_FCAT200.
+
+  CLEAR GS_FCAT200.
+  GS_FCAT200-FIELDNAME = 'PRCHG_SCORE'.
+  GS_FCAT200-COLTEXT   = '### ##'.
+  APPEND GS_FCAT200 TO GT_FCAT200.
+
+
+  CLEAR GS_FCAT200.
+  GS_FCAT200-FIELDNAME = 'BADRT'.
+  GS_FCAT200-COLTEXT   = '###'.
+  APPEND GS_FCAT200 TO GT_FCAT200.
+
+ENDFORM.
+*&---------------------------------------------------------------------*
+*& Form DISPLAY_ALV200
+*&---------------------------------------------------------------------*
+*& text
+*&---------------------------------------------------------------------*
+*& -->  p1        text
+*& <--  p2        text
+*&---------------------------------------------------------------------*
+FORM DISPLAY_ALV200 .
+  CALL METHOD GO_GRID200->SET_TABLE_FOR_FIRST_DISPLAY
+    EXPORTING
+*     I_BUFFER_ACTIVE =
+*     I_BYPASSING_BUFFER            =
+*     I_CONSISTENCY_CHECK           =
+*     I_STRUCTURE_NAME              =
+*     IS_VARIANT      =
+*     I_SAVE          =
+*     I_DEFAULT       = 'X'
+      IS_LAYOUT       = GS_LAYOUT
+*     IS_PRINT        =
+*     IT_SPECIAL_GROUPS             =
+*     IT_TOOLBAR_EXCLUDING          =
+*     IT_HYPERLINK    =
+*     IT_ALV_GRAPHICS =
+*     IT_EXCEPT_QINFO =
+*     IR_SALV_ADAPTER =
+    CHANGING
+      IT_OUTTAB       = GT_DETAIL
+      IT_FIELDCATALOG = GT_FCAT200
+*     IT_SORT         = GT_SORT
+*     IT_FILTER       =
+*    EXCEPTIONS
+*     INVALID_PARAMETER_COMBINATION = 1
+*     PROGRAM_ERROR   = 2
+*     TOO_MANY_LINES  = 3
+*     OTHERS          = 4
+    .
+  IF SY-SUBRC <> 0.
+*   Implement suitable error handling here
+  ENDIF.
+
+ENDFORM.
+
+----------------------------------------------------------------------------------
+Extracted by Direct Download Enterprise version 1.3.1 - E.G.Mellodew. 1998-2005 UK. Sap Release 751
