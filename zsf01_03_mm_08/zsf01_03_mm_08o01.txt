@@ -1,0 +1,102 @@
+*&---------------------------------------------------------------------*
+*& Include          YR0122_0220OO1
+*&---------------------------------------------------------------------*
+
+*&---------------------------------------------------------------------*
+*& Module STATUS_0100 OUTPUT
+*&---------------------------------------------------------------------*
+*&
+*&---------------------------------------------------------------------*
+MODULE STATUS_0100 OUTPUT.
+  SET PF-STATUS '0100'.
+  SET TITLEBAR '0100'.
+ENDMODULE.
+*&---------------------------------------------------------------------*
+*& Module SET_ALV_0100 OUTPUT
+*&---------------------------------------------------------------------*
+*&
+*&---------------------------------------------------------------------*
+MODULE SET_ALV_0100 OUTPUT.
+
+  IF GO_CONTAINER IS INITIAL.
+
+*INSTANCE
+    PERFORM SET_INSTANCE.
+*EVENT
+    PERFORM SET_EVENT.
+*####
+    PERFORM SET_FCAT.
+*LAYOUT
+    PERFORM SET_LAYOUT.
+*SORT ##
+    PERFORM SET_SORT.
+
+
+
+*ALV
+    PERFORM DISPLAY_ALV.
+  ELSE.
+    PERFORM REFRESH_ALV.
+
+  ENDIF.
+
+ENDMODULE.
+*&---------------------------------------------------------------------*
+*& Module SET_LISTBOX_0100 OUTPUT
+*&---------------------------------------------------------------------*
+*&
+*&---------------------------------------------------------------------*
+MODULE SET_LISTBOX_0100 OUTPUT.
+
+
+
+  DATA : LT_LISTBOX TYPE VRM_VALUES WITH HEADER LINE.
+
+
+
+  CLEAR : LT_LISTBOX[], LT_LISTBOX.
+
+  LT_LISTBOX-KEY = 'R'.
+  LT_LISTBOX-TEXT = 'ROH'.
+  APPEND LT_LISTBOX TO LT_LISTBOX.
+
+  CLEAR : LT_LISTBOX.
+  LT_LISTBOX-KEY = 'H'.
+  LT_LISTBOX-TEXT = 'HALB'.
+  APPEND LT_LISTBOX TO LT_LISTBOX.
+
+  CLEAR : LT_LISTBOX.
+  LT_LISTBOX-KEY = 'F'.
+  LT_LISTBOX-TEXT = 'FERT'.
+  APPEND LT_LISTBOX TO LT_LISTBOX.
+
+  CLEAR : LT_LISTBOX.
+  LT_LISTBOX-KEY = 'A'.
+  LT_LISTBOX-TEXT = 'ALL'.
+  APPEND LT_LISTBOX TO LT_LISTBOX.
+
+
+
+
+
+  CALL FUNCTION 'VRM_SET_VALUES'
+    EXPORTING
+      ID     = 'MTART'
+      VALUES = LT_LISTBOX
+*   EXCEPTIONS
+*     ID_ILLEGAL_NAME       = 1
+*     OTHERS = 2
+    .
+ENDMODULE.
+*&---------------------------------------------------------------------*
+*& Module STATUS_0300 OUTPUT
+*&---------------------------------------------------------------------*
+*&
+*&---------------------------------------------------------------------*
+MODULE STATUS_0300 OUTPUT.
+ SET PF-STATUS '0300'.
+ SET TITLEBAR '0300'.
+ENDMODULE.
+
+----------------------------------------------------------------------------------
+Extracted by Direct Download Enterprise version 1.3.1 - E.G.Mellodew. 1998-2005 UK. Sap Release 751

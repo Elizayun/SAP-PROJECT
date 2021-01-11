@@ -1,0 +1,116 @@
+*&---------------------------------------------------------------------*
+*& Include          YR0122_0220IO1
+*&---------------------------------------------------------------------*
+*&---------------------------------------------------------------------*
+*&      Module  EXIT_0100  INPUT
+*&---------------------------------------------------------------------*
+*       text
+*----------------------------------------------------------------------*
+MODULE EXIT_0100 INPUT.
+
+  LEAVE TO SCREEN 0.
+
+ENDMODULE.
+*&---------------------------------------------------------------------*
+*&      Module  USER_COMMAND_0100  INPUT
+*&---------------------------------------------------------------------*
+*       text
+*----------------------------------------------------------------------*
+MODULE USER_COMMAND_0100 INPUT.
+
+  CASE GV_OKCODE.
+    WHEN 'MTART'.
+      CASE 'X'.
+        WHEN ROH.
+          P_MTART = 'ROH'.
+          P_LGORT = '1000'.
+          PERFORM GET_DATA.
+
+        WHEN HALB.
+          P_MTART = 'HALB'.
+          P_LGORT = '2000'.
+          PERFORM GET_DATA.
+
+        WHEN FERT.
+
+          P_MTART = 'FERT'.
+          P_LGORT = '3000'.
+          PERFORM GET_DATA.
+
+        WHEN ALL.
+          P_MTART = 'ALL'.
+          P_LGORT = 'ALL'.
+          PERFORM GET_DATA.
+      ENDCASE.
+
+  ENDCASE.
+
+ENDMODULE.
+*&---------------------------------------------------------------------*
+*& Module CREATE_LISTBOX OUTPUT
+*&---------------------------------------------------------------------*
+*&
+*&---------------------------------------------------------------------*
+*&---------------------------------------------------------------------*
+*& Module STATUS_0200 OUTPUT
+*&---------------------------------------------------------------------*
+*&
+*&---------------------------------------------------------------------*
+MODULE STATUS_0200 OUTPUT.
+  SET PF-STATUS '200'.
+  SET TITLEBAR '200'.
+ENDMODULE.
+*&---------------------------------------------------------------------*
+*& Module SET_ALV_0200 OUTPUT
+*&---------------------------------------------------------------------*
+*&
+*&---------------------------------------------------------------------*
+MODULE SET_ALV_0200 OUTPUT.
+
+  IF GO_CONTAINER_0200 IS INITIAL.
+
+* INSTANCE ##
+    PERFORM CREATE_OBJECT.
+
+* LAYOUT ##
+    PERFORM SET_LAYOUT_0200.
+
+* #### ##
+    PERFORM SET_FIELDCAT_0200.
+
+*sort
+*CLEAR GT_SORT_0200.
+*IF GV_OKCODE_0200 = 'DAILY'.
+*    PERFORM SET_SORT_0200.
+*ENDIF.
+* ALV ##
+    PERFORM DISPLY_ALV_GO_GRID_0200.
+  ELSE.
+
+* #### ##
+"refresh#### ### gt_Fcat# ######
+    CLEAR  : GT_FCAT_0200, GT_SORT_0200.
+    PERFORM SET_FIELDCAT_0200.
+
+
+    CALL METHOD GO_GRID_0200->SET_FRONTEND_FIELDCATALOG
+      EXPORTING
+        IT_FIELDCATALOG = GT_FCAT_0200.
+
+
+    CALL METHOD GO_GRID_0200->REFRESH_TABLE_DISPLAY.
+
+
+  ENDIF.
+ENDMODULE.
+*&---------------------------------------------------------------------*
+*&      Module  EXIT_0300  INPUT
+*&---------------------------------------------------------------------*
+*       text
+*----------------------------------------------------------------------*
+MODULE EXIT_0300 INPUT.
+LEAVE TO SCREEN 0.
+ENDMODULE.
+
+----------------------------------------------------------------------------------
+Extracted by Direct Download Enterprise version 1.3.1 - E.G.Mellodew. 1998-2005 UK. Sap Release 751

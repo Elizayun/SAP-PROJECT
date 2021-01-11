@@ -1,0 +1,1903 @@
+*&---------------------------------------------------------------------*
+*& Include          YR0122_0220F01
+*&---------------------------------------------------------------------*
+*&---------------------------------------------------------------------*
+*& Form GET_DATA
+*&---------------------------------------------------------------------*
+*& text
+*&---------------------------------------------------------------------*
+*& -->  p1        text
+*& <--  p2        text
+*&---------------------------------------------------------------------*
+FORM GET_DATA .
+  PERFORM CLEAR_ALL.
+  PERFORM GET_MATERIAL_DATA.
+
+  PERFORM CHECK_STAT.
+
+  PERFORM SET_COLOR.
+
+ENDFORM.
+*&---------------------------------------------------------------------*
+*& Form SET_INSTANCE
+*&---------------------------------------------------------------------*
+*& text
+*&---------------------------------------------------------------------*
+*& -->  p1        text
+*& <--  p2        text
+*&---------------------------------------------------------------------*
+FORM SET_INSTANCE .
+
+
+*MAIN CONTAINER ##
+  CREATE OBJECT GO_CONTAINER
+    EXPORTING
+      CONTAINER_NAME = 'GO_CONTAINER'.
+
+
+*## #### ## (MAIN CONTAINER ##)
+
+  CREATE OBJECT GO_SPLITTER1
+    EXPORTING
+      PARENT  = GO_CONTAINER
+      ROWS    = 1  "1#
+      COLUMNS = 2. "2#
+
+
+
+* ## ### GUI CONTAINER ##
+
+  CALL METHOD GO_SPLITTER1->GET_CONTAINER
+    EXPORTING
+      ROW       = 1
+      COLUMN    = 1
+    RECEIVING
+      CONTAINER = GO_CONT1.
+
+
+
+  CALL METHOD GO_SPLITTER1->GET_CONTAINER
+    EXPORTING
+      ROW       = 1
+      COLUMN    = 2
+    RECEIVING
+      CONTAINER = GO_CONT2.
+
+
+
+
+*### ### #####  GRID ##
+  CREATE OBJECT GO_GRID1
+    EXPORTING
+      I_PARENT = GO_CONT1.
+
+  CREATE OBJECT GO_GRID2
+    EXPORTING
+      I_PARENT = GO_CONT2.
+  .
+*
+*  CREATE OBJECT GO_GRID3
+*    EXPORTING
+*      I_PARENT = GO_CONT3.
+
+
+ENDFORM.
+*&---------------------------------------------------------------------*
+*& Form SET_FCAT
+*&---------------------------------------------------------------------*
+*& text
+*&---------------------------------------------------------------------*
+*& -->  p1        text
+*& <--  p2        text
+*&---------------------------------------------------------------------*
+FORM SET_FCAT .
+
+  PERFORM SET_FCAT_GRID1."##
+
+  PERFORM SET_FCAT_GRID2. "##
+
+*  PERFORM SET_FCAT_GRID3. "##
+
+
+
+
+
+
+ENDFORM.
+*&---------------------------------------------------------------------*
+*& Form SET_LAYOUT
+*&---------------------------------------------------------------------*
+*& text
+*&---------------------------------------------------------------------*
+*& -->  p1        text
+*& <--  p2        text
+*&---------------------------------------------------------------------*
+FORM SET_LAYOUT .
+
+  CLEAR : GS_LAYOUT1.
+  GS_LAYOUT1-ZEBRA       = 'X'.
+  GS_LAYOUT1-CWIDTH_OPT  = 'A'.
+  GS_LAYOUT1-SEL_MODE    = 'D'.
+  GS_LAYOUT1-CTAB_FNAME = 'TCOLOR'. "FIELD ####
+  GS_LAYOUT1-GRID_TITLE = TEXT-T05.
+
+
+  CLEAR : GS_LAYOUT2.
+  GS_LAYOUT2-ZEBRA       = 'X'.
+  GS_LAYOUT2-CWIDTH_OPT  = 'A'.
+  GS_LAYOUT2-SEL_MODE    = 'D'.
+  GS_LAYOUT2-CTAB_FNAME = 'TCOLOR'.
+  GS_LAYOUT2-GRID_TITLE = TEXT-T03.
+
+
+*  CLEAR : GS_LAYOUT3.
+*  GS_LAYOUT3-ZEBRA       = 'X'.
+*  GS_LAYOUT3-CWIDTH_OPT  = 'A'.
+*  GS_LAYOUT3-SEL_MODE    = 'D'.
+*  GS_LAYOUT3-INFO_FNAME = 'COLOR'. "# # ##
+*  GS_LAYOUT3-GRID_TITLE = TEXT-T04.
+
+ENDFORM.
+*&---------------------------------------------------------------------*
+*& Form DISPLAY_ALV
+*&---------------------------------------------------------------------*
+*& text
+*&---------------------------------------------------------------------*
+*& -->  p1        text
+*& <--  p2        text
+*&---------------------------------------------------------------------*
+FORM DISPLAY_ALV .
+
+  PERFORM DISPLY_ALV_GO_GRID1.
+
+  PERFORM DISPLY_ALV_GO_GRID2.
+
+
+
+ENDFORM.
+*&---------------------------------------------------------------------*
+*& Form REFRESH_ALV
+*&---------------------------------------------------------------------*
+*& text
+*&---------------------------------------------------------------------*
+*& -->  p1        text
+*& <--  p2        text
+*&---------------------------------------------------------------------*
+FORM REFRESH_ALV .
+
+  CALL METHOD GO_GRID1->REFRESH_TABLE_DISPLAY.
+*    EXPORTING
+*      IS_STABLE      =  "### #### ## ##
+*      I_SOFT_REFRESH =
+*    EXCEPTIONS
+*      FINISHED       = 1
+*      OTHERS         = 2.
+
+  CALL METHOD GO_GRID2->REFRESH_TABLE_DISPLAY.
+
+*  CALL METHOD GO_GRID3->REFRESH_TABLE_DISPLAY.
+
+
+
+ENDFORM.
+*&---------------------------------------------------------------------*
+*& Form HANDLE_DOUBLE_CLICK
+*&---------------------------------------------------------------------*
+*& text
+*&---------------------------------------------------------------------*
+*      -->P_E_ROW  text
+*      -->P_E_COLUMN  text
+*&---------------------------------------------------------------------*
+FORM HANDLE_DOUBLE_CLICK  USING    PS_ROW TYPE LVC_S_ROW
+                                   PS_COLUMN TYPE LVC_S_COL.
+
+
+
+  CLEAR : GS_MARD, GS_WEEKLY_SUM.
+*  CHECK PS_COLUMN-FIELDNAME = 'stat'.
+  PERFORM WEEKLY.
+  READ TABLE GT_MARD INTO GS_MARD INDEX PS_ROW-INDEX.
+
+
+  READ TABLE GT_WEEKLY_SUM INTO GS_WEEKLY_SUM WITH KEY MATNR = GS_MARD-MATNR.
+  IF SY-SUBRC = 0.
+
+    CALL SCREEN 0300 STARTING AT 10 10.
+  ELSE.
+
+    MESSAGE I027 . "###### ## #####.
+
+  ENDIF.
+
+ENDFORM.
+*&---------------------------------------------------------------------*
+*& Form SET_EVENT
+*&---------------------------------------------------------------------*
+*& text
+*&---------------------------------------------------------------------*
+*& -->  p1        text
+*& <--  p2        text
+*&---------------------------------------------------------------------*
+FORM SET_EVENT .
+
+  CREATE OBJECT GO_EVENT_RECEIVER.
+
+  SET HANDLER GO_EVENT_RECEIVER->HANDLE_DOUBLE_CLICK
+          FOR GO_GRID1.
+  SET HANDLER GO_EVENT_RECEIVER->HANDLE_HOTSPOT_CLICK
+          FOR GO_GRID1.
+
+  SET HANDLER GO_EVENT_RECEIVER->HANDLE_HOTSPOT_CLICK
+        FOR GO_GRID2.
+  SET HANDLER GO_EVENT_RECEIVER->HANDLE_TOOLBAR
+         FOR GO_GRID1.
+  SET HANDLER GO_EVENT_RECEIVER->HANDLE_USER_COMMAND
+          FOR GO_GRID1.
+*  CALL METHOD GO_GRID1->REGISTER_EDIT_EVENT
+*    EXPORTING
+*      I_EVENT_ID = CL_GUI_ALV_GRID=>MC_EVT_MODIFIED.
+ENDFORM.
+*&---------------------------------------------------------------------*
+*& Form MERGE_DATA
+*&---------------------------------------------------------------------*
+*& text
+*&---------------------------------------------------------------------*
+*& -->  p1        text
+*& <--  p2        text
+*&---------------------------------------------------------------------*
+FORM MERGE_DATA .
+
+
+
+ENDFORM.
+*&---------------------------------------------------------------------*
+*& Form GET_BATCH_DATA
+*&---------------------------------------------------------------------*
+*& text
+*&---------------------------------------------------------------------*
+*& -->  p1        text
+*& <--  p2        text
+*&---------------------------------------------------------------------*
+FORM GET_BATCH_DATA .
+
+  DATA : LT_MAKT TYPE TABLE OF MAKT,
+         LS_MAKT TYPE MAKT.
+  DATA : LT_MARA TYPE TABLE OF MARA,
+         LS_MARA TYPE MARA.
+
+  CLEAR : GT_MCHB, LT_MAKT, LT_MARA.
+
+
+
+  SELECT MAKTX MATNR
+    INTO CORRESPONDING FIELDS OF TABLE LT_MAKT
+    FROM MAKT
+    WHERE SPRAS = SY-LANGU
+    AND MATNR IN S_MATNR.
+
+  SELECT MEINS MATNR
+    INTO CORRESPONDING FIELDS OF TABLE LT_MARA
+    FROM MARA
+    WHERE MATNR IN S_MATNR.
+
+  SORT LT_MAKT BY MATNR.
+  SORT LT_MARA BY MATNR.
+  LOOP AT GT_MCHB INTO GS_MCHB.
+    "1. ### ##
+    READ TABLE LT_MAKT INTO LS_MAKT
+                       WITH KEY MATNR = GS_MCHB-MATNR
+                       BINARY SEARCH.
+    GS_MCHB-MAKTX = LS_MAKT-MAKTX.
+    "2. ## ## ##
+    READ TABLE LT_MARA INTO LS_MARA
+                   WITH KEY MATNR = GS_MCHB-MATNR
+                   BINARY SEARCH.
+
+
+    GS_MCHB-MEINS = LS_MARA-MEINS.
+
+    MODIFY GT_MCHB FROM GS_MCHB.
+    CLEAR : LS_MARA, LS_MAKT.
+  ENDLOOP.
+
+
+
+ENDFORM.
+*&---------------------------------------------------------------------*
+*& Form GET_MATERIAL_DATA
+*&---------------------------------------------------------------------*
+*& text
+*&---------------------------------------------------------------------*
+*& -->  p1        text
+*& <--  p2        text
+*&---------------------------------------------------------------------*
+FORM GET_MATERIAL_DATA .
+  DATA : LT_MAKT TYPE TABLE OF MAKT,
+         LS_MAKT TYPE MAKT.
+  DATA : LT_MARA TYPE TABLE OF MARA,
+         LS_MARA TYPE MARA.
+
+  CLEAR : GT_MARD, LT_MAKT, LT_MARA.
+  PERFORM DIVIDE_MTART.
+
+
+  SELECT MAKTX MATNR
+    INTO CORRESPONDING FIELDS OF TABLE LT_MAKT
+    FROM MAKT
+    WHERE SPRAS = SY-LANGU
+    AND MATNR IN S_MATNR.
+
+  SELECT MEINS MATNR MTART
+    INTO CORRESPONDING FIELDS OF TABLE LT_MARA
+    FROM MARA
+    WHERE MATNR IN S_MATNR.
+
+  SORT LT_MAKT BY MATNR.
+  SORT LT_MARA BY MATNR.
+  LOOP AT GT_MARD INTO GS_MARD.
+    "1. ### ##
+    READ TABLE LT_MAKT INTO LS_MAKT
+                       WITH KEY MATNR = GS_MARD-MATNR
+                       BINARY SEARCH.
+    GS_MARD-MAKTX = LS_MAKT-MAKTX.
+    "2. ## ## ##
+    READ TABLE LT_MARA INTO LS_MARA
+                   WITH KEY MATNR = GS_MARD-MATNR
+                   BINARY SEARCH.
+
+
+    GS_MARD-MEINS = LS_MARA-MEINS.
+    GS_MARD-MTART = LS_MARA-MTART.
+
+
+
+
+
+    MODIFY GT_MARD FROM GS_MARD.
+    IF GS_MARD-MATNR = 'JG-A03-R05'.
+      DELETE TABLE GT_MARD FROM GS_MARD.
+    ENDIF.
+    CLEAR : LS_MARA, LS_MAKT.
+  ENDLOOP.
+
+  SORT GT_MARD BY MATNR.
+
+
+ENDFORM.
+*&---------------------------------------------------------------------*
+*& Form DISPLY_ALV_GO_GRID1
+*&---------------------------------------------------------------------*
+*& text
+*&---------------------------------------------------------------------*
+*& -->  p1        text
+*& <--  p2        text
+*&---------------------------------------------------------------------*
+FORM DISPLY_ALV_GO_GRID1 .
+  CALL METHOD GO_GRID1->SET_TABLE_FOR_FIRST_DISPLAY
+    EXPORTING
+*     I_BUFFER_ACTIVE =
+*     I_BYPASSING_BUFFER            =
+*     I_CONSISTENCY_CHECK           =
+*     I_STRUCTURE_NAME              =
+*     IS_VARIANT      =
+*     I_SAVE          =
+*     I_DEFAULT       = 'X'
+      IS_LAYOUT       = GS_LAYOUT1
+*     IS_PRINT        =
+*     IT_SPECIAL_GROUPS             =
+*     IT_TOOLBAR_EXCLUDING          =
+*     IT_HYPERLINK    =
+*     IT_ALV_GRAPHICS =
+*     IT_EXCEPT_QINFO =
+*     IR_SALV_ADAPTER =
+    CHANGING
+      IT_OUTTAB       = GT_MARD
+      IT_FIELDCATALOG = GT_FCAT1
+      IT_SORT         = GT_SORT1
+*     IT_FILTER       =
+*  EXCEPTIONS
+*     INVALID_PARAMETER_COMBINATION = 1
+*     PROGRAM_ERROR   = 2
+*     TOO_MANY_LINES  = 3
+*     OTHERS          = 4
+    .
+ENDFORM.
+*&---------------------------------------------------------------------*
+*& Form DISPLY_ALV_GO_GRID2
+*&---------------------------------------------------------------------*
+*& text
+*&---------------------------------------------------------------------*
+*& -->  p1        text
+*& <--  p2        text
+*&---------------------------------------------------------------------*
+FORM DISPLY_ALV_GO_GRID2 .
+  CALL METHOD GO_GRID2->SET_TABLE_FOR_FIRST_DISPLAY
+    EXPORTING
+*     I_BUFFER_ACTIVE =
+*     I_BYPASSING_BUFFER            =
+*     I_CONSISTENCY_CHECK           =
+*     I_STRUCTURE_NAME              =
+*     IS_VARIANT      =
+*     I_SAVE          =
+*     I_DEFAULT       = 'X'
+      IS_LAYOUT       = GS_LAYOUT2
+*     IS_PRINT        =
+*     IT_SPECIAL_GROUPS             =
+*     IT_TOOLBAR_EXCLUDING          =
+*     IT_HYPERLINK    =
+*     IT_ALV_GRAPHICS =
+*     IT_EXCEPT_QINFO =
+*     IR_SALV_ADAPTER =
+    CHANGING
+      IT_OUTTAB       = GT_MCHB
+      IT_FIELDCATALOG = GT_FCAT2
+      IT_SORT         = GT_SORT2
+*     IT_FILTER       =
+*  EXCEPTIONS
+*     INVALID_PARAMETER_COMBINATION = 1
+*     PROGRAM_ERROR   = 2
+*     TOO_MANY_LINES  = 3
+*     OTHERS          = 4
+    .
+ENDFORM.
+*&---------------------------------------------------------------------*
+*& Form SET_FCAT_GRID1
+*&---------------------------------------------------------------------*
+*& text
+*&---------------------------------------------------------------------*
+*& -->  p1        text
+*& <--  p2        text
+*&---------------------------------------------------------------------*
+FORM SET_FCAT_GRID1 .
+  CLEAR GS_FCAT.
+  GS_FCAT-FIELDNAME = 'STAT'.
+  GS_FCAT-COLTEXT   = 'STATUS'.
+  APPEND GS_FCAT TO GT_FCAT1.
+
+  CLEAR GS_FCAT.
+  GS_FCAT-FIELDNAME = 'MTART'.
+  GS_FCAT-COLTEXT   = '####'.
+  GS_FCAT-REF_TABLE = 'MARA'.
+  APPEND GS_FCAT TO GT_FCAT1.
+
+  CLEAR GS_FCAT.
+  GS_FCAT-FIELDNAME = 'MATNR'.
+  GS_FCAT-COLTEXT   = '####'.
+  GS_FCAT-REF_TABLE = 'MARA'.
+  GS_FCAT-HOTSPOT = 'X'.
+  APPEND GS_FCAT TO GT_FCAT1.
+
+
+  CLEAR GS_FCAT.
+  GS_FCAT-FIELDNAME = 'LABST'.
+  GS_FCAT-COLTEXT   = '##'.
+  GS_FCAT-QFIELDNAME = 'MEINS'.
+  GS_FCAT-REF_TABLE = 'MARD'.
+  APPEND GS_FCAT TO GT_FCAT1.
+
+  CLEAR GS_FCAT.
+  GS_FCAT-FIELDNAME = 'MEINS'.
+  GS_FCAT-COLTEXT   = '##'.
+  GS_FCAT-REF_TABLE = 'MARA'.
+  APPEND GS_FCAT TO GT_FCAT1.
+
+  CLEAR GS_FCAT.
+  GS_FCAT-FIELDNAME = 'MAKTX'.
+  GS_FCAT-COLTEXT   = '## ##'.
+  GS_FCAT-REF_TABLE = 'MAKT'.
+  APPEND GS_FCAT TO GT_FCAT1.
+
+  CLEAR GS_FCAT.
+  GS_FCAT-FIELDNAME = 'WERKS'.
+  GS_FCAT-COLTEXT   = '##'.
+  GS_FCAT-REF_TABLE = 'MARD'.
+  APPEND GS_FCAT TO GT_FCAT1.
+
+  CLEAR GS_FCAT.
+  GS_FCAT-FIELDNAME = 'LGORT'.
+  GS_FCAT-COLTEXT   = '##'.
+  GS_FCAT-REF_TABLE = 'MARD'.
+  APPEND GS_FCAT TO GT_FCAT1.
+
+
+
+
+ENDFORM.
+*&---------------------------------------------------------------------*
+*& Form SET_FCAT_GRID2
+*&---------------------------------------------------------------------*
+*& text
+*&---------------------------------------------------------------------*
+*& -->  p1        text
+*& <--  p2        text
+*&---------------------------------------------------------------------*
+FORM SET_FCAT_GRID2 .
+  CLEAR GS_FCAT.
+  GS_FCAT-FIELDNAME = 'STAT'.
+  GS_FCAT-COLTEXT   = '##'.
+  APPEND GS_FCAT TO GT_FCAT2.
+
+  CLEAR GS_FCAT.
+  GS_FCAT-FIELDNAME = 'MATNR'.
+  GS_FCAT-COLTEXT   = '####'.
+  GS_FCAT-REF_TABLE = 'MARA'.
+  GS_FCAT-HOTSPOT = 'X'.
+  APPEND GS_FCAT TO GT_FCAT2.
+
+  CLEAR GS_FCAT.
+  GS_FCAT-FIELDNAME = 'CHARG'.
+  GS_FCAT-COLTEXT   = '## ##'.
+  GS_FCAT-REF_TABLE = 'MCHB'.
+  APPEND GS_FCAT TO GT_FCAT2.
+
+  CLEAR GS_FCAT.
+  GS_FCAT-FIELDNAME = 'PSDAY'.
+  GS_FCAT-COLTEXT   = '####'.
+  APPEND GS_FCAT TO GT_FCAT2.
+
+
+  CLEAR GS_FCAT.
+  GS_FCAT-FIELDNAME = 'CLABS'.
+  GS_FCAT-COLTEXT   = '##'.
+  GS_FCAT-QFIELDNAME = 'MEINS'.
+  GS_FCAT-REF_TABLE = 'MARD'.
+  APPEND GS_FCAT TO GT_FCAT2.
+
+  CLEAR GS_FCAT.
+  GS_FCAT-FIELDNAME = 'MEINS'.
+  GS_FCAT-COLTEXT   = '##'.
+  GS_FCAT-REF_TABLE = 'MARA'.
+  APPEND GS_FCAT TO GT_FCAT2.
+
+  CLEAR GS_FCAT.
+  GS_FCAT-FIELDNAME = 'MTART'.
+  GS_FCAT-COLTEXT   = '####'.
+  GS_FCAT-REF_TABLE = 'MARA'.
+  APPEND GS_FCAT TO GT_FCAT2.
+
+  CLEAR GS_FCAT.
+  GS_FCAT-FIELDNAME = 'MAKTX'.
+  GS_FCAT-COLTEXT   = '## ##'.
+  GS_FCAT-REF_TABLE = 'MAKT'.
+  APPEND GS_FCAT TO GT_FCAT2.
+
+  CLEAR GS_FCAT.
+  GS_FCAT-FIELDNAME = 'WERKS'.
+  GS_FCAT-COLTEXT   = '##'.
+  GS_FCAT-REF_TABLE = 'MARD'.
+  APPEND GS_FCAT TO GT_FCAT2.
+
+  CLEAR GS_FCAT.
+  GS_FCAT-FIELDNAME = 'LGORT'.
+  GS_FCAT-COLTEXT   = 'STORAGE LOCATION'.
+  GS_FCAT-REF_TABLE = 'MARD'.
+  APPEND GS_FCAT TO GT_FCAT2.
+
+ENDFORM.
+*&---------------------------------------------------------------------*
+*& Form HANDLE_HOTSPOT_CLICK
+*&---------------------------------------------------------------------*
+*& text
+*&---------------------------------------------------------------------*
+*      -->P_E_ROW_ID  text
+*      -->P_E_COLUMN_ID  text
+*      -->P_SENDER  text
+*&---------------------------------------------------------------------*
+FORM HANDLE_HOTSPOT_CLICK  USING    PS_ROW TYPE LVC_S_ROW
+                                    PS_COLUMN TYPE LVC_S_COL
+                                    P_SENDER.
+  CASE P_SENDER.
+    WHEN GO_GRID1.
+
+      CLEAR GS_MARD.
+      READ TABLE GT_MARD INTO GS_MARD INDEX PS_ROW-INDEX.
+
+      PERFORM GET_DATA_FOR_BATCH.
+
+      CALL METHOD GO_GRID2->REFRESH_TABLE_DISPLAY.
+
+    WHEN GO_GRID2.
+      CLEAR GS_MCHB.
+
+      READ TABLE GT_MCHB INTO GS_MCHB INDEX PS_ROW-INDEX.
+*
+*      PERFORM GET_DATA_DETAIL.
+*
+*      CALL METHOD GO_GRID3->REFRESH_TABLE_DISPLAY.
+
+
+
+      SET PARAMETER ID 'WRK' FIELD GS_MCHB-WERKS.
+      SET PARAMETER ID 'LAG' FIELD GS_MCHB-LGORT.
+      SET PARAMETER ID 'MAT' FIELD GS_MCHB-MATNR.
+
+      CALL TRANSACTION 'ZSF01_03_MM_07' AND SKIP FIRST SCREEN.
+
+  ENDCASE.
+
+ENDFORM.
+*&---------------------------------------------------------------------*
+*& Form GET_DATE
+*&---------------------------------------------------------------------*
+*& text
+*&---------------------------------------------------------------------*
+*& -->  p1        text
+*& <--  p2        text
+*&---------------------------------------------------------------------*
+FORM GET_DATE .
+  DATA :LV_HTYPE TYPE DD01V-DATATYPE.
+
+
+
+  CLEAR : GS_MCHB-PSDAY,LV_HTYPE.
+  CALL FUNCTION 'NUMERIC_CHECK'
+    EXPORTING
+      STRING_IN = GS_MCHB-CHARG
+    IMPORTING
+      HTYPE     = LV_HTYPE.
+
+  IF LV_HTYPE = 'NUMC' AND STRLEN( GS_MCHB-CHARG ) = 6. "##### #####
+
+  ELSE.                 "### ###
+    GS_MCHB-PSDAY = '### ##### ####.'.
+
+  ENDIF.
+
+
+ENDFORM.
+*&---------------------------------------------------------------------*
+*& Form GET_DATE&DAY
+*&---------------------------------------------------------------------*
+*& text
+*&---------------------------------------------------------------------*
+*& -->  p1        text
+*& <--  p2        text
+*&---------------------------------------------------------------------*
+
+
+*&---------------------------------------------------------------------*
+*& Form GET_DATA_FOR_BATCH
+*&---------------------------------------------------------------------*
+*& text
+*&---------------------------------------------------------------------*
+*& -->  p1        text
+*& <--  p2        text
+*&---------------------------------------------------------------------*
+FORM GET_DATA_FOR_BATCH .
+  DATA : TEMP_CELL TYPE LVC_S_SCOL,
+         T_COL     TYPE LVC_S_COLO.
+
+  DATA : LT_MAKT TYPE TABLE OF MAKT,
+         LS_MAKT TYPE MAKT.
+  DATA : LT_MARA TYPE TABLE OF MARA,
+         LS_MARA TYPE MARA.
+  IF P_LGORT = 'ALL'.
+    SELECT *
+    INTO CORRESPONDING FIELDS OF TABLE GT_MCHB
+    FROM MCHB
+    WHERE WERKS = P_WERKS
+    AND MATNR = GS_MARD-MATNR
+    AND CLABS <> 0.
+  ELSE.
+
+    CLEAR : GT_MCHB, LT_MAKT, LT_MARA.
+    SELECT *
+    INTO CORRESPONDING FIELDS OF TABLE GT_MCHB
+    FROM MCHB
+    WHERE WERKS = P_WERKS
+    AND LGORT = P_LGORT
+    AND MATNR = GS_MARD-MATNR
+    AND CLABS <> 0.
+
+    SELECT MAKTX MATNR
+      INTO CORRESPONDING FIELDS OF TABLE LT_MAKT
+      FROM MAKT
+      WHERE SPRAS = SY-LANGU
+       AND MATNR = GS_MARD-MATNR.
+
+    SELECT MEINS MATNR MTART
+      INTO CORRESPONDING FIELDS OF TABLE LT_MARA
+      FROM MARA
+       WHERE MATNR = GS_MARD-MATNR.
+  ENDIF.
+
+  IF LINES( GT_MCHB ) = 0.
+    MESSAGE S026 DISPLAY LIKE 'E'. "##### ## #####.
+  ELSE.
+    "### ## & ##
+
+    SORT LT_MAKT BY MATNR.
+    SORT LT_MARA BY MATNR.
+    LOOP AT GT_MCHB INTO GS_MCHB.
+      "1. ### ##
+      READ TABLE LT_MAKT INTO LS_MAKT
+                         WITH KEY MATNR = GS_MCHB-MATNR
+                         BINARY SEARCH.
+      GS_MCHB-MAKTX = LS_MAKT-MAKTX.
+      "2. ## ## ##
+      READ TABLE LT_MARA INTO LS_MARA
+                     WITH KEY MATNR = GS_MCHB-MATNR
+                     BINARY SEARCH.
+
+
+      GS_MCHB-MEINS = LS_MARA-MEINS.
+      GS_MCHB-MTART = LS_MARA-MTART.
+      "3. ## ## = #### - ###
+      PERFORM GET_DATE.
+      DATA : LV_DATE TYPE SYST-DATUM,
+             EDAYS   TYPE VTBBEWE-ATAGE.
+      LV_DATE = '20' && GS_MCHB-CHARG.
+      IF GS_MCHB-PSDAY <> '### ##### ####.'.
+
+
+
+        CALL FUNCTION 'FIMA_DAYS_AND_MONTHS_AND_YEARS'
+          EXPORTING
+            I_DATE_FROM = LV_DATE
+            I_DATE_TO   = SY-DATUM
+*           I_FLG_SEPARATE       = ' '
+          IMPORTING
+            E_DAYS      = EDAYS
+*           E_MONTHS    = EMONTHS
+*           E_YEARS     = EYEARS.
+          .
+
+
+        GS_MCHB-PSDAY = EDAYS.
+
+
+        IF EDAYS > 7.
+          T_COL-COL = '6'. "## ###
+        ELSE.
+          T_COL-COL = '4'. "## ##
+        ENDIF.
+      ELSEIF GS_MCHB-PSDAY = '### ##### ####.'.
+*            DELETE TABLE GT_MCHB FROM GS_MCHB.
+        T_COL-COL = '6'. "##
+      ENDIF.
+      T_COL-INV = 2.  "##,### ## ##
+      TEMP_CELL-FNAME = 'PSDAY'.
+      TEMP_CELL-COLOR = T_COL.
+
+      APPEND TEMP_CELL TO GS_MCHB-TCOLOR.
+      MODIFY GT_MCHB FROM GS_MCHB.
+      CLEAR : LS_MARA, LS_MAKT.
+      CLEAR :  GS_MCHB, T_COL, TEMP_CELL.
+    ENDLOOP.
+    SORT GT_MCHB DESCENDING BY PSDAY.
+  ENDIF.
+
+
+
+ENDFORM.
+*&---------------------------------------------------------------------*
+*& Form SET_SORT
+*&---------------------------------------------------------------------*
+*& text
+*&---------------------------------------------------------------------*
+*& -->  p1        text
+*& <--  p2        text
+*&---------------------------------------------------------------------*
+FORM SET_SORT .
+
+  PERFORM SET_SORT1.
+  PERFORM SET_SORT2.
+*  PERFORM SET_SORT3.
+
+
+ENDFORM.
+*&---------------------------------------------------------------------*
+*& Form SET_FCAT_GRID3
+*&---------------------------------------------------------------------*
+*& text
+*&---------------------------------------------------------------------*
+*& -->  p1        text
+*& <--  p2        text
+*&---------------------------------------------------------------------*
+
+*&---------------------------------------------------------------------*
+*& Form CHECK_STAT
+*&---------------------------------------------------------------------*
+*& text
+*&---------------------------------------------------------------------*
+*& -->  p1        text
+*& <--  p2        text
+*&---------------------------------------------------------------------*
+FORM CHECK_STAT .
+  DATA : LV_MT        TYPE MARA-MATNR,
+         LV_DAILY_NUM TYPE I.
+
+  PERFORM GET_DAILY_COMSUMPTION.
+
+  LOOP AT GT_MARD INTO GS_MARD.
+
+    READ TABLE GT_WEEKLY INTO GS_WEEKLY WITH KEY MATNR = GS_MARD-MATNR.
+    PERFORM COUNT_STAT .          "### #####
+
+    MODIFY GT_MARD FROM GS_MARD.
+  ENDLOOP.
+ENDFORM.
+*&---------------------------------------------------------------------*
+*& Form COUNT_STAT
+*&---------------------------------------------------------------------*
+*& text
+*&---------------------------------------------------------------------*
+*      -->P_LV_MT  text
+*      -->P_LV_DAILY_NUM  text
+*&---------------------------------------------------------------------*
+FORM COUNT_STAT.
+  DATA : BEGIN OF LS_WEEKLY_SUM,
+           MATNR TYPE MARA-MATNR,
+           MAKTX TYPE MAKT-MAKTX,
+           PDATU TYPE PBED-PDATU,
+           PLNMG TYPE PBED-PLNMG,
+           MENGE TYPE MSEG-MENGE,
+           MEINS TYPE MSEG-MEINS,
+           RATE  TYPE P DECIMALS 2,
+           "TCOLOR TYPE LVC_T_SCOL,      "#
+         END OF LS_WEEKLY_SUM,
+         LT_WEEKLY_SUM LIKE TABLE OF LS_WEEKLY_SUM.
+
+  CLEAR GS_WEEKLY.
+  "####
+  LOOP AT GT_WEEKLY INTO GS_WEEKLY.
+    LS_WEEKLY_SUM-MATNR = GS_WEEKLY-MATNR.
+    LS_WEEKLY_SUM-PLNMG = GS_WEEKLY-PLNMG.
+
+    COLLECT LS_WEEKLY_SUM INTO LT_WEEKLY_SUM.
+    CLEAR : LS_WEEKLY_SUM, GS_WEEKLY.
+  ENDLOOP.
+
+
+  "#### ###
+  CLEAR : GT_WEEKLY_SUM, GS_WEEKLY_SUM.
+  LOOP AT LT_WEEKLY_SUM INTO LS_WEEKLY_SUM.
+    GS_WEEKLY_SUM-MATNR = LS_WEEKLY_SUM-MATNR.
+    GS_WEEKLY_SUM-PLNMG = LS_WEEKLY_SUM-PLNMG.
+
+
+    APPEND GS_WEEKLY_SUM TO GT_WEEKLY_SUM.
+    CLEAR : LS_WEEKLY_SUM, GS_WEEKLY_SUM.
+  ENDLOOP.
+
+
+
+
+  READ TABLE GT_WEEKLY_SUM INTO GS_WEEKLY_SUM WITH KEY MATNR = GS_MARD-MATNR.
+  IF SY-SUBRC = 0 AND GS_WEEKLY_SUM-PLNMG <> 0.
+    IF GS_MARD-LABST / GS_WEEKLY_SUM-PLNMG  <  3 / 10 . "### ### 30%### ##
+      GS_MARD-STAT = ICON_LED_RED.
+    ELSEIF GS_MARD-LABST / GS_WEEKLY_SUM-PLNMG > 9 / 10. "90%## ####
+      GS_MARD-STAT = ICON_LED_YELLOW.
+    ELSE. "# ### #####
+      GS_MARD-STAT = ICON_LED_GREEN.
+    ENDIF.
+  ELSE. " ###### #####
+    GS_MARD-STAT = ICON_LED_GREEN.
+  ENDIF.
+  CLEAR :  GS_WEEKLY.
+
+ENDFORM.
+*&---------------------------------------------------------------------*
+*& Form GET_DATA_DETAIL
+*&---------------------------------------------------------------------*
+*& text
+*&---------------------------------------------------------------------*
+*& -->  p1        text
+*& <--  p2        text
+*&---------------------------------------------------------------------*
+FORM SET_FCAT_GRID3.
+  CLEAR GT_FCAT3.
+
+  CLEAR GS_FCAT.
+  GS_FCAT-FIELDNAME = 'WERKS'.
+  GS_FCAT-COLTEXT   = '##'.
+  GS_FCAT-REF_TABLE = 'MSEG'.
+  APPEND GS_FCAT TO GT_FCAT3.
+
+  CLEAR GS_FCAT.
+  GS_FCAT-FIELDNAME = 'DORC'.
+  GS_FCAT-COLTEXT   = '### ##'.
+  GS_FCAT-KEY       = 'X'.
+  GS_FCAT-REF_TABLE = 'MSEG'.
+  APPEND GS_FCAT TO GT_FCAT3.
+  CLEAR GS_FCAT.
+  GS_FCAT-FIELDNAME = 'LGORT'.
+  GS_FCAT-COLTEXT   = '##'.
+
+  GS_FCAT-REF_TABLE = 'MSEG'.
+  APPEND GS_FCAT TO GT_FCAT3.
+
+  CLEAR GS_FCAT.
+  GS_FCAT-FIELDNAME = 'MATNR'.
+  GS_FCAT-COLTEXT   = '####'.
+  GS_FCAT-KEY       = 'X'.
+  GS_FCAT-REF_TABLE = 'MSEG'.
+  APPEND GS_FCAT TO GT_FCAT3.
+
+  CLEAR GS_FCAT.
+  GS_FCAT-FIELDNAME = 'MAKTX'.
+  GS_FCAT-COLTEXT   = '###'.
+*  GS_FCAT-KEY       = 'X'.
+  GS_FCAT-REF_TABLE = 'MSEG'.
+  APPEND GS_FCAT TO GT_FCAT3.
+
+  CLEAR GS_FCAT.
+  GS_FCAT-FIELDNAME = 'DATE'.
+  GS_FCAT-COLTEXT   = '## ##'.
+  GS_FCAT-REF_TABLE = 'MSEG'.
+  APPEND GS_FCAT TO GT_FCAT3.
+
+  CLEAR GS_FCAT.
+  GS_FCAT-FIELDNAME = 'CHARG'.
+  GS_FCAT-COLTEXT   = '## ##'.
+  GS_FCAT-REF_TABLE = 'MSEG'.
+  APPEND GS_FCAT TO GT_FCAT3.
+
+
+  CLEAR GS_FCAT.
+  GS_FCAT-FIELDNAME = 'MENGE'.
+  GS_FCAT-COLTEXT   = '##'.
+  GS_FCAT-REF_TABLE = 'MSEG'.
+  GS_FCAT-QFIELDNAME = 'MEINS'.
+  APPEND GS_FCAT TO GT_FCAT3.
+
+  CLEAR GS_FCAT.
+  GS_FCAT-FIELDNAME = 'MEINS'.
+  GS_FCAT-COLTEXT   = '####'.
+  GS_FCAT-REF_TABLE = 'MSEG'.
+  APPEND GS_FCAT TO GT_FCAT3.
+
+  CLEAR GS_FCAT.
+  GS_FCAT-FIELDNAME = 'BWART'.
+  GS_FCAT-COLTEXT   = '####'.
+  GS_FCAT-REF_TABLE = 'MSEG'.
+  APPEND GS_FCAT TO GT_FCAT3.
+
+  CLEAR GS_FCAT.
+  GS_FCAT-FIELDNAME = 'SHKZG'.
+  GS_FCAT-COLTEXT   = '###'.
+  GS_FCAT-REF_TABLE = 'MSEG'.
+  APPEND GS_FCAT TO GT_FCAT3.
+
+
+
+  CLEAR GS_FCAT.
+  GS_FCAT-FIELDNAME = 'MBLNR'.
+  GS_FCAT-COLTEXT   = '######'.
+  GS_FCAT-REF_TABLE = 'MSEG'.
+  APPEND GS_FCAT TO GT_FCAT3.
+
+  CLEAR GS_FCAT.
+  GS_FCAT-FIELDNAME = 'LIFNR'.
+  GS_FCAT-COLTEXT   = '####'.
+  GS_FCAT-REF_TABLE = 'MSEG'.
+  APPEND GS_FCAT TO GT_FCAT3.
+
+  CLEAR GS_FCAT.
+  GS_FCAT-FIELDNAME = 'DMBTR'.
+  GS_FCAT-COLTEXT   = '##'.
+  GS_FCAT-REF_TABLE = 'MSEG'.
+  GS_FCAT-CFIELDNAME = 'WAERS'.
+  APPEND GS_FCAT TO GT_FCAT3.
+
+  CLEAR GS_FCAT.
+  GS_FCAT-FIELDNAME = 'WAERS'.
+  GS_FCAT-COLTEXT   = '## ##'.
+  GS_FCAT-REF_TABLE = 'MSEG'.
+  APPEND GS_FCAT TO GT_FCAT3.
+
+  CLEAR GS_FCAT.
+  GS_FCAT-FIELDNAME = 'BUDAT_MKPF'.
+  GS_FCAT-COLTEXT   = '####'.
+  GS_FCAT-REF_TABLE = 'MSEG'.
+  APPEND GS_FCAT TO GT_FCAT3.
+
+
+  CLEAR GS_FCAT.
+  GS_FCAT-FIELDNAME = 'USNAM_MKPF'.
+  GS_FCAT-COLTEXT   = '####'.
+  GS_FCAT-REF_TABLE = 'MSEG'.
+  APPEND GS_FCAT TO GT_FCAT3.
+
+
+  CLEAR GS_FCAT.
+  GS_FCAT-FIELDNAME = 'STAT'.
+  GS_FCAT-COLTEXT   = '##'.
+  GS_FCAT-REF_TABLE = 'MSEG'.
+  APPEND GS_FCAT TO GT_FCAT3.
+
+
+ENDFORM.
+*&---------------------------------------------------------------------*
+*& Form SET_FCAT_GRID3
+*&---------------------------------------------------------------------*
+*& text
+*&---------------------------------------------------------------------*
+*& -->  p1        text
+*& <--  p2        text
+*&---------------------------------------------------------------------*
+
+*&---------------------------------------------------------------------*
+*& Form GET_DATA_DETAIL
+*&---------------------------------------------------------------------*
+*& text
+*&---------------------------------------------------------------------*
+*& -->  p1        text
+*& <--  p2        text
+*&---------------------------------------------------------------------*
+FORM GET_DATA_DETAIL .
+  DATA : LT_MAKT TYPE TABLE OF MAKT,
+         LS_MAKT TYPE MAKT.
+
+
+  DATA : LV_DATE    TYPE D,
+         LV_MT_TEXT TYPE C LENGTH 10.
+  CLEAR GT_DISP.
+
+  SELECT *
+    INTO CORRESPONDING FIELDS OF TABLE GT_DISP
+    FROM MSEG
+    WHERE WERKS = P_WERKS
+    AND LGORT = P_LGORT
+    AND MATNR = GS_MCHB-MATNR.
+
+  SELECT MAKTX MATNR
+    INTO CORRESPONDING FIELDS OF TABLE LT_MAKT
+    FROM MAKT
+    WHERE SPRAS = SY-LANGU
+    AND MATNR = GS_MCHB-MATNR.
+
+  SORT LT_MAKT BY MATNR.
+  LOOP AT GT_DISP INTO GS_DISP.
+    "1. ### ##
+    READ TABLE LT_MAKT INTO LS_MAKT
+                       WITH KEY MATNR = GS_DISP-MATNR
+                       BINARY SEARCH.
+
+    MOVE-CORRESPONDING LS_MAKT TO GS_DISP.
+    "2. ## ## = #### - ###
+    LV_DATE = SY-DATUM.
+    GS_DISP-DATE = SY-DATUM - GS_DISP-BUDAT_MKPF.
+
+    "3. ###TEXT
+    PERFORM SET_DORC.
+
+    "4. # ## ##
+    PERFORM SET_LCOLOR.
+
+    MODIFY GT_DISP FROM GS_DISP.
+
+  ENDLOOP.
+  SORT GT_DISP BY DATE DESCENDING.
+ENDFORM.
+*&---------------------------------------------------------------------*
+*& Form DISPLY_ALV_GO_GRID3
+*&---------------------------------------------------------------------*
+*& text
+*&---------------------------------------------------------------------*
+*& -->  p1        text
+*& <--  p2        text
+*&---------------------------------------------------------------------*
+FORM DISPLY_ALV_GO_GRID3 .
+
+  CALL METHOD GO_GRID3->SET_TABLE_FOR_FIRST_DISPLAY
+    EXPORTING
+*     I_BUFFER_ACTIVE =
+*     I_BYPASSING_BUFFER            =
+*     I_CONSISTENCY_CHECK           =
+*     I_STRUCTURE_NAME              =
+*     IS_VARIANT      =
+*     I_SAVE          =
+*     I_DEFAULT       = 'X'
+      IS_LAYOUT       = GS_LAYOUT3
+*     IS_PRINT        =
+*     IT_SPECIAL_GROUPS             =
+*     IT_TOOLBAR_EXCLUDING          =
+*     IT_HYPERLINK    =
+*     IT_ALV_GRAPHICS =
+*     IT_EXCEPT_QINFO =
+*     IR_SALV_ADAPTER =
+    CHANGING
+      IT_OUTTAB       = GT_DISP
+      IT_FIELDCATALOG = GT_FCAT3
+      IT_SORT         = GT_SORT3
+*     IT_FILTER       =
+*  EXCEPTIONS
+*     INVALID_PARAMETER_COMBINATION = 1
+*     PROGRAM_ERROR   = 2
+*     TOO_MANY_LINES  = 3
+*     OTHERS          = 4
+    .
+
+ENDFORM.
+*&---------------------------------------------------------------------*
+*& Form SET_SORT1
+*&---------------------------------------------------------------------*
+*& text
+*&---------------------------------------------------------------------*
+*& -->  p1        text
+*& <--  p2        text
+*&---------------------------------------------------------------------*
+FORM SET_SORT1 .
+
+  CLEAR GS_SORT.
+  GS_SORT-FIELDNAME = 'WERKS'.
+  GS_SORT-UP = 'X'.
+  APPEND GS_SORT TO GT_SORT1.
+
+  CLEAR GS_SORT.
+  GS_SORT-FIELDNAME = 'LGORT'.
+  GS_SORT-UP = 'X'.
+  APPEND GS_SORT TO GT_SORT1.
+
+  CLEAR GS_SORT.
+  GS_SORT-FIELDNAME = 'MTART'.
+  GS_SORT-UP = 'X'.
+  APPEND GS_SORT TO GT_SORT1.
+
+ENDFORM.
+*&---------------------------------------------------------------------*
+*& Form SET_SORT2
+*&---------------------------------------------------------------------*
+*& text
+*&---------------------------------------------------------------------*
+*& -->  p1        text
+*& <--  p2        text
+*&---------------------------------------------------------------------*
+FORM SET_SORT2 .
+  CLEAR GS_SORT.
+  GS_SORT-FIELDNAME = 'MATNR'.
+  GS_SORT-UP = 'X'.
+  APPEND GS_SORT TO GT_SORT2.
+
+  CLEAR GS_SORT.
+  GS_SORT-FIELDNAME = 'WERKS'.
+  GS_SORT-UP = 'X'.
+  APPEND GS_SORT TO GT_SORT2.
+
+  CLEAR GS_SORT.
+  GS_SORT-FIELDNAME = 'LGORT'.
+  GS_SORT-UP = 'X'.
+  APPEND GS_SORT TO GT_SORT2.
+
+  CLEAR GS_SORT.
+  GS_SORT-FIELDNAME = 'MTART'.
+  GS_SORT-UP = 'X'.
+  APPEND GS_SORT TO GT_SORT2.
+
+  CLEAR GS_SORT.
+  GS_SORT-FIELDNAME = 'MAKTX'.
+  GS_SORT-UP = 'X'.
+  APPEND GS_SORT TO GT_SORT2.
+
+  CLEAR GS_SORT.
+  GS_SORT-FIELDNAME = 'MEINS'.
+  GS_SORT-UP = 'X'.
+  APPEND GS_SORT TO GT_SORT2.
+
+ENDFORM.
+*&---------------------------------------------------------------------*
+*& Form SET_SORT3
+*&---------------------------------------------------------------------*
+*& text
+*&---------------------------------------------------------------------*
+*& -->  p1        text
+*& <--  p2        text
+*&---------------------------------------------------------------------*
+FORM SET_SORT3 .
+
+  CLEAR GS_SORT.
+  GS_SORT-FIELDNAME = 'MATNR'.
+  GS_SORT-UP = 'X'.
+  APPEND GS_SORT TO GT_SORT3.
+
+  CLEAR GS_SORT.
+  GS_SORT-FIELDNAME = 'WERKS'.
+  GS_SORT-UP = 'X'.
+  APPEND GS_SORT TO GT_SORT3.
+
+  CLEAR GS_SORT.
+  GS_SORT-FIELDNAME = 'LGORT'.
+  GS_SORT-UP = 'X'.
+  APPEND GS_SORT TO GT_SORT3.
+
+  CLEAR GS_SORT.
+  GS_SORT-FIELDNAME = 'WAERS'.
+  GS_SORT-UP = 'X'.
+  APPEND GS_SORT TO GT_SORT3.
+
+  CLEAR GS_SORT.
+  GS_SORT-FIELDNAME = 'MEINS'.
+  GS_SORT-UP = 'X'.
+  APPEND GS_SORT TO GT_SORT3.
+ENDFORM.
+*&---------------------------------------------------------------------*
+*& Form SET_COLOR
+*&---------------------------------------------------------------------*
+*& text
+*&---------------------------------------------------------------------*
+*& -->  p1        text
+*& <--  p2        text
+*&---------------------------------------------------------------------*
+*&---------------------------------------------------------------------*
+*& Form SET_COLOR
+*&---------------------------------------------------------------------*
+*& text
+*&---------------------------------------------------------------------*
+*& -->  p1        text
+*& <--  p2        text
+*&---------------------------------------------------------------------*
+FORM SET_COLOR .
+
+
+
+
+
+  DATA : TEMP_CELL TYPE LVC_S_SCOL,
+         T_COL     TYPE LVC_S_COLO.
+  LOOP AT GT_MARD INTO GS_MARD .
+    IF GS_MARD-MATNR+0(8) = 'JG-A03-P'.
+
+      T_COL-COL = '1'. "##
+
+
+    ELSEIF GS_MARD-MATNR+0(8) = 'JG-A03-R'.
+
+
+      T_COL-COL = '7'. "##
+
+    ELSEIF GS_MARD-MATNR+0(8) = 'JG-A03-H'.
+      T_COL-COL = '3'. "##
+    ENDIF.
+    T_COL-INV = 2.  "##,### ## ##
+    TEMP_CELL-FNAME = 'MATNR'.
+    TEMP_CELL-COLOR = T_COL.
+
+    APPEND TEMP_CELL TO GS_MARD-TCOLOR.
+    MODIFY GT_MARD FROM GS_MARD.
+    CLEAR : TEMP_CELL, T_COL.
+  ENDLOOP.
+
+
+
+ENDFORM.
+*&---------------------------------------------------------------------*
+*& Form SET_LCOLOR
+*&---------------------------------------------------------------------*
+*& text
+*&---------------------------------------------------------------------*
+*& -->  p1        text
+*& <--  p2        text
+*&---------------------------------------------------------------------*
+FORM SET_LCOLOR .
+
+  IF GS_DISP-DORC = '##'.
+    GS_DISP-COLOR = 'C300'. "###
+  ELSEIF GS_DISP-DORC = '##'.
+    GS_DISP-COLOR = 'C710'. "###
+  ENDIF.
+
+ENDFORM.
+*&---------------------------------------------------------------------*
+*& Form SET_DORC
+*&---------------------------------------------------------------------*
+*& text
+*&---------------------------------------------------------------------*
+*& -->  p1        text
+*& <--  p2        text
+*&---------------------------------------------------------------------*
+FORM SET_DORC .
+  CASE GS_DISP-SHKZG.
+    WHEN 'H'.
+      GS_DISP-DORC = '##'.
+*        GS_DISP-MENGE = GS_DISP-MENGE * -1.
+      MULTIPLY  GS_DISP-MENGE BY -1.
+    WHEN 'S'.
+      GS_DISP-DORC = '##'.
+  ENDCASE.
+ENDFORM.
+*&---------------------------------------------------------------------*
+*& Form GET_BATCH
+*&---------------------------------------------------------------------*
+*& text
+*&---------------------------------------------------------------------*
+*      -->P_LV_DAY  text
+*      <--P_LV_BATCH  text
+*&---------------------------------------------------------------------*
+FORM GET_BATCH  USING    PV_DAY
+                CHANGING PV_BATCH.
+
+  IF PV_DAY = 1.
+    PV_BATCH = 10.
+  ENDIF.
+
+
+ENDFORM.
+*&---------------------------------------------------------------------*
+*& Form SET_LGORT
+*&---------------------------------------------------------------------*
+*& text
+*&---------------------------------------------------------------------*
+*& -->  p1        text
+*& <--  p2        text
+*&---------------------------------------------------------------------*
+FORM SET_LGORT .
+
+
+  LOOP AT SCREEN.
+    CLEAR : ROH, HALB, FERT, ALL.
+    CASE 'X'.
+
+      WHEN P_RAD1.
+        P_MTART = 'ROH'.
+        P_LGORT = '1000'.
+        ROH = 'X'.
+
+      WHEN P_RAD2.
+        P_MTART = 'HALB'.
+        P_LGORT = '2000'.
+        HALB = 'X'.
+
+
+      WHEN P_RAD3.
+        P_MTART = 'FERT'.
+        P_LGORT = '3000'.
+        FERT = 'X'.
+
+
+      WHEN P_RAD4.
+        P_MTART = 'ALL'.
+        P_LGORT = 'ALL'.
+        ALL = 'X'.
+
+
+
+
+
+    ENDCASE.
+
+  ENDLOOP.
+ENDFORM.
+
+
+*&---------------------------------------------------------------------*
+*& Form DIVIDE_MTART
+*&---------------------------------------------------------------------*
+*& text
+*&---------------------------------------------------------------------*
+*& -->  p1        text
+*& <--  p2        text
+*&---------------------------------------------------------------------*
+FORM DIVIDE_MTART .
+
+
+  CASE P_MTART.
+    WHEN 'ROH'.
+      SELECT *
+      INTO CORRESPONDING FIELDS OF TABLE GT_MARD
+      FROM MARD
+      WHERE WERKS = P_WERKS
+      AND LGORT = P_LGORT
+      AND MATNR IN S_MATNR.
+
+    WHEN 'FERT'.
+      SELECT *
+      INTO CORRESPONDING FIELDS OF TABLE GT_MARD
+      FROM MARD
+      WHERE WERKS = P_WERKS
+      AND LGORT = P_LGORT
+      AND MATNR IN S_MATNR.
+
+    WHEN 'HALB'.
+      SELECT *
+      INTO CORRESPONDING FIELDS OF TABLE GT_MARD
+      FROM MARD
+      WHERE WERKS = P_WERKS
+      AND LGORT = P_LGORT
+      AND MATNR IN S_MATNR.
+
+    WHEN 'ALL'.
+      SELECT *
+      INTO CORRESPONDING FIELDS OF TABLE GT_MARD
+      FROM MARD
+      WHERE WERKS = P_WERKS
+      AND MATNR IN S_MATNR
+      AND MATNR LIKE 'JG-A03-%'.
+  ENDCASE.
+
+
+ENDFORM.
+*&---------------------------------------------------------------------*
+*& Form SET_COLOR1
+*&---------------------------------------------------------------------*
+*& text
+*&---------------------------------------------------------------------*
+*& -->  p1        text
+*& <--  p2        text
+*&---------------------------------------------------------------------*
+FORM SET_COLOR1 .
+
+ENDFORM.
+*&---------------------------------------------------------------------*
+*& Form SET_COLOR2
+*&---------------------------------------------------------------------*
+*& text
+*&---------------------------------------------------------------------*
+*& -->  p1        text
+*& <--  p2        text
+*&---------------------------------------------------------------------*
+FORM SET_COLOR2 .
+
+
+
+ENDFORM.
+*&---------------------------------------------------------------------*
+*& Form HANDLE_TOOLBAR
+*&---------------------------------------------------------------------*
+*& text
+*&---------------------------------------------------------------------*
+*      -->P_E_OBJECT  text
+*&---------------------------------------------------------------------*
+FORM HANDLE_TOOLBAR  USING PO_OBJECT TYPE REF TO CL_ALV_EVENT_TOOLBAR_SET.
+
+  DATA : LS_TOOLBAR TYPE STB_BUTTON.
+  DATA : LV_INDEX TYPE SY-TABIX.
+  CLEAR LS_TOOLBAR.
+
+
+  LS_TOOLBAR-FUNCTION = 'WEEKLY'.
+  LS_TOOLBAR-ICON     = ''.
+  LS_TOOLBAR-QUICKINFO     = ''.
+  LS_TOOLBAR-TEXT     = '[########]'.
+  LS_TOOLBAR-DISABLED     = ''.
+  INSERT LS_TOOLBAR INTO PO_OBJECT->MT_TOOLBAR INDEX 1.
+
+  CLEAR LS_TOOLBAR.
+  LS_TOOLBAR-FUNCTION = 'DAILY'.
+  LS_TOOLBAR-ICON     = ''.
+  LS_TOOLBAR-QUICKINFO     = ''.
+  LS_TOOLBAR-TEXT     = '[########]'.
+  LS_TOOLBAR-DISABLED     = ''.
+  INSERT LS_TOOLBAR INTO PO_OBJECT->MT_TOOLBAR INDEX 2.
+
+
+*  CLEAR LS_TOOLBAR.
+*  LS_TOOLBAR-FUNCTION = 'ALL_SELECT'.
+*  LS_TOOLBAR-ICON     = ''.
+*  LS_TOOLBAR-QUICKINFO     = ''.
+*  LS_TOOLBAR-TEXT     = '[####]'.
+*  LS_TOOLBAR-DISABLED     = ''.
+**  APPEND LS_TOOLBAR TO PO_OBJECT->MT_TOOLBAR.
+*  INSERT LS_TOOLBAR INTO PO_OBJECT->MT_TOOLBAR INDEX 2.
+*
+*  CLEAR LS_TOOLBAR.
+*  LS_TOOLBAR-FUNCTION = 'NO_SELECT'.
+*  LS_TOOLBAR-ICON     = ''.
+*  LS_TOOLBAR-QUICKINFO     = ''.
+*  LS_TOOLBAR-TEXT     = '[####]'.
+*  LS_TOOLBAR-DISABLED     = ''.
+**  APPEND LS_TOOLBAR TO PO_OBJECT->MT_TOOLBAR.
+*  INSERT LS_TOOLBAR INTO PO_OBJECT->MT_TOOLBAR INDEX 3.
+
+
+ENDFORM.
+*&---------------------------------------------------------------------*
+*& Form HANDLE_USER_COMAND
+*&---------------------------------------------------------------------*
+*& text
+*&---------------------------------------------------------------------*
+*      -->P_E_UCOMM  text
+*&---------------------------------------------------------------------*
+FORM HANDLE_USER_COMMAND  USING    P_UCOMM.
+  CASE P_UCOMM.
+
+    WHEN 'DAILY'.
+      PERFORM DAILY.
+      GV_OKCODE_0200 = 'DAILY'.
+    WHEN 'WEEKLY'.
+      PERFORM WEEKLY.
+      GV_OKCODE_0200 = 'WEEKLY'.
+  ENDCASE.
+
+
+
+  CALL SCREEN 0200  STARTING AT 10 10
+                  ENDING AT 100 100.
+ENDFORM.
+*&---------------------------------------------------------------------*
+*& Form SET_INPUT
+*&---------------------------------------------------------------------*
+*& text
+*&---------------------------------------------------------------------*
+*& -->  p1        text
+*& <--  p2        text
+*&---------------------------------------------------------------------*
+FORM SET_INPUT .
+  LOOP AT SCREEN.
+
+    CASE 'X'.
+      WHEN P_RAD1.
+        IF SCREEN-GROUP1 = 'DT1' OR SCREEN-GROUP1 = 'DT2' OR SCREEN-GROUP1 = 'DT3'.
+          SCREEN-INPUT = 0.
+          P_MTART = 'ROH'.
+          P_LGORT = '1000'.
+          ROH = 'X'.
+          MODIFY SCREEN.
+        ENDIF.
+
+      WHEN P_RAD2.
+        IF  SCREEN-GROUP1 = 'DT1' OR SCREEN-GROUP1 = 'DT2' OR SCREEN-GROUP1 = 'DT3'.
+          SCREEN-INPUT = 0.
+          MODIFY SCREEN.
+        ENDIF.
+
+      WHEN P_RAD3.
+        IF  SCREEN-GROUP1 = 'DT1' OR SCREEN-GROUP1 = 'DT2' OR SCREEN-GROUP1 = 'DT3'.
+          SCREEN-INPUT = 0.
+
+          MODIFY SCREEN.
+        ENDIF.
+
+      WHEN P_RAD4.
+        IF  SCREEN-GROUP1 = 'DT1' OR SCREEN-GROUP1 = 'DT2' OR SCREEN-GROUP1 = 'DT3' OR SCREEN-GROUP1 = 'DT4'.
+          SCREEN-INPUT = 0.
+          MODIFY SCREEN.
+        ENDIF.
+    ENDCASE.
+  ENDLOOP.
+ENDFORM.
+*&---------------------------------------------------------------------*
+*& Form DETAIL
+*&---------------------------------------------------------------------*
+*& text
+*&---------------------------------------------------------------------*
+*& -->  p1        text
+*& <--  p2        text
+*&---------------------------------------------------------------------*
+FORM DAILY .
+  DATA : TEMP_CELL TYPE LVC_S_SCOL,
+         T_COL     TYPE LVC_S_COLO.
+  DATA : LV_NUM TYPE I.
+  PERFORM GET_DATA.
+  CLEAR : GT_WEEKLY_SUM, LV_NUM.
+  SORT GT_WEEKLY BY PDATU MATNR.
+  LOOP AT GT_WEEKLY INTO GS_WEEKLY.
+    GS_WEEKLY_SUM-MATNR = GS_WEEKLY-MATNR.
+    GS_WEEKLY_SUM-PDATU = GS_WEEKLY-PDATU.
+    GS_WEEKLY_SUM-PLNMG = GS_WEEKLY-PLNMG.
+    APPEND GS_WEEKLY_SUM TO GT_WEEKLY_SUM.
+  ENDLOOP.
+
+  SORT GT_WEEKLY_SUM BY PDATU MATNR.
+  LOOP AT GT_WEEKLY_SUM INTO GS_WEEKLY_SUM.
+    READ TABLE GT_MARD INTO GS_MARD WITH KEY MATNR = GS_WEEKLY_SUM-MATNR.
+    IF SY-SUBRC = 0.
+      GS_WEEKLY_SUM-MAKTX = GS_MARD-MAKTX.
+      GS_WEEKLY_SUM-MEINS = GS_MARD-MEINS.
+      MODIFY GT_WEEKLY_SUM FROM GS_WEEKLY_SUM.
+      CLEAR : GS_MARD, GS_WEEKLY_SUM.
+    ELSE.
+      DELETE TABLE GT_WEEKLY_SUM FROM GS_WEEKLY_SUM.
+    ENDIF.
+  ENDLOOP.
+
+  "#### ###
+  LOOP AT GT_WEEKLY_SUM INTO GS_WEEKLY_SUM.
+
+    AT NEW PDATU. "## ### ## ### # #
+      LV_NUM = LV_NUM + 1.
+    ENDAT.
+    T_COL-COL = LV_NUM.
+    T_COL-INV = 2.
+    TEMP_CELL-FNAME = 'PDATU'.
+    TEMP_CELL-COLOR = T_COL.
+    APPEND TEMP_CELL TO GS_WEEKLY_SUM-TCOLOR.
+    MODIFY GT_WEEKLY_SUM FROM GS_WEEKLY_SUM.
+    CLEAR : TEMP_CELL, T_COL.
+
+  ENDLOOP.
+
+ENDFORM.
+*&---------------------------------------------------------------------*
+*& Form GET_DAILY_COMSUMPTION
+*&---------------------------------------------------------------------*
+*& text
+*&---------------------------------------------------------------------*
+*& -->  p1        text
+*& <--  p2        text
+*&---------------------------------------------------------------------*
+FORM GET_DAILY_COMSUMPTION .
+
+  DATA : LT_BOM LIKE TABLE OF STPOX,
+         LS_BOM LIKE STPOX.
+
+  DATA : LT_WEEKLY_FERT LIKE TABLE OF GT_WEEKLY,
+         LS_WEEKLY_FERT LIKE GS_WEEKLY.
+
+
+  DATA LV_DATE TYPE SYST-DATUM.
+  LV_DATE = SY-DATUM + 7.
+
+  "### ## ## ### ###
+  SELECT PBIM~MATNR PBED~PDATU PBED~PLNMG  "PBIM~BDZEI  PBED~ENTLI
+    INTO CORRESPONDING FIELDS OF TABLE GT_PIR
+    FROM PBIM INNER JOIN PBED
+    ON PBIM~BDZEI = PBED~BDZEI
+    WHERE PBIM~MATNR LIKE 'JG-A03-F%'
+    AND PBIM~WERKS = '5131'
+    AND PBED~ENTLI = '1'  "DAILY ##
+    AND PBED~PDATU BETWEEN SY-DATUM AND LV_DATE. "## ####
+
+
+  LOOP AT GT_PIR INTO GS_PIR.
+    "##### BOM# ## ### ROH, HALB ###
+    CALL FUNCTION 'CS_BOM_EXPL_MAT_V2'
+      EXPORTING
+        AUMNG = 0
+        BREMS = ' '
+        CAPID = 'PP01' "PRODUCTION GENERAL
+        CUOBJ = 000000000000000
+        CUOVS = 0
+        DATUV = SY-DATUM
+        EMENG = GS_PIR-PLNMG "## ###
+        MKTLS = 'X'
+        MDMPS = ' '
+        MEHRS = 'X' "######
+        MTNRV = GS_PIR-MATNR
+        STLAN = '1' "BOM USAGE
+        STPST = 0
+        SVWVO = 'X'
+        WERKS = '5131'
+        VERID = 'P001'
+      TABLES
+        STB   = LT_BOM.
+
+    LOOP AT LT_BOM INTO LS_BOM. " WHERE MTART = 'ROH'.
+      GS_WEEKLY-MATNR = LS_BOM-IDNRK. "####
+      GS_WEEKLY-PLNMG = LS_BOM-MNGLG. "##
+      GS_WEEKLY-PDATU = GS_PIR-PDATU. "##
+      COLLECT GS_WEEKLY INTO GT_WEEKLY.
+      CLEAR : GS_WEEKLY, LS_BOM.
+
+    ENDLOOP.
+  ENDLOOP.
+
+
+  APPEND LINES OF GT_PIR TO GT_WEEKLY.
+  SORT GT_PIR BY PDATU MATNR.
+
+ENDFORM.
+*&---------------------------------------------------------------------*
+*& Form CREATE_OBJECT
+*&---------------------------------------------------------------------*
+*& text
+*&---------------------------------------------------------------------*
+*& -->  p1        text
+*& <--  p2        text
+*&---------------------------------------------------------------------*
+FORM CREATE_OBJECT .
+* ## #### ##
+*  CREATE OBJECT GO_DOCKING_0200
+*    EXPORTING
+*      SIDE      = CL_GUI_DOCKING_CONTAINER=>DOCK_AT_LEFT
+*      EXTENSION = CL_GUI_DOCKING_CONTAINER=>WS_MAXIMIZEBOX.
+
+  CREATE OBJECT GO_CONTAINER_0200
+    EXPORTING
+*     PARENT         =
+      CONTAINER_NAME = 'GO_CONTAINER_0200'.
+
+* ### ### ##### GRID ##.
+  CREATE OBJECT GO_GRID_0200
+    EXPORTING
+      I_PARENT = GO_CONTAINER_0200.
+ENDFORM.
+*&---------------------------------------------------------------------*
+*& Form SET_LAYOUT_0200
+*&---------------------------------------------------------------------*
+*& text
+*&---------------------------------------------------------------------*
+*& -->  p1        text
+*& <--  p2        text
+*&---------------------------------------------------------------------*
+FORM SET_LAYOUT_0200 .
+  CLEAR GS_LAYOUT_0200.
+  GS_LAYOUT_0200-ZEBRA = 'X'.
+  GS_LAYOUT_0200-CWIDTH_OPT = 'A'.
+  GS_LAYOUT_0200-SEL_MODE = 'D'.
+  GS_LAYOUT_0200-CTAB_FNAME = 'TCOLOR'.
+
+ENDFORM.
+*&---------------------------------------------------------------------*
+*& Form SET_FIELDCAT_0200
+*&---------------------------------------------------------------------*
+*& text
+*&---------------------------------------------------------------------*
+*& -->  p1        text
+*& <--  p2        text
+*&---------------------------------------------------------------------*
+FORM SET_FIELDCAT_0200 .
+  IF GV_OKCODE_0200 = 'DAILY'.
+
+    CLEAR GS_FCAT_0200.
+    GS_FCAT_0200-FIELDNAME  = 'PDATU'.
+    GS_FCAT_0200-COLTEXT    = '##'.
+    APPEND GS_FCAT_0200 TO GT_FCAT_0200.
+
+    CLEAR GS_FCAT_0200.
+    GS_FCAT_0200-FIELDNAME = 'MATNR'.
+    GS_FCAT_0200-COLTEXT   = '####'.
+    GS_FCAT_0200-EMPHASIZE = 'C510'.
+    APPEND GS_FCAT_0200 TO GT_FCAT_0200.
+
+    CLEAR GS_FCAT_0200.
+    GS_FCAT_0200-FIELDNAME = 'MAKTX'.
+    GS_FCAT_0200-COLTEXT   = '####'.
+    APPEND GS_FCAT_0200 TO GT_FCAT_0200.
+
+
+    CLEAR GS_FCAT_0200.
+    GS_FCAT_0200-FIELDNAME  = 'PLNMG'.
+    GS_FCAT_0200-COLTEXT    = '######'.
+    APPEND GS_FCAT_0200 TO GT_FCAT_0200.
+
+    CLEAR GS_FCAT_0200.
+    GS_FCAT_0200-FIELDNAME  = 'MEINS'.
+    GS_FCAT_0200-COLTEXT    = '## ##'.
+    APPEND GS_FCAT_0200 TO GT_FCAT_0200.
+
+  ELSEIF GV_OKCODE_0200 = 'WEEKLY'.
+
+    CLEAR GS_FCAT_0200.
+    GS_FCAT_0200-FIELDNAME = 'MATNR'.
+    GS_FCAT_0200-COLTEXT   = '####'.
+    APPEND GS_FCAT_0200 TO GT_FCAT_0200.
+
+
+    CLEAR GS_FCAT_0200.
+    GS_FCAT_0200-FIELDNAME = 'MAKTX'.
+    GS_FCAT_0200-COLTEXT   = '####'.
+    GS_FCAT_0200-EMPHASIZE = 'C510'.
+    APPEND GS_FCAT_0200 TO GT_FCAT_0200.
+
+
+    CLEAR GS_FCAT_0200.
+    GS_FCAT_0200-FIELDNAME  = 'PLNMG'.
+    GS_FCAT_0200-COLTEXT    = '#### ####'.
+    APPEND GS_FCAT_0200 TO GT_FCAT_0200.
+
+    CLEAR GS_FCAT_0200.
+    GS_FCAT_0200-FIELDNAME  = 'MENGE'.
+    GS_FCAT_0200-COLTEXT    = '#####'.
+    APPEND GS_FCAT_0200 TO GT_FCAT_0200.
+    CLEAR GS_FCAT_0200.
+    GS_FCAT_0200-FIELDNAME  = 'RATE'.
+    GS_FCAT_0200-COLTEXT    = '## ## ## ###(%)'.
+    GS_FCAT_0200-JUST = 'C'.
+    APPEND GS_FCAT_0200 TO GT_FCAT_0200.
+
+    CLEAR GS_FCAT_0200.
+    GS_FCAT_0200-FIELDNAME  = 'MEINS'.
+    GS_FCAT_0200-COLTEXT    = '## ##'.
+    APPEND GS_FCAT_0200 TO GT_FCAT_0200.
+
+
+  ENDIF.
+ENDFORM.
+*&---------------------------------------------------------------------*
+*& Form DISPLY_ALV_GO_GRID_0200
+*&---------------------------------------------------------------------*
+*& text
+*&---------------------------------------------------------------------*
+*& -->  p1        text
+*& <--  p2        text
+*&---------------------------------------------------------------------*
+FORM DISPLY_ALV_GO_GRID_0200 .
+
+
+  CALL METHOD GO_GRID_0200->SET_TABLE_FOR_FIRST_DISPLAY
+    EXPORTING
+      IS_LAYOUT       = GS_LAYOUT_0200
+    CHANGING
+      IT_OUTTAB       = GT_WEEKLY_SUM
+      IT_FIELDCATALOG = GT_FCAT_0200
+      IT_SORT         = GT_SORT_0200.
+
+
+
+ENDFORM.
+*&---------------------------------------------------------------------*
+*& Form WEEKLY
+*&---------------------------------------------------------------------*
+*& text
+*&---------------------------------------------------------------------*
+*& -->  p1        text
+*& <--  p2        text
+*&---------------------------------------------------------------------*
+FORM WEEKLY .
+  PERFORM GET_DATA.
+  SORT GT_WEEKLY_SUM BY PDATU MATNR.
+
+
+
+
+  LOOP AT GT_WEEKLY_SUM INTO GS_WEEKLY_SUM.
+    READ TABLE GT_MARD INTO GS_MARD WITH KEY MATNR = GS_WEEKLY_SUM-MATNR.
+    IF SY-SUBRC = 0.
+      GS_WEEKLY_SUM-MAKTX = GS_MARD-MAKTX.
+      GS_WEEKLY_SUM-MENGE = GS_MARD-LABST.
+      GS_WEEKLY_SUM-MEINS = GS_MARD-MEINS.
+      GS_WEEKLY_SUM-RATE = GS_WEEKLY_SUM-MENGE / GS_WEEKLY_SUM-PLNMG * 100.
+      PERFORM SET_RATE_COLOR.
+
+      MODIFY GT_WEEKLY_SUM FROM GS_WEEKLY_SUM.
+      CLEAR : GS_MARD, GS_WEEKLY_SUM.
+    ELSE.
+      DELETE TABLE GT_WEEKLY_SUM FROM GS_WEEKLY_SUM.
+    ENDIF.
+  ENDLOOP.
+ENDFORM.
+*&---------------------------------------------------------------------*
+
+*&---------------------------------------------------------------------*
+*& Form SET_RATE_COLOR_
+*&---------------------------------------------------------------------*
+*& text
+*&---------------------------------------------------------------------*
+*& -->  p1        text
+*& <--  p2        text
+*&---------------------------------------------------------------------*
+FORM SET_RATE_COLOR.
+  DATA : TEMP_CELL TYPE LVC_S_SCOL,
+         T_COL     TYPE LVC_S_COLO.
+  IF GS_WEEKLY_SUM-RATE < 30.
+    T_COL-COL = '6'. "###
+  ELSEIF GS_WEEKLY_SUM-RATE > 90.
+    T_COL-COL = '3'. "###
+  ELSE.
+    T_COL-COL = '5'. "###
+  ENDIF.
+  T_COL-INV = 2.  "##,### ## ##
+  TEMP_CELL-FNAME = 'RATE'.
+  TEMP_CELL-COLOR = T_COL.
+  APPEND TEMP_CELL TO GS_WEEKLY_SUM-TCOLOR.
+  CLEAR : TEMP_CELL, T_COL.
+ENDFORM.
+*&---------------------------------------------------------------------*
+*& Form CLEAR_ALL
+*&---------------------------------------------------------------------*
+*& text
+*&---------------------------------------------------------------------*
+*& -->  p1        text
+*& <--  p2        text
+*&---------------------------------------------------------------------*
+FORM CLEAR_ALL .
+
+
+  CLEAR : GT_MCHB, GT_MARD, GT_DISP, GT_WEEKLY, GT_WEEKLY_SUM.
+ENDFORM.
+*&---------------------------------------------------------------------*
+*& Form SET_SORT_0200
+*&---------------------------------------------------------------------*
+*& text
+*&---------------------------------------------------------------------*
+*& -->  p1        text
+*& <--  p2        text
+*&---------------------------------------------------------------------*
+FORM SET_SORT_0200 .
+  CLEAR GS_SORT.
+  GS_SORT-FIELDNAME = 'PDATU'.
+  GS_SORT-UP = 'X'.
+  APPEND GS_SORT TO GT_SORT_0200.
+
+*  CLEAR GS_SORT.
+*  GS_SORT-FIELDNAME = 'LGORT'.
+*  GS_SORT-UP = 'X'.
+*  APPEND GS_SORT TO GT_SORT_0200.
+
+
+ENDFORM.
+
+----------------------------------------------------------------------------------
+Extracted by Direct Download Enterprise version 1.3.1 - E.G.Mellodew. 1998-2005 UK. Sap Release 751

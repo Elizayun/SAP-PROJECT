@@ -1,0 +1,130 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<html>
+<head>
+<title>ZSF01_03_MM_08I01</title>
+</head>
+<body bgcolor="#FFFFE0">
+<font size="3" face = "Arial" color="#000000"><b>Code listing for: ZSF01_03_MM_08I01</b></font>
+<br>
+<font size="3" face = "Arial" color="#000000"><b>Description:  Include YR0122_0220IO1</b></font>
+<hr>
+<pre width="100">
+<font color ="#0000FF">*&---------------------------------------------------------------------*</font>
+<font color ="#0000FF">*& Include          YR0122_0220IO1</font>
+<font color ="#0000FF">*&---------------------------------------------------------------------*</font>
+<font color ="#0000FF">*&---------------------------------------------------------------------*</font>
+<font color ="#0000FF">*&      Module  EXIT_0100  INPUT</font>
+<font color ="#0000FF">*&---------------------------------------------------------------------*</font>
+<font color ="#0000FF">*       text</font>
+<font color ="#0000FF">*----------------------------------------------------------------------*</font>
+MODULE EXIT_0100 INPUT.
+
+  LEAVE TO SCREEN 0.
+
+ENDMODULE.
+<font color ="#0000FF">*&---------------------------------------------------------------------*</font>
+<font color ="#0000FF">*&      Module  USER_COMMAND_0100  INPUT</font>
+<font color ="#0000FF">*&---------------------------------------------------------------------*</font>
+<font color ="#0000FF">*       text</font>
+<font color ="#0000FF">*----------------------------------------------------------------------*</font>
+MODULE USER_COMMAND_0100 INPUT.
+
+  CASE GV_OKCODE.
+    WHEN 'MTART'.
+      CASE 'X'.
+        WHEN ROH.
+          P_MTART = 'ROH'.
+          P_LGORT = '1000'.
+          PERFORM GET_DATA.
+
+        WHEN HALB.
+          P_MTART = 'HALB'.
+          P_LGORT = '2000'.
+          PERFORM GET_DATA.
+
+        WHEN FERT.
+
+          P_MTART = 'FERT'.
+          P_LGORT = '3000'.
+          PERFORM GET_DATA.
+
+        WHEN ALL.
+          P_MTART = 'ALL'.
+          P_LGORT = 'ALL'.
+          PERFORM GET_DATA.
+      ENDCASE.
+
+  ENDCASE.
+
+ENDMODULE.
+<font color ="#0000FF">*&---------------------------------------------------------------------*</font>
+<font color ="#0000FF">*& Module CREATE_LISTBOX OUTPUT</font>
+<font color ="#0000FF">*&---------------------------------------------------------------------*</font>
+<font color ="#0000FF">*&</font>
+<font color ="#0000FF">*&---------------------------------------------------------------------*</font>
+<font color ="#0000FF">*&---------------------------------------------------------------------*</font>
+<font color ="#0000FF">*& Module STATUS_0200 OUTPUT</font>
+<font color ="#0000FF">*&---------------------------------------------------------------------*</font>
+<font color ="#0000FF">*&</font>
+<font color ="#0000FF">*&---------------------------------------------------------------------*</font>
+MODULE STATUS_0200 OUTPUT.
+  SET PF-STATUS '200'.
+  SET TITLEBAR '200'.
+ENDMODULE.
+<font color ="#0000FF">*&---------------------------------------------------------------------*</font>
+<font color ="#0000FF">*& Module SET_ALV_0200 OUTPUT</font>
+<font color ="#0000FF">*&---------------------------------------------------------------------*</font>
+<font color ="#0000FF">*&</font>
+<font color ="#0000FF">*&---------------------------------------------------------------------*</font>
+MODULE SET_ALV_0200 OUTPUT.
+
+  IF GO_CONTAINER_0200 IS INITIAL.
+
+<font color ="#0000FF">* INSTANCE ##</font>
+    PERFORM CREATE_OBJECT.
+
+<font color ="#0000FF">* LAYOUT ##</font>
+    PERFORM SET_LAYOUT_0200.
+
+<font color ="#0000FF">* #### ##</font>
+    PERFORM SET_FIELDCAT_0200.
+
+<font color ="#0000FF">*sort</font>
+<font color ="#0000FF">*CLEAR GT_SORT_0200.</font>
+<font color ="#0000FF">*IF GV_OKCODE_0200 = 'DAILY'.</font>
+<font color ="#0000FF">*    PERFORM SET_SORT_0200.</font>
+<font color ="#0000FF">*ENDIF.</font>
+<font color ="#0000FF">* ALV ##</font>
+    PERFORM DISPLY_ALV_GO_GRID_0200.
+  ELSE.
+
+<font color ="#0000FF">* #### ##</font>
+"refresh#### ### gt_Fcat# ######
+    CLEAR  : GT_FCAT_0200, GT_SORT_0200.
+    PERFORM SET_FIELDCAT_0200.
+
+
+    CALL METHOD GO_GRID_0200-&gt;SET_FRONTEND_FIELDCATALOG
+      EXPORTING
+        IT_FIELDCATALOG = GT_FCAT_0200.
+
+
+    CALL METHOD GO_GRID_0200-&gt;REFRESH_TABLE_DISPLAY.
+
+
+  ENDIF.
+ENDMODULE.
+<font color ="#0000FF">*&---------------------------------------------------------------------*</font>
+<font color ="#0000FF">*&      Module  EXIT_0300  INPUT</font>
+<font color ="#0000FF">*&---------------------------------------------------------------------*</font>
+<font color ="#0000FF">*       text</font>
+<font color ="#0000FF">*----------------------------------------------------------------------*</font>
+MODULE EXIT_0300 INPUT.
+LEAVE TO SCREEN 0.
+ENDMODULE.
+</pre>
+<hr>
+<font size="2" face = "Sans Serif">Extracted by Direct Download Enterprise version 1.3.1 - E.G.Mellodew. 1998-2005 UK. Sap Release 751
+</font>
+</body>
+</html>

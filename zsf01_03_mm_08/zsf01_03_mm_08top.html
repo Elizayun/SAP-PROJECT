@@ -1,0 +1,184 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<html>
+<head>
+<title>ZSF01_03_MM_08TOP</title>
+</head>
+<body bgcolor="#FFFFE0">
+<font size="3" face = "Arial" color="#000000"><b>Code listing for: ZSF01_03_MM_08TOP</b></font>
+<br>
+<font size="3" face = "Arial" color="#000000"><b>Description:  Include YR0122_0220TOP</b></font>
+<hr>
+<pre width="100">
+<font color ="#0000FF">*&---------------------------------------------------------------------*</font>
+<font color ="#0000FF">*& Include          YR0122_0220TOP</font>
+<font color ="#0000FF">*&---------------------------------------------------------------------*</font>
+TABLES : MARA, MSEG, MCHB.
+<font color ="#0000FF">************************************</font>
+
+DATA : BEGIN OF GS_MCHB, "MCHB "BATCH# ##
+
+         LGORT  TYPE MCHB-LGORT,      "STORAGE LOCATION
+         WERKS  TYPE MCHB-WERKS,      "PLANT
+         CHARG  TYPE MCHB-CHARG,      "####
+         MATNR  TYPE MCHB-MATNR,      "####
+         MTART  TYPE MARA-MTART,      "####
+         CLABS  TYPE MCHB-CLABS,      "##
+         MEINS  TYPE MARA-MEINS,      "##-##
+         MAKTX  TYPE MAKT-MAKTX,      "####
+         PSDAY  TYPE CHAR15,         "## # : #### - ##
+         CMMNT  TYPE CHAR15,          "###
+         DTL    TYPE ICON-ID,          "######TRANS
+         STAT   TYPE ICON-ID,
+         TCOLOR TYPE LVC_T_SCOL,      "#
+
+       END OF GS_MCHB.
+
+
+DATA : GT_MCHB LIKE TABLE OF GS_MCHB.
+DATA : BEGIN OF GS_MARD, "#####
+
+         LGORT  TYPE MARD-LGORT,      "STORAGE LOCATION
+         WERKS  TYPE MARD-WERKS,      "PLANT
+         MATNR  TYPE MARD-MATNR,      "####
+         MTART  TYPE MARA-MTART,      "####
+         LABST  TYPE MARD-LABST,      "##
+         MEINS  TYPE MARA-MEINS,      "##-##
+         MAKTX  TYPE MAKT-MAKTX,      "####
+         STAT   TYPE ICON-ID,
+         TCOLOR TYPE LVC_T_SCOL,      "#
+
+
+       END OF GS_MARD.
+
+
+DATA : GT_MARD LIKE TABLE OF GS_MARD.
+
+DATA : BEGIN OF GS_DISP, "MSEG
+
+         LGORT      TYPE MSEG-LGORT,      "STORAGE LOCATION
+         WERKS      TYPE MSEG-WERKS,      "PLANT
+         CHARG      TYPE MSEG-CHARG,      "####
+         MATNR      TYPE MSEG-MATNR,      "####
+         MENGE      TYPE MSEG-MENGE,      "##
+         MEINS      TYPE MSEG-MEINS,      "##-##
+         BWART      TYPE MSEG-BWART,      "####
+         MT_TEXT    TYPE C LENGTH 10,          "######
+         MBLNR      TYPE MSEG-MBLNR,      "######
+         LIFNR      TYPE MSEG-LIFNR,      "####
+         DMBTR      TYPE MSEG-DMBTR,      "##
+         WAERS      TYPE MSEG-WAERS,      "## ##
+         MAKTX      TYPE MAKT-MAKTX,      "####
+<font color ="#0000FF">*         BTEXT      TYPE T156T-BTEXT,    "######</font>
+         BUDAT_MKPF TYPE MSEG-BUDAT_MKPF, "###
+         USNAM_MKPF TYPE MSEG-USNAM_MKPF, "####
+         DATE       TYPE N LENGTH 2,               "### ## ## ##
+         STAT       TYPE ICON-ID,
+         DORC       TYPE CHAR02,              "###TEXT
+         SHKZG      TYPE MSEG-SHKZG,        "###
+         COLOR      TYPE CHAR04,
+
+
+       END OF GS_DISP.
+
+DATA : BEGIN OF GS_WEEKLY,
+         MATNR TYPE MARA-MATNR,
+         MEINS TYPE MSEG-MEINS,
+         PDATU TYPE PBED-PDATU,
+         PLNMG TYPE PBED-PLNMG,
+
+         MAKTX TYPE MAKT-MAKTX,
+
+       END OF GS_WEEKLY,
+       GT_WEEKLY LIKE TABLE OF GS_WEEKLY.
+DATA : BEGIN OF GS_WEEKLY_SUM,
+         PDATU  TYPE PBED-PDATU,
+         MATNR  TYPE MARA-MATNR,
+         MAKTX  TYPE MAKT-MAKTX,
+         PLNMG  TYPE PBED-PLNMG,
+         MENGE  TYPE MSEG-MENGE,
+         MEINS  TYPE MSEG-MEINS,
+         RATE   TYPE P DECIMALS 2,
+         TCOLOR TYPE LVC_T_SCOL,      "#
+       END OF GS_WEEKLY_SUM.
+DATA GT_WEEKLY_SUM LIKE TABLE OF GS_WEEKLY_SUM.
+DATA : GT_DISP LIKE TABLE OF GS_DISP.
+
+DATA RB1.
+DATA : ROH  TYPE CHAR01,
+       HALB TYPE CHAR01,
+       FERT TYPE CHAR01,
+       ALL  TYPE CHAR01.
+
+
+<font color ="#0000FF">************</font>
+<font color ="#0000FF">*200#</font>
+<font color ="#0000FF">*DATA : BEGIN OF GS_PIR,</font>
+<font color ="#0000FF">*         MATNR TYPE MARA-MATNR,</font>
+<font color ="#0000FF">*  MEINS TYPE MSEG-MEINS,</font>
+<font color ="#0000FF">*  MAKTX      TYPE MAKT-MAKTX,</font>
+<font color ="#0000FF">*         " BDZEI TYPE PBIM-BDZEI,</font>
+<font color ="#0000FF">*         PDATU TYPE SYST-DATUM,</font>
+<font color ="#0000FF">*         PLNMG TYPE PBED-PLNMG, "##</font>
+<font color ="#0000FF">*         " ENTLI TYPE PBED-ENTLI, "#### ###</font>
+<font color ="#0000FF">*       END OF GS_PIR,</font>
+<font color ="#0000FF">*       GT_PIR LIKE TABLE OF GS_PIR.</font>
+
+DATA : GS_PIR LIKE GS_WEEKLY,
+       GT_PIR LIKE TABLE OF GS_PIR.
+
+<font color ="#0000FF">***********************************************</font>
+<font color ="#0000FF">*ALV## ##</font>
+<font color ="#0000FF">**********************************************</font>
+
+DATA : GO_CONTAINER TYPE REF TO CL_GUI_CUSTOM_CONTAINER,
+       GO_SPLITTER1 TYPE REF TO CL_GUI_SPLITTER_CONTAINER,
+       GO_SPLITTER2 TYPE REF TO CL_GUI_SPLITTER_CONTAINER,
+       GO_CONT1     TYPE REF TO CL_GUI_CONTAINER,
+       GO_CONT2     TYPE REF TO CL_GUI_CONTAINER,
+       GO_CONT3     TYPE REF TO CL_GUI_CONTAINER,
+       GO_CONT4     TYPE REF TO CL_GUI_CONTAINER,
+       GO_GRID1     TYPE REF TO CL_GUI_ALV_GRID,
+       GO_GRID2     TYPE REF TO CL_GUI_ALV_GRID,
+       GO_GRID3     TYPE REF TO CL_GUI_ALV_GRID.
+
+DATA : GV_OKCODE TYPE SY-UCOMM.
+
+DATA : GT_FCAT1   TYPE LVC_T_FCAT,
+       GS_FCAT    TYPE LVC_S_FCAT,
+       GS_LAYOUT1 TYPE LVC_S_LAYO.
+
+DATA : GT_FCAT2   TYPE LVC_T_FCAT,
+       GS_LAYOUT2 TYPE LVC_S_LAYO.
+
+DATA : GT_FCAT3   TYPE LVC_T_FCAT,
+       GS_LAYOUT3 TYPE LVC_S_LAYO.
+
+DATA : GT_SORT1 TYPE LVC_T_SORT,
+       GT_SORT2 TYPE LVC_T_SORT,
+       GT_SORT3 TYPE LVC_T_SORT,
+       GS_SORT  LIKE LINE OF GT_SORT1.
+
+
+<font color ="#0000FF">****************************************</font>
+<font color ="#0000FF">*200# ALV</font>
+DATA : GO_CONTAINER_0200 TYPE REF TO CL_GUI_CUSTOM_CONTAINER,
+       GO_CONT_0200      TYPE REF TO CL_GUI_CONTAINER,
+
+       GO_GRID_0200      TYPE REF TO CL_GUI_ALV_GRID.
+
+DATA : GT_FCAT_0200   TYPE LVC_T_FCAT,    "##
+       GS_FCAT_0200   TYPE LVC_S_FCAT,    "#### ##
+       GS_LAYOUT_0200 TYPE LVC_S_LAYO,    "##
+       GT_SORT_0200   TYPE LVC_T_SORT.
+DATA GV_OKCODE_0200 TYPE SY-UCOMM.
+<font color ="#0000FF">************************************************************</font>
+<font color ="#0000FF">*EVENT ## ##</font>
+<font color ="#0000FF">****************************************************</font>
+
+DATA : GO_EVENT_RECEIVER TYPE REF TO LCL_EVENT_RECEIVER.
+</pre>
+<hr>
+<font size="2" face = "Sans Serif">Extracted by Direct Download Enterprise version 1.3.1 - E.G.Mellodew. 1998-2005 UK. Sap Release 751
+</font>
+</body>
+</html>
